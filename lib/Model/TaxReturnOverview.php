@@ -2,12 +2,12 @@
 /**
  * TaxReturnOverview
  *
- * PHP version 7.4
+ * PHP version 5
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
 
 /**
@@ -15,14 +15,14 @@
  *
  * ## Usage  - **Download the spec** [swagger.json](/v2/swagger.json) file, it is a [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification).  - **Generating a client** can easily be done using tools like [swagger-codegen](https://github.com/swagger-api/swagger-codegen) or other that accepts [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) specs.     - For swagger codegen it is recommended to use the flag: **--removeOperationIdPrefix**.        Unique operation ids are about to be introduced to the spec, and this ensures forward compatibility - and results in less verbose generated code.   ## Overview  - Partial resource updating is done using the `PUT` method with optional fields instead of the `PATCH` method.  - **Actions** or **commands** are represented in our RESTful path with a prefixed `:`. Example: `/v2/hours/123/:approve`.  - **Summaries** or **aggregated** results are represented in our RESTful path with a prefixed `>`. Example: `/v2/hours/>thisWeeksBillables`.  - **Request ID** is a key found in all responses in the header with the name `x-tlx-request-id`. For validation and error responses it is also in the response body. If additional log information is absolutely necessary, our support division can locate the key value.  - **version** This is a revision number found on all persisted resources. If included, it will prevent your PUT/POST from overriding any updates to the resource since your GET.  - **Date** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DD`.  - **DateTime** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DDThh:mm:ss`.  - **Searching** is done by entering values in the optional fields for each API call. The values fall into the following categories: range, in, exact and like.  - **Missing fields** or even **no response data** can occur because result objects and fields are filtered on authorization.  - **See [GitHub](https://github.com/Tripletex/tripletex-api2) for more documentation, examples, changelog and more.**  - **See [FAQ](https://tripletex.no/execute/docViewer?articleId=906&language=0) for additional information.**   ## Authentication  - **Tokens:** The Tripletex API uses 3 different tokens    - **consumerToken** is a token provided to the consumer by Tripletex after the API 2.0 registration is completed.    - **employeeToken** is a token created by an administrator in your Tripletex account via the user settings and the tab \"API access\". Each employee token must be given a set of entitlements. [Read more here.](https://tripletex.no/execute/docViewer?articleId=1505&languageId=0)    - **sessionToken** is the token from `/token/session/:create` which requires a consumerToken and an employeeToken created with the same consumer token, but not an authentication header.  - **Authentication** is done via [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)    - **username** is used to specify what company to access.      - `0` or blank means the company of the employee.      - Any other value means accountant clients. Use `/company/>withLoginAccess` to get a list of those.    - **password** is the **sessionToken**.    - If you need to create the header yourself use `Authorization: Basic <encoded token>` where `encoded token` is the string `<target company id or 0>:<your session token>` Base64 encoded.   ## Tags  - `[BETA]` This is a beta endpoint and can be subject to change. - `[DEPRECATED]` Deprecated means that we intend to remove/change this feature or capability in a future \"major\" API release. We therefore discourage all use of this feature/capability.   ## Fields  Use the `fields` parameter to specify which fields should be returned. This also supports fields from sub elements, done via `<field>(<subResourceFields>)`. `*` means all fields for that resource. Example values: - `project,activity,hours`  returns `{project:..., activity:...., hours:...}`. - just `project` returns `\"project\" : { \"id\": 12345, \"url\": \"tripletex.no/v2/projects/12345\"  }`. - `project(*)` returns `\"project\" : { \"id\": 12345 \"name\":\"ProjectName\" \"number.....startDate\": \"2013-01-07\" }`. - `project(name)` returns `\"project\" : { \"name\":\"ProjectName\" }`. - All resources and some subResources :  `*,activity(name),employee(*)`.   ## Sorting  Use the `sorting` parameter to specify sorting. It takes a comma separated list, where a `-` prefix denotes descending. You can sort by sub object with the following format: `<field>.<subObjectField>`. Example values: - `date` - `project.name` - `project.name, -date`   ## Changes  To get the changes for a resource, `changes` have to be explicitly specified as part of the `fields` parameter, e.g. `*,changes`. There are currently two types of change available:  - `CREATE` for when the resource was created - `UPDATE` for when the resource was updated  **NOTE** > For objects created prior to October 24th 2018 the list may be incomplete, but will always contain the CREATE and the last change (if the object has been changed after creation).   ## Rate limiting  Rate limiting is performed on the API calls for an employee for each API consumer. Status regarding the rate limit is returned as headers: - `X-Rate-Limit-Limit` - The number of allowed requests in the current period. - `X-Rate-Limit-Remaining` - The number of remaining requests. - `X-Rate-Limit-Reset` - The number of seconds left in the current period.  Once the rate limit is hit, all requests will return HTTP status code `429` for the remainder of the current period.   ## Response envelope  #### Multiple values  ```json {   \"fullResultSize\": ###, // {number} [DEPRECATED]   \"from\": ###, // {number} Paging starting from   \"count\": ###, // {number} Paging count   \"versionDigest\": \"###\", // {string} Hash of full result, null if no result   \"values\": [...{...object...},{...object...},{...object...}...] } ```  #### Single value  ```json {   \"value\": {...single object...} } ```   ## WebHook envelope  ```json {   \"subscriptionId\": ###, // Subscription id   \"event\": \"object.verb\", // As listed from /v2/event/   \"id\": ###, // Id of object this event is for   \"value\": {... single object, null if object.deleted ...} } ```   ## Error/warning envelope  ```json {   \"status\": ###, // {number} HTTP status code   \"code\": #####, // {number} internal status code of event   \"message\": \"###\", // {string} Basic feedback message in your language   \"link\": \"###\", // {string} Link to doc   \"developerMessage\": \"###\", // {string} More technical message   \"validationMessages\": [ // {array} List of validation messages, can be null     {       \"field\": \"###\", // {string} Name of field       \"message\": \"###\" // {string} Validation message for field     }   ],   \"requestId\": \"###\" // {string} Same as x-tlx-request-id  } ```   ## Status codes / Error codes  - **200 OK** - **201 Created** - From POSTs that create something new. - **204 No Content** - When there is no answer, ex: \"/:anAction\" or DELETE. - **400 Bad request** -   -  **4000** Bad Request Exception   - **11000** Illegal Filter Exception   - **12000** Path Param Exception   - **24000** Cryptography Exception - **401 Unauthorized** - When authentication is required and has failed or has not yet been provided   -  **3000** Authentication Exception - **403 Forbidden** - When AuthorisationManager says no.   -  **9000** Security Exception - **404 Not Found** - For resources that does not exist.   -  **6000** Not Found Exception - **409 Conflict** - Such as an edit conflict between multiple simultaneous updates   -  **7000** Object Exists Exception   -  **8000** Revision Exception   - **10000** Locked Exception   - **14000** Duplicate entry - **422 Bad Request** - For Required fields or things like malformed payload.   - **15000** Value Validation Exception   - **16000** Mapping Exception   - **17000** Sorting Exception   - **18000** Validation Exception   - **21000** Param Exception   - **22000** Invalid JSON Exception   - **23000** Result Set Too Large Exception - **429 Too Many Requests** - Request rate limit hit - **500 Internal Error** - Unexpected condition was encountered and no more specific message is suitable   - **1000** Exception
  *
- * The version of the OpenAPI document: 2.70.19
- * Generated by: https://openapi-generator.tech
- * OpenAPI Generator version: 6.5.0-SNAPSHOT
+ * OpenAPI spec version: 2.70.19
+ * 
+ * Generated by: https://github.com/swagger-api/swagger-codegen.git
+ * Swagger Codegen version: 3.0.41
  */
-
 /**
- * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
- * https://openapi-generator.tech
+ * NOTE: This class is auto generated by the swagger code generator program.
+ * https://github.com/swagger-api/swagger-codegen
  * Do not edit the class manually.
  */
 
@@ -36,134 +36,90 @@ use \Learnist\Tripletex\ObjectSerializer;
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- * @implements \ArrayAccess<string, mixed>
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
-class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializable
+class TaxReturnOverview implements ModelInterface, ArrayAccess
 {
-    public const DISCRIMINATOR = null;
+    const DISCRIMINATOR = null;
 
     /**
       * The original name of the model.
       *
       * @var string
       */
-    protected static $openAPIModelName = 'TaxReturnOverview';
+    protected static $swaggerModelName = 'TaxReturnOverview';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
       *
       * @var string[]
       */
-    protected static $openAPITypes = [
+    protected static $swaggerTypes = [
         'year_end_report' => '\Learnist\Tripletex\Model\YearEndReport',
-        'show_concern_relation' => 'bool',
-        'business_income' => 'float',
-        'group_contribution_received' => 'float',
-        'group_contribution_received_grouping' => 'string',
-        'paid_group_contribution' => 'float',
-        'paid_group_contribution_grouping' => 'string',
-        'obtained_private_agreement_and_debt_forgiveness' => 'float',
-        'obtained_private_agreement_and_debt_forgiveness_grouping' => 'string',
-        'taxable_profit_for_the_year' => 'float',
-        'accumulated_loss_from_previous_year' => 'float',
-        'losses_in_business_and_real_estate' => 'float',
-        'use_of_loss_carry_forwards' => 'float',
-        'accumulated_loss_for_next_year' => 'float',
-        'tax_value_tangible_fixed_assets' => 'float',
-        'tax_value_inventories' => 'float',
-        'tax_value_customer_receivables' => 'float',
-        'sum_gross_assets' => 'float',
-        'total_debt_in_accounts' => 'float',
-        'tax_to_pay' => 'float',
-        'sum_debt' => 'float',
-        'posts' => '\Learnist\Tripletex\Model\GenericData[]',
-        'capital_and_debt' => '\Learnist\Tripletex\Model\TaxReturn[]',
-        'aid_schemes' => '\Learnist\Tripletex\Model\AidScheme[]'
-    ];
+'show_concern_relation' => 'bool',
+'business_income' => 'float',
+'group_contribution_received' => 'float',
+'group_contribution_received_grouping' => 'string',
+'paid_group_contribution' => 'float',
+'paid_group_contribution_grouping' => 'string',
+'obtained_private_agreement_and_debt_forgiveness' => 'float',
+'obtained_private_agreement_and_debt_forgiveness_grouping' => 'string',
+'taxable_profit_for_the_year' => 'float',
+'accumulated_loss_from_previous_year' => 'float',
+'losses_in_business_and_real_estate' => 'float',
+'use_of_loss_carry_forwards' => 'float',
+'accumulated_loss_for_next_year' => 'float',
+'tax_value_tangible_fixed_assets' => 'float',
+'tax_value_inventories' => 'float',
+'tax_value_customer_receivables' => 'float',
+'sum_gross_assets' => 'float',
+'total_debt_in_accounts' => 'float',
+'tax_to_pay' => 'float',
+'sum_debt' => 'float',
+'posts' => '\Learnist\Tripletex\Model\GenericData[]',
+'capital_and_debt' => '\Learnist\Tripletex\Model\TaxReturn[]',
+'aid_schemes' => '\Learnist\Tripletex\Model\AidScheme[]'    ];
 
     /**
       * Array of property to format mappings. Used for (de)serialization
       *
       * @var string[]
-      * @phpstan-var array<string, string|null>
-      * @psalm-var array<string, string|null>
       */
-    protected static $openAPIFormats = [
+    protected static $swaggerFormats = [
         'year_end_report' => null,
-        'show_concern_relation' => null,
-        'business_income' => null,
-        'group_contribution_received' => null,
-        'group_contribution_received_grouping' => null,
-        'paid_group_contribution' => null,
-        'paid_group_contribution_grouping' => null,
-        'obtained_private_agreement_and_debt_forgiveness' => null,
-        'obtained_private_agreement_and_debt_forgiveness_grouping' => null,
-        'taxable_profit_for_the_year' => null,
-        'accumulated_loss_from_previous_year' => null,
-        'losses_in_business_and_real_estate' => null,
-        'use_of_loss_carry_forwards' => null,
-        'accumulated_loss_for_next_year' => null,
-        'tax_value_tangible_fixed_assets' => null,
-        'tax_value_inventories' => null,
-        'tax_value_customer_receivables' => null,
-        'sum_gross_assets' => null,
-        'total_debt_in_accounts' => null,
-        'tax_to_pay' => null,
-        'sum_debt' => null,
-        'posts' => null,
-        'capital_and_debt' => null,
-        'aid_schemes' => null
-    ];
-
-    /**
-      * Array of nullable properties. Used for (de)serialization
-      *
-      * @var boolean[]
-      */
-    protected static array $openAPINullables = [
-        'year_end_report' => false,
-		'show_concern_relation' => false,
-		'business_income' => false,
-		'group_contribution_received' => false,
-		'group_contribution_received_grouping' => false,
-		'paid_group_contribution' => false,
-		'paid_group_contribution_grouping' => false,
-		'obtained_private_agreement_and_debt_forgiveness' => false,
-		'obtained_private_agreement_and_debt_forgiveness_grouping' => false,
-		'taxable_profit_for_the_year' => false,
-		'accumulated_loss_from_previous_year' => false,
-		'losses_in_business_and_real_estate' => false,
-		'use_of_loss_carry_forwards' => false,
-		'accumulated_loss_for_next_year' => false,
-		'tax_value_tangible_fixed_assets' => false,
-		'tax_value_inventories' => false,
-		'tax_value_customer_receivables' => false,
-		'sum_gross_assets' => false,
-		'total_debt_in_accounts' => false,
-		'tax_to_pay' => false,
-		'sum_debt' => false,
-		'posts' => false,
-		'capital_and_debt' => false,
-		'aid_schemes' => false
-    ];
-
-    /**
-      * If a nullable field gets set to null, insert it here
-      *
-      * @var boolean[]
-      */
-    protected array $openAPINullablesSetToNull = [];
+'show_concern_relation' => null,
+'business_income' => null,
+'group_contribution_received' => null,
+'group_contribution_received_grouping' => null,
+'paid_group_contribution' => null,
+'paid_group_contribution_grouping' => null,
+'obtained_private_agreement_and_debt_forgiveness' => null,
+'obtained_private_agreement_and_debt_forgiveness_grouping' => null,
+'taxable_profit_for_the_year' => null,
+'accumulated_loss_from_previous_year' => null,
+'losses_in_business_and_real_estate' => null,
+'use_of_loss_carry_forwards' => null,
+'accumulated_loss_for_next_year' => null,
+'tax_value_tangible_fixed_assets' => null,
+'tax_value_inventories' => null,
+'tax_value_customer_receivables' => null,
+'sum_gross_assets' => null,
+'total_debt_in_accounts' => null,
+'tax_to_pay' => null,
+'sum_debt' => null,
+'posts' => null,
+'capital_and_debt' => null,
+'aid_schemes' => null    ];
 
     /**
      * Array of property to type mappings. Used for (de)serialization
      *
      * @return array
      */
-    public static function openAPITypes()
+    public static function swaggerTypes()
     {
-        return self::$openAPITypes;
+        return self::$swaggerTypes;
     }
 
     /**
@@ -171,61 +127,9 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @return array
      */
-    public static function openAPIFormats()
+    public static function swaggerFormats()
     {
-        return self::$openAPIFormats;
-    }
-
-    /**
-     * Array of nullable properties
-     *
-     * @return array
-     */
-    protected static function openAPINullables(): array
-    {
-        return self::$openAPINullables;
-    }
-
-    /**
-     * Array of nullable field names deliberately set to null
-     *
-     * @return boolean[]
-     */
-    private function getOpenAPINullablesSetToNull(): array
-    {
-        return $this->openAPINullablesSetToNull;
-    }
-
-    /**
-     * Setter - Array of nullable field names deliberately set to null
-     *
-     * @param boolean[] $openAPINullablesSetToNull
-     */
-    private function setOpenAPINullablesSetToNull(array $openAPINullablesSetToNull): void
-    {
-        $this->openAPINullablesSetToNull = $openAPINullablesSetToNull;
-    }
-
-    /**
-     * Checks if a property is nullable
-     *
-     * @param string $property
-     * @return bool
-     */
-    public static function isNullable(string $property): bool
-    {
-        return self::openAPINullables()[$property] ?? false;
-    }
-
-    /**
-     * Checks if a nullable property is set to null.
-     *
-     * @param string $property
-     * @return bool
-     */
-    public function isNullableSetToNull(string $property): bool
-    {
-        return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+        return self::$swaggerFormats;
     }
 
     /**
@@ -236,30 +140,29 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
      */
     protected static $attributeMap = [
         'year_end_report' => 'yearEndReport',
-        'show_concern_relation' => 'showConcernRelation',
-        'business_income' => 'businessIncome',
-        'group_contribution_received' => 'groupContributionReceived',
-        'group_contribution_received_grouping' => 'groupContributionReceivedGrouping',
-        'paid_group_contribution' => 'paidGroupContribution',
-        'paid_group_contribution_grouping' => 'paidGroupContributionGrouping',
-        'obtained_private_agreement_and_debt_forgiveness' => 'obtainedPrivateAgreementAndDebtForgiveness',
-        'obtained_private_agreement_and_debt_forgiveness_grouping' => 'obtainedPrivateAgreementAndDebtForgivenessGrouping',
-        'taxable_profit_for_the_year' => 'taxableProfitForTheYear',
-        'accumulated_loss_from_previous_year' => 'accumulatedLossFromPreviousYear',
-        'losses_in_business_and_real_estate' => 'lossesInBusinessAndRealEstate',
-        'use_of_loss_carry_forwards' => 'useOfLossCarryForwards',
-        'accumulated_loss_for_next_year' => 'accumulatedLossForNextYear',
-        'tax_value_tangible_fixed_assets' => 'taxValueTangibleFixedAssets',
-        'tax_value_inventories' => 'taxValueInventories',
-        'tax_value_customer_receivables' => 'taxValueCustomerReceivables',
-        'sum_gross_assets' => 'sumGrossAssets',
-        'total_debt_in_accounts' => 'totalDebtInAccounts',
-        'tax_to_pay' => 'taxToPay',
-        'sum_debt' => 'sumDebt',
-        'posts' => 'posts',
-        'capital_and_debt' => 'capitalAndDebt',
-        'aid_schemes' => 'aidSchemes'
-    ];
+'show_concern_relation' => 'showConcernRelation',
+'business_income' => 'businessIncome',
+'group_contribution_received' => 'groupContributionReceived',
+'group_contribution_received_grouping' => 'groupContributionReceivedGrouping',
+'paid_group_contribution' => 'paidGroupContribution',
+'paid_group_contribution_grouping' => 'paidGroupContributionGrouping',
+'obtained_private_agreement_and_debt_forgiveness' => 'obtainedPrivateAgreementAndDebtForgiveness',
+'obtained_private_agreement_and_debt_forgiveness_grouping' => 'obtainedPrivateAgreementAndDebtForgivenessGrouping',
+'taxable_profit_for_the_year' => 'taxableProfitForTheYear',
+'accumulated_loss_from_previous_year' => 'accumulatedLossFromPreviousYear',
+'losses_in_business_and_real_estate' => 'lossesInBusinessAndRealEstate',
+'use_of_loss_carry_forwards' => 'useOfLossCarryForwards',
+'accumulated_loss_for_next_year' => 'accumulatedLossForNextYear',
+'tax_value_tangible_fixed_assets' => 'taxValueTangibleFixedAssets',
+'tax_value_inventories' => 'taxValueInventories',
+'tax_value_customer_receivables' => 'taxValueCustomerReceivables',
+'sum_gross_assets' => 'sumGrossAssets',
+'total_debt_in_accounts' => 'totalDebtInAccounts',
+'tax_to_pay' => 'taxToPay',
+'sum_debt' => 'sumDebt',
+'posts' => 'posts',
+'capital_and_debt' => 'capitalAndDebt',
+'aid_schemes' => 'aidSchemes'    ];
 
     /**
      * Array of attributes to setter functions (for deserialization of responses)
@@ -268,30 +171,29 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
      */
     protected static $setters = [
         'year_end_report' => 'setYearEndReport',
-        'show_concern_relation' => 'setShowConcernRelation',
-        'business_income' => 'setBusinessIncome',
-        'group_contribution_received' => 'setGroupContributionReceived',
-        'group_contribution_received_grouping' => 'setGroupContributionReceivedGrouping',
-        'paid_group_contribution' => 'setPaidGroupContribution',
-        'paid_group_contribution_grouping' => 'setPaidGroupContributionGrouping',
-        'obtained_private_agreement_and_debt_forgiveness' => 'setObtainedPrivateAgreementAndDebtForgiveness',
-        'obtained_private_agreement_and_debt_forgiveness_grouping' => 'setObtainedPrivateAgreementAndDebtForgivenessGrouping',
-        'taxable_profit_for_the_year' => 'setTaxableProfitForTheYear',
-        'accumulated_loss_from_previous_year' => 'setAccumulatedLossFromPreviousYear',
-        'losses_in_business_and_real_estate' => 'setLossesInBusinessAndRealEstate',
-        'use_of_loss_carry_forwards' => 'setUseOfLossCarryForwards',
-        'accumulated_loss_for_next_year' => 'setAccumulatedLossForNextYear',
-        'tax_value_tangible_fixed_assets' => 'setTaxValueTangibleFixedAssets',
-        'tax_value_inventories' => 'setTaxValueInventories',
-        'tax_value_customer_receivables' => 'setTaxValueCustomerReceivables',
-        'sum_gross_assets' => 'setSumGrossAssets',
-        'total_debt_in_accounts' => 'setTotalDebtInAccounts',
-        'tax_to_pay' => 'setTaxToPay',
-        'sum_debt' => 'setSumDebt',
-        'posts' => 'setPosts',
-        'capital_and_debt' => 'setCapitalAndDebt',
-        'aid_schemes' => 'setAidSchemes'
-    ];
+'show_concern_relation' => 'setShowConcernRelation',
+'business_income' => 'setBusinessIncome',
+'group_contribution_received' => 'setGroupContributionReceived',
+'group_contribution_received_grouping' => 'setGroupContributionReceivedGrouping',
+'paid_group_contribution' => 'setPaidGroupContribution',
+'paid_group_contribution_grouping' => 'setPaidGroupContributionGrouping',
+'obtained_private_agreement_and_debt_forgiveness' => 'setObtainedPrivateAgreementAndDebtForgiveness',
+'obtained_private_agreement_and_debt_forgiveness_grouping' => 'setObtainedPrivateAgreementAndDebtForgivenessGrouping',
+'taxable_profit_for_the_year' => 'setTaxableProfitForTheYear',
+'accumulated_loss_from_previous_year' => 'setAccumulatedLossFromPreviousYear',
+'losses_in_business_and_real_estate' => 'setLossesInBusinessAndRealEstate',
+'use_of_loss_carry_forwards' => 'setUseOfLossCarryForwards',
+'accumulated_loss_for_next_year' => 'setAccumulatedLossForNextYear',
+'tax_value_tangible_fixed_assets' => 'setTaxValueTangibleFixedAssets',
+'tax_value_inventories' => 'setTaxValueInventories',
+'tax_value_customer_receivables' => 'setTaxValueCustomerReceivables',
+'sum_gross_assets' => 'setSumGrossAssets',
+'total_debt_in_accounts' => 'setTotalDebtInAccounts',
+'tax_to_pay' => 'setTaxToPay',
+'sum_debt' => 'setSumDebt',
+'posts' => 'setPosts',
+'capital_and_debt' => 'setCapitalAndDebt',
+'aid_schemes' => 'setAidSchemes'    ];
 
     /**
      * Array of attributes to getter functions (for serialization of requests)
@@ -300,30 +202,29 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
      */
     protected static $getters = [
         'year_end_report' => 'getYearEndReport',
-        'show_concern_relation' => 'getShowConcernRelation',
-        'business_income' => 'getBusinessIncome',
-        'group_contribution_received' => 'getGroupContributionReceived',
-        'group_contribution_received_grouping' => 'getGroupContributionReceivedGrouping',
-        'paid_group_contribution' => 'getPaidGroupContribution',
-        'paid_group_contribution_grouping' => 'getPaidGroupContributionGrouping',
-        'obtained_private_agreement_and_debt_forgiveness' => 'getObtainedPrivateAgreementAndDebtForgiveness',
-        'obtained_private_agreement_and_debt_forgiveness_grouping' => 'getObtainedPrivateAgreementAndDebtForgivenessGrouping',
-        'taxable_profit_for_the_year' => 'getTaxableProfitForTheYear',
-        'accumulated_loss_from_previous_year' => 'getAccumulatedLossFromPreviousYear',
-        'losses_in_business_and_real_estate' => 'getLossesInBusinessAndRealEstate',
-        'use_of_loss_carry_forwards' => 'getUseOfLossCarryForwards',
-        'accumulated_loss_for_next_year' => 'getAccumulatedLossForNextYear',
-        'tax_value_tangible_fixed_assets' => 'getTaxValueTangibleFixedAssets',
-        'tax_value_inventories' => 'getTaxValueInventories',
-        'tax_value_customer_receivables' => 'getTaxValueCustomerReceivables',
-        'sum_gross_assets' => 'getSumGrossAssets',
-        'total_debt_in_accounts' => 'getTotalDebtInAccounts',
-        'tax_to_pay' => 'getTaxToPay',
-        'sum_debt' => 'getSumDebt',
-        'posts' => 'getPosts',
-        'capital_and_debt' => 'getCapitalAndDebt',
-        'aid_schemes' => 'getAidSchemes'
-    ];
+'show_concern_relation' => 'getShowConcernRelation',
+'business_income' => 'getBusinessIncome',
+'group_contribution_received' => 'getGroupContributionReceived',
+'group_contribution_received_grouping' => 'getGroupContributionReceivedGrouping',
+'paid_group_contribution' => 'getPaidGroupContribution',
+'paid_group_contribution_grouping' => 'getPaidGroupContributionGrouping',
+'obtained_private_agreement_and_debt_forgiveness' => 'getObtainedPrivateAgreementAndDebtForgiveness',
+'obtained_private_agreement_and_debt_forgiveness_grouping' => 'getObtainedPrivateAgreementAndDebtForgivenessGrouping',
+'taxable_profit_for_the_year' => 'getTaxableProfitForTheYear',
+'accumulated_loss_from_previous_year' => 'getAccumulatedLossFromPreviousYear',
+'losses_in_business_and_real_estate' => 'getLossesInBusinessAndRealEstate',
+'use_of_loss_carry_forwards' => 'getUseOfLossCarryForwards',
+'accumulated_loss_for_next_year' => 'getAccumulatedLossForNextYear',
+'tax_value_tangible_fixed_assets' => 'getTaxValueTangibleFixedAssets',
+'tax_value_inventories' => 'getTaxValueInventories',
+'tax_value_customer_receivables' => 'getTaxValueCustomerReceivables',
+'sum_gross_assets' => 'getSumGrossAssets',
+'total_debt_in_accounts' => 'getTotalDebtInAccounts',
+'tax_to_pay' => 'getTaxToPay',
+'sum_debt' => 'getSumDebt',
+'posts' => 'getPosts',
+'capital_and_debt' => 'getCapitalAndDebt',
+'aid_schemes' => 'getAidSchemes'    ];
 
     /**
      * Array of attributes where the key is the local name,
@@ -363,9 +264,10 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
      */
     public function getModelName()
     {
-        return self::$openAPIModelName;
+        return self::$swaggerModelName;
     }
 
+    
 
     /**
      * Associative array for storing property values
@@ -382,48 +284,30 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
      */
     public function __construct(array $data = null)
     {
-        $this->setIfExists('year_end_report', $data ?? [], null);
-        $this->setIfExists('show_concern_relation', $data ?? [], null);
-        $this->setIfExists('business_income', $data ?? [], null);
-        $this->setIfExists('group_contribution_received', $data ?? [], null);
-        $this->setIfExists('group_contribution_received_grouping', $data ?? [], null);
-        $this->setIfExists('paid_group_contribution', $data ?? [], null);
-        $this->setIfExists('paid_group_contribution_grouping', $data ?? [], null);
-        $this->setIfExists('obtained_private_agreement_and_debt_forgiveness', $data ?? [], null);
-        $this->setIfExists('obtained_private_agreement_and_debt_forgiveness_grouping', $data ?? [], null);
-        $this->setIfExists('taxable_profit_for_the_year', $data ?? [], null);
-        $this->setIfExists('accumulated_loss_from_previous_year', $data ?? [], null);
-        $this->setIfExists('losses_in_business_and_real_estate', $data ?? [], null);
-        $this->setIfExists('use_of_loss_carry_forwards', $data ?? [], null);
-        $this->setIfExists('accumulated_loss_for_next_year', $data ?? [], null);
-        $this->setIfExists('tax_value_tangible_fixed_assets', $data ?? [], null);
-        $this->setIfExists('tax_value_inventories', $data ?? [], null);
-        $this->setIfExists('tax_value_customer_receivables', $data ?? [], null);
-        $this->setIfExists('sum_gross_assets', $data ?? [], null);
-        $this->setIfExists('total_debt_in_accounts', $data ?? [], null);
-        $this->setIfExists('tax_to_pay', $data ?? [], null);
-        $this->setIfExists('sum_debt', $data ?? [], null);
-        $this->setIfExists('posts', $data ?? [], null);
-        $this->setIfExists('capital_and_debt', $data ?? [], null);
-        $this->setIfExists('aid_schemes', $data ?? [], null);
-    }
-
-    /**
-    * Sets $this->container[$variableName] to the given data or to the given default Value; if $variableName
-    * is nullable and its value is set to null in the $fields array, then mark it as "set to null" in the
-    * $this->openAPINullablesSetToNull array
-    *
-    * @param string $variableName
-    * @param array  $fields
-    * @param mixed  $defaultValue
-    */
-    private function setIfExists(string $variableName, array $fields, $defaultValue): void
-    {
-        if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
-            $this->openAPINullablesSetToNull[] = $variableName;
-        }
-
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $this->container['year_end_report'] = isset($data['year_end_report']) ? $data['year_end_report'] : null;
+        $this->container['show_concern_relation'] = isset($data['show_concern_relation']) ? $data['show_concern_relation'] : null;
+        $this->container['business_income'] = isset($data['business_income']) ? $data['business_income'] : null;
+        $this->container['group_contribution_received'] = isset($data['group_contribution_received']) ? $data['group_contribution_received'] : null;
+        $this->container['group_contribution_received_grouping'] = isset($data['group_contribution_received_grouping']) ? $data['group_contribution_received_grouping'] : null;
+        $this->container['paid_group_contribution'] = isset($data['paid_group_contribution']) ? $data['paid_group_contribution'] : null;
+        $this->container['paid_group_contribution_grouping'] = isset($data['paid_group_contribution_grouping']) ? $data['paid_group_contribution_grouping'] : null;
+        $this->container['obtained_private_agreement_and_debt_forgiveness'] = isset($data['obtained_private_agreement_and_debt_forgiveness']) ? $data['obtained_private_agreement_and_debt_forgiveness'] : null;
+        $this->container['obtained_private_agreement_and_debt_forgiveness_grouping'] = isset($data['obtained_private_agreement_and_debt_forgiveness_grouping']) ? $data['obtained_private_agreement_and_debt_forgiveness_grouping'] : null;
+        $this->container['taxable_profit_for_the_year'] = isset($data['taxable_profit_for_the_year']) ? $data['taxable_profit_for_the_year'] : null;
+        $this->container['accumulated_loss_from_previous_year'] = isset($data['accumulated_loss_from_previous_year']) ? $data['accumulated_loss_from_previous_year'] : null;
+        $this->container['losses_in_business_and_real_estate'] = isset($data['losses_in_business_and_real_estate']) ? $data['losses_in_business_and_real_estate'] : null;
+        $this->container['use_of_loss_carry_forwards'] = isset($data['use_of_loss_carry_forwards']) ? $data['use_of_loss_carry_forwards'] : null;
+        $this->container['accumulated_loss_for_next_year'] = isset($data['accumulated_loss_for_next_year']) ? $data['accumulated_loss_for_next_year'] : null;
+        $this->container['tax_value_tangible_fixed_assets'] = isset($data['tax_value_tangible_fixed_assets']) ? $data['tax_value_tangible_fixed_assets'] : null;
+        $this->container['tax_value_inventories'] = isset($data['tax_value_inventories']) ? $data['tax_value_inventories'] : null;
+        $this->container['tax_value_customer_receivables'] = isset($data['tax_value_customer_receivables']) ? $data['tax_value_customer_receivables'] : null;
+        $this->container['sum_gross_assets'] = isset($data['sum_gross_assets']) ? $data['sum_gross_assets'] : null;
+        $this->container['total_debt_in_accounts'] = isset($data['total_debt_in_accounts']) ? $data['total_debt_in_accounts'] : null;
+        $this->container['tax_to_pay'] = isset($data['tax_to_pay']) ? $data['tax_to_pay'] : null;
+        $this->container['sum_debt'] = isset($data['sum_debt']) ? $data['sum_debt'] : null;
+        $this->container['posts'] = isset($data['posts']) ? $data['posts'] : null;
+        $this->container['capital_and_debt'] = isset($data['capital_and_debt']) ? $data['capital_and_debt'] : null;
+        $this->container['aid_schemes'] = isset($data['aid_schemes']) ? $data['aid_schemes'] : null;
     }
 
     /**
@@ -453,7 +337,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets year_end_report
      *
-     * @return \Learnist\Tripletex\Model\YearEndReport|null
+     * @return \Learnist\Tripletex\Model\YearEndReport
      */
     public function getYearEndReport()
     {
@@ -463,15 +347,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets year_end_report
      *
-     * @param \Learnist\Tripletex\Model\YearEndReport|null $year_end_report year_end_report
+     * @param \Learnist\Tripletex\Model\YearEndReport $year_end_report year_end_report
      *
-     * @return self
+     * @return $this
      */
     public function setYearEndReport($year_end_report)
     {
-        if (is_null($year_end_report)) {
-            throw new \InvalidArgumentException('non-nullable year_end_report cannot be null');
-        }
         $this->container['year_end_report'] = $year_end_report;
 
         return $this;
@@ -480,7 +361,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets show_concern_relation
      *
-     * @return bool|null
+     * @return bool
      */
     public function getShowConcernRelation()
     {
@@ -490,15 +371,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets show_concern_relation
      *
-     * @param bool|null $show_concern_relation show_concern_relation
+     * @param bool $show_concern_relation show_concern_relation
      *
-     * @return self
+     * @return $this
      */
     public function setShowConcernRelation($show_concern_relation)
     {
-        if (is_null($show_concern_relation)) {
-            throw new \InvalidArgumentException('non-nullable show_concern_relation cannot be null');
-        }
         $this->container['show_concern_relation'] = $show_concern_relation;
 
         return $this;
@@ -507,7 +385,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets business_income
      *
-     * @return float|null
+     * @return float
      */
     public function getBusinessIncome()
     {
@@ -517,15 +395,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets business_income
      *
-     * @param float|null $business_income business_income
+     * @param float $business_income business_income
      *
-     * @return self
+     * @return $this
      */
     public function setBusinessIncome($business_income)
     {
-        if (is_null($business_income)) {
-            throw new \InvalidArgumentException('non-nullable business_income cannot be null');
-        }
         $this->container['business_income'] = $business_income;
 
         return $this;
@@ -534,7 +409,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets group_contribution_received
      *
-     * @return float|null
+     * @return float
      */
     public function getGroupContributionReceived()
     {
@@ -544,15 +419,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets group_contribution_received
      *
-     * @param float|null $group_contribution_received group_contribution_received
+     * @param float $group_contribution_received group_contribution_received
      *
-     * @return self
+     * @return $this
      */
     public function setGroupContributionReceived($group_contribution_received)
     {
-        if (is_null($group_contribution_received)) {
-            throw new \InvalidArgumentException('non-nullable group_contribution_received cannot be null');
-        }
         $this->container['group_contribution_received'] = $group_contribution_received;
 
         return $this;
@@ -561,7 +433,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets group_contribution_received_grouping
      *
-     * @return string|null
+     * @return string
      */
     public function getGroupContributionReceivedGrouping()
     {
@@ -571,15 +443,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets group_contribution_received_grouping
      *
-     * @param string|null $group_contribution_received_grouping group_contribution_received_grouping
+     * @param string $group_contribution_received_grouping group_contribution_received_grouping
      *
-     * @return self
+     * @return $this
      */
     public function setGroupContributionReceivedGrouping($group_contribution_received_grouping)
     {
-        if (is_null($group_contribution_received_grouping)) {
-            throw new \InvalidArgumentException('non-nullable group_contribution_received_grouping cannot be null');
-        }
         $this->container['group_contribution_received_grouping'] = $group_contribution_received_grouping;
 
         return $this;
@@ -588,7 +457,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets paid_group_contribution
      *
-     * @return float|null
+     * @return float
      */
     public function getPaidGroupContribution()
     {
@@ -598,15 +467,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets paid_group_contribution
      *
-     * @param float|null $paid_group_contribution paid_group_contribution
+     * @param float $paid_group_contribution paid_group_contribution
      *
-     * @return self
+     * @return $this
      */
     public function setPaidGroupContribution($paid_group_contribution)
     {
-        if (is_null($paid_group_contribution)) {
-            throw new \InvalidArgumentException('non-nullable paid_group_contribution cannot be null');
-        }
         $this->container['paid_group_contribution'] = $paid_group_contribution;
 
         return $this;
@@ -615,7 +481,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets paid_group_contribution_grouping
      *
-     * @return string|null
+     * @return string
      */
     public function getPaidGroupContributionGrouping()
     {
@@ -625,15 +491,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets paid_group_contribution_grouping
      *
-     * @param string|null $paid_group_contribution_grouping paid_group_contribution_grouping
+     * @param string $paid_group_contribution_grouping paid_group_contribution_grouping
      *
-     * @return self
+     * @return $this
      */
     public function setPaidGroupContributionGrouping($paid_group_contribution_grouping)
     {
-        if (is_null($paid_group_contribution_grouping)) {
-            throw new \InvalidArgumentException('non-nullable paid_group_contribution_grouping cannot be null');
-        }
         $this->container['paid_group_contribution_grouping'] = $paid_group_contribution_grouping;
 
         return $this;
@@ -642,7 +505,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets obtained_private_agreement_and_debt_forgiveness
      *
-     * @return float|null
+     * @return float
      */
     public function getObtainedPrivateAgreementAndDebtForgiveness()
     {
@@ -652,15 +515,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets obtained_private_agreement_and_debt_forgiveness
      *
-     * @param float|null $obtained_private_agreement_and_debt_forgiveness obtained_private_agreement_and_debt_forgiveness
+     * @param float $obtained_private_agreement_and_debt_forgiveness obtained_private_agreement_and_debt_forgiveness
      *
-     * @return self
+     * @return $this
      */
     public function setObtainedPrivateAgreementAndDebtForgiveness($obtained_private_agreement_and_debt_forgiveness)
     {
-        if (is_null($obtained_private_agreement_and_debt_forgiveness)) {
-            throw new \InvalidArgumentException('non-nullable obtained_private_agreement_and_debt_forgiveness cannot be null');
-        }
         $this->container['obtained_private_agreement_and_debt_forgiveness'] = $obtained_private_agreement_and_debt_forgiveness;
 
         return $this;
@@ -669,7 +529,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets obtained_private_agreement_and_debt_forgiveness_grouping
      *
-     * @return string|null
+     * @return string
      */
     public function getObtainedPrivateAgreementAndDebtForgivenessGrouping()
     {
@@ -679,15 +539,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets obtained_private_agreement_and_debt_forgiveness_grouping
      *
-     * @param string|null $obtained_private_agreement_and_debt_forgiveness_grouping obtained_private_agreement_and_debt_forgiveness_grouping
+     * @param string $obtained_private_agreement_and_debt_forgiveness_grouping obtained_private_agreement_and_debt_forgiveness_grouping
      *
-     * @return self
+     * @return $this
      */
     public function setObtainedPrivateAgreementAndDebtForgivenessGrouping($obtained_private_agreement_and_debt_forgiveness_grouping)
     {
-        if (is_null($obtained_private_agreement_and_debt_forgiveness_grouping)) {
-            throw new \InvalidArgumentException('non-nullable obtained_private_agreement_and_debt_forgiveness_grouping cannot be null');
-        }
         $this->container['obtained_private_agreement_and_debt_forgiveness_grouping'] = $obtained_private_agreement_and_debt_forgiveness_grouping;
 
         return $this;
@@ -696,7 +553,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets taxable_profit_for_the_year
      *
-     * @return float|null
+     * @return float
      */
     public function getTaxableProfitForTheYear()
     {
@@ -706,15 +563,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets taxable_profit_for_the_year
      *
-     * @param float|null $taxable_profit_for_the_year taxable_profit_for_the_year
+     * @param float $taxable_profit_for_the_year taxable_profit_for_the_year
      *
-     * @return self
+     * @return $this
      */
     public function setTaxableProfitForTheYear($taxable_profit_for_the_year)
     {
-        if (is_null($taxable_profit_for_the_year)) {
-            throw new \InvalidArgumentException('non-nullable taxable_profit_for_the_year cannot be null');
-        }
         $this->container['taxable_profit_for_the_year'] = $taxable_profit_for_the_year;
 
         return $this;
@@ -723,7 +577,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets accumulated_loss_from_previous_year
      *
-     * @return float|null
+     * @return float
      */
     public function getAccumulatedLossFromPreviousYear()
     {
@@ -733,15 +587,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets accumulated_loss_from_previous_year
      *
-     * @param float|null $accumulated_loss_from_previous_year accumulated_loss_from_previous_year
+     * @param float $accumulated_loss_from_previous_year accumulated_loss_from_previous_year
      *
-     * @return self
+     * @return $this
      */
     public function setAccumulatedLossFromPreviousYear($accumulated_loss_from_previous_year)
     {
-        if (is_null($accumulated_loss_from_previous_year)) {
-            throw new \InvalidArgumentException('non-nullable accumulated_loss_from_previous_year cannot be null');
-        }
         $this->container['accumulated_loss_from_previous_year'] = $accumulated_loss_from_previous_year;
 
         return $this;
@@ -750,7 +601,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets losses_in_business_and_real_estate
      *
-     * @return float|null
+     * @return float
      */
     public function getLossesInBusinessAndRealEstate()
     {
@@ -760,15 +611,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets losses_in_business_and_real_estate
      *
-     * @param float|null $losses_in_business_and_real_estate losses_in_business_and_real_estate
+     * @param float $losses_in_business_and_real_estate losses_in_business_and_real_estate
      *
-     * @return self
+     * @return $this
      */
     public function setLossesInBusinessAndRealEstate($losses_in_business_and_real_estate)
     {
-        if (is_null($losses_in_business_and_real_estate)) {
-            throw new \InvalidArgumentException('non-nullable losses_in_business_and_real_estate cannot be null');
-        }
         $this->container['losses_in_business_and_real_estate'] = $losses_in_business_and_real_estate;
 
         return $this;
@@ -777,7 +625,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets use_of_loss_carry_forwards
      *
-     * @return float|null
+     * @return float
      */
     public function getUseOfLossCarryForwards()
     {
@@ -787,15 +635,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets use_of_loss_carry_forwards
      *
-     * @param float|null $use_of_loss_carry_forwards use_of_loss_carry_forwards
+     * @param float $use_of_loss_carry_forwards use_of_loss_carry_forwards
      *
-     * @return self
+     * @return $this
      */
     public function setUseOfLossCarryForwards($use_of_loss_carry_forwards)
     {
-        if (is_null($use_of_loss_carry_forwards)) {
-            throw new \InvalidArgumentException('non-nullable use_of_loss_carry_forwards cannot be null');
-        }
         $this->container['use_of_loss_carry_forwards'] = $use_of_loss_carry_forwards;
 
         return $this;
@@ -804,7 +649,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets accumulated_loss_for_next_year
      *
-     * @return float|null
+     * @return float
      */
     public function getAccumulatedLossForNextYear()
     {
@@ -814,15 +659,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets accumulated_loss_for_next_year
      *
-     * @param float|null $accumulated_loss_for_next_year accumulated_loss_for_next_year
+     * @param float $accumulated_loss_for_next_year accumulated_loss_for_next_year
      *
-     * @return self
+     * @return $this
      */
     public function setAccumulatedLossForNextYear($accumulated_loss_for_next_year)
     {
-        if (is_null($accumulated_loss_for_next_year)) {
-            throw new \InvalidArgumentException('non-nullable accumulated_loss_for_next_year cannot be null');
-        }
         $this->container['accumulated_loss_for_next_year'] = $accumulated_loss_for_next_year;
 
         return $this;
@@ -831,7 +673,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets tax_value_tangible_fixed_assets
      *
-     * @return float|null
+     * @return float
      */
     public function getTaxValueTangibleFixedAssets()
     {
@@ -841,15 +683,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets tax_value_tangible_fixed_assets
      *
-     * @param float|null $tax_value_tangible_fixed_assets tax_value_tangible_fixed_assets
+     * @param float $tax_value_tangible_fixed_assets tax_value_tangible_fixed_assets
      *
-     * @return self
+     * @return $this
      */
     public function setTaxValueTangibleFixedAssets($tax_value_tangible_fixed_assets)
     {
-        if (is_null($tax_value_tangible_fixed_assets)) {
-            throw new \InvalidArgumentException('non-nullable tax_value_tangible_fixed_assets cannot be null');
-        }
         $this->container['tax_value_tangible_fixed_assets'] = $tax_value_tangible_fixed_assets;
 
         return $this;
@@ -858,7 +697,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets tax_value_inventories
      *
-     * @return float|null
+     * @return float
      */
     public function getTaxValueInventories()
     {
@@ -868,15 +707,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets tax_value_inventories
      *
-     * @param float|null $tax_value_inventories tax_value_inventories
+     * @param float $tax_value_inventories tax_value_inventories
      *
-     * @return self
+     * @return $this
      */
     public function setTaxValueInventories($tax_value_inventories)
     {
-        if (is_null($tax_value_inventories)) {
-            throw new \InvalidArgumentException('non-nullable tax_value_inventories cannot be null');
-        }
         $this->container['tax_value_inventories'] = $tax_value_inventories;
 
         return $this;
@@ -885,7 +721,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets tax_value_customer_receivables
      *
-     * @return float|null
+     * @return float
      */
     public function getTaxValueCustomerReceivables()
     {
@@ -895,15 +731,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets tax_value_customer_receivables
      *
-     * @param float|null $tax_value_customer_receivables tax_value_customer_receivables
+     * @param float $tax_value_customer_receivables tax_value_customer_receivables
      *
-     * @return self
+     * @return $this
      */
     public function setTaxValueCustomerReceivables($tax_value_customer_receivables)
     {
-        if (is_null($tax_value_customer_receivables)) {
-            throw new \InvalidArgumentException('non-nullable tax_value_customer_receivables cannot be null');
-        }
         $this->container['tax_value_customer_receivables'] = $tax_value_customer_receivables;
 
         return $this;
@@ -912,7 +745,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets sum_gross_assets
      *
-     * @return float|null
+     * @return float
      */
     public function getSumGrossAssets()
     {
@@ -922,15 +755,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets sum_gross_assets
      *
-     * @param float|null $sum_gross_assets sum_gross_assets
+     * @param float $sum_gross_assets sum_gross_assets
      *
-     * @return self
+     * @return $this
      */
     public function setSumGrossAssets($sum_gross_assets)
     {
-        if (is_null($sum_gross_assets)) {
-            throw new \InvalidArgumentException('non-nullable sum_gross_assets cannot be null');
-        }
         $this->container['sum_gross_assets'] = $sum_gross_assets;
 
         return $this;
@@ -939,7 +769,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets total_debt_in_accounts
      *
-     * @return float|null
+     * @return float
      */
     public function getTotalDebtInAccounts()
     {
@@ -949,15 +779,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets total_debt_in_accounts
      *
-     * @param float|null $total_debt_in_accounts total_debt_in_accounts
+     * @param float $total_debt_in_accounts total_debt_in_accounts
      *
-     * @return self
+     * @return $this
      */
     public function setTotalDebtInAccounts($total_debt_in_accounts)
     {
-        if (is_null($total_debt_in_accounts)) {
-            throw new \InvalidArgumentException('non-nullable total_debt_in_accounts cannot be null');
-        }
         $this->container['total_debt_in_accounts'] = $total_debt_in_accounts;
 
         return $this;
@@ -966,7 +793,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets tax_to_pay
      *
-     * @return float|null
+     * @return float
      */
     public function getTaxToPay()
     {
@@ -976,15 +803,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets tax_to_pay
      *
-     * @param float|null $tax_to_pay tax_to_pay
+     * @param float $tax_to_pay tax_to_pay
      *
-     * @return self
+     * @return $this
      */
     public function setTaxToPay($tax_to_pay)
     {
-        if (is_null($tax_to_pay)) {
-            throw new \InvalidArgumentException('non-nullable tax_to_pay cannot be null');
-        }
         $this->container['tax_to_pay'] = $tax_to_pay;
 
         return $this;
@@ -993,7 +817,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets sum_debt
      *
-     * @return float|null
+     * @return float
      */
     public function getSumDebt()
     {
@@ -1003,15 +827,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets sum_debt
      *
-     * @param float|null $sum_debt sum_debt
+     * @param float $sum_debt sum_debt
      *
-     * @return self
+     * @return $this
      */
     public function setSumDebt($sum_debt)
     {
-        if (is_null($sum_debt)) {
-            throw new \InvalidArgumentException('non-nullable sum_debt cannot be null');
-        }
         $this->container['sum_debt'] = $sum_debt;
 
         return $this;
@@ -1020,7 +841,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets posts
      *
-     * @return \Learnist\Tripletex\Model\GenericData[]|null
+     * @return \Learnist\Tripletex\Model\GenericData[]
      */
     public function getPosts()
     {
@@ -1030,15 +851,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets posts
      *
-     * @param \Learnist\Tripletex\Model\GenericData[]|null $posts posts
+     * @param \Learnist\Tripletex\Model\GenericData[] $posts posts
      *
-     * @return self
+     * @return $this
      */
     public function setPosts($posts)
     {
-        if (is_null($posts)) {
-            throw new \InvalidArgumentException('non-nullable posts cannot be null');
-        }
         $this->container['posts'] = $posts;
 
         return $this;
@@ -1047,7 +865,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets capital_and_debt
      *
-     * @return \Learnist\Tripletex\Model\TaxReturn[]|null
+     * @return \Learnist\Tripletex\Model\TaxReturn[]
      */
     public function getCapitalAndDebt()
     {
@@ -1057,15 +875,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets capital_and_debt
      *
-     * @param \Learnist\Tripletex\Model\TaxReturn[]|null $capital_and_debt capital_and_debt
+     * @param \Learnist\Tripletex\Model\TaxReturn[] $capital_and_debt capital_and_debt
      *
-     * @return self
+     * @return $this
      */
     public function setCapitalAndDebt($capital_and_debt)
     {
-        if (is_null($capital_and_debt)) {
-            throw new \InvalidArgumentException('non-nullable capital_and_debt cannot be null');
-        }
         $this->container['capital_and_debt'] = $capital_and_debt;
 
         return $this;
@@ -1074,7 +889,7 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets aid_schemes
      *
-     * @return \Learnist\Tripletex\Model\AidScheme[]|null
+     * @return \Learnist\Tripletex\Model\AidScheme[]
      */
     public function getAidSchemes()
     {
@@ -1084,15 +899,12 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets aid_schemes
      *
-     * @param \Learnist\Tripletex\Model\AidScheme[]|null $aid_schemes aid_schemes
+     * @param \Learnist\Tripletex\Model\AidScheme[] $aid_schemes aid_schemes
      *
-     * @return self
+     * @return $this
      */
     public function setAidSchemes($aid_schemes)
     {
-        if (is_null($aid_schemes)) {
-            throw new \InvalidArgumentException('non-nullable aid_schemes cannot be null');
-        }
         $this->container['aid_schemes'] = $aid_schemes;
 
         return $this;
@@ -1104,7 +916,8 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @return boolean
      */
-    public function offsetExists($offset): bool
+    #[\ReturnTypeWillChange] 
+    public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
     }
@@ -1114,23 +927,24 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @param integer $offset Offset
      *
-     * @return mixed|null
+     * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[\ReturnTypeWillChange] 
     public function offsetGet($offset)
     {
-        return $this->container[$offset] ?? null;
+        return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
 
     /**
      * Sets value based on offset.
      *
-     * @param int|null $offset Offset
-     * @param mixed    $value  Value to be set
+     * @param integer $offset Offset
+     * @param mixed   $value  Value to be set
      *
      * @return void
      */
-    public function offsetSet($offset, $value): void
+    #[\ReturnTypeWillChange] 
+    public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -1146,22 +960,10 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @return void
      */
-    public function offsetUnset($offset): void
+    #[\ReturnTypeWillChange] 
+    public function offsetUnset($offset)
     {
         unset($this->container[$offset]);
-    }
-
-    /**
-     * Serializes the object to a value that can be serialized natively by json_encode().
-     * @link https://www.php.net/manual/en/jsonserializable.jsonserialize.php
-     *
-     * @return mixed Returns data which can be serialized by json_encode(), which is a value
-     * of any type other than a resource.
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
-    {
-       return ObjectSerializer::sanitizeForSerialization($this);
     }
 
     /**
@@ -1171,21 +973,13 @@ class TaxReturnOverview implements ModelInterface, ArrayAccess, \JsonSerializabl
      */
     public function __toString()
     {
-        return json_encode(
-            ObjectSerializer::sanitizeForSerialization($this),
-            JSON_PRETTY_PRINT
-        );
-    }
+        if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
+            return json_encode(
+                ObjectSerializer::sanitizeForSerialization($this),
+                JSON_PRETTY_PRINT
+            );
+        }
 
-    /**
-     * Gets a header-safe presentation of the object
-     *
-     * @return string
-     */
-    public function toHeaderValue()
-    {
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
 }
-
-

@@ -1,12 +1,12 @@
-# # SalaryV2OverviewDataSalaryPayment
+# SalaryV2OverviewDataSalaryPayment
 
 ## Properties
-
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**salary_payment_id** | **int** |  | [optional] [readonly]
-**display_name** | **string** |  | [optional] [readonly]
-**payment_amount** | **float** |  | [optional] [readonly]
-**payroll_tax_basis_amount** | **float** |  | [optional] [readonly]
+**salary_payment_id** | **int** |  | [optional] 
+**display_name** | **string** |  | [optional] 
+**payment_amount** | **float** |  | [optional] 
+**payroll_tax_basis_amount** | **float** |  | [optional] 
 
-[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)
+[[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
+

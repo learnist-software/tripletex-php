@@ -1,11 +1,11 @@
-# # SalaryV2PaymentValidationResult
+# SalaryV2PaymentValidationResult
 
 ## Properties
-
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**warnings** | **string[]** |  | [optional] [readonly]
-**validations** | **string[]** |  | [optional] [readonly]
-**poison_pills** | **string[]** |  | [optional] [readonly]
+**warnings** | **string[]** |  | [optional] 
+**validations** | **string[]** |  | [optional] 
+**poison_pills** | **string[]** |  | [optional] 
 
-[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)
+[[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
+

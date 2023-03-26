@@ -2,12 +2,12 @@
 /**
  * SegmentationModules
  *
- * PHP version 7.4
+ * PHP version 5
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
 
 /**
@@ -15,14 +15,14 @@
  *
  * ## Usage  - **Download the spec** [swagger.json](/v2/swagger.json) file, it is a [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification).  - **Generating a client** can easily be done using tools like [swagger-codegen](https://github.com/swagger-api/swagger-codegen) or other that accepts [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) specs.     - For swagger codegen it is recommended to use the flag: **--removeOperationIdPrefix**.        Unique operation ids are about to be introduced to the spec, and this ensures forward compatibility - and results in less verbose generated code.   ## Overview  - Partial resource updating is done using the `PUT` method with optional fields instead of the `PATCH` method.  - **Actions** or **commands** are represented in our RESTful path with a prefixed `:`. Example: `/v2/hours/123/:approve`.  - **Summaries** or **aggregated** results are represented in our RESTful path with a prefixed `>`. Example: `/v2/hours/>thisWeeksBillables`.  - **Request ID** is a key found in all responses in the header with the name `x-tlx-request-id`. For validation and error responses it is also in the response body. If additional log information is absolutely necessary, our support division can locate the key value.  - **version** This is a revision number found on all persisted resources. If included, it will prevent your PUT/POST from overriding any updates to the resource since your GET.  - **Date** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DD`.  - **DateTime** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DDThh:mm:ss`.  - **Searching** is done by entering values in the optional fields for each API call. The values fall into the following categories: range, in, exact and like.  - **Missing fields** or even **no response data** can occur because result objects and fields are filtered on authorization.  - **See [GitHub](https://github.com/Tripletex/tripletex-api2) for more documentation, examples, changelog and more.**  - **See [FAQ](https://tripletex.no/execute/docViewer?articleId=906&language=0) for additional information.**   ## Authentication  - **Tokens:** The Tripletex API uses 3 different tokens    - **consumerToken** is a token provided to the consumer by Tripletex after the API 2.0 registration is completed.    - **employeeToken** is a token created by an administrator in your Tripletex account via the user settings and the tab \"API access\". Each employee token must be given a set of entitlements. [Read more here.](https://tripletex.no/execute/docViewer?articleId=1505&languageId=0)    - **sessionToken** is the token from `/token/session/:create` which requires a consumerToken and an employeeToken created with the same consumer token, but not an authentication header.  - **Authentication** is done via [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)    - **username** is used to specify what company to access.      - `0` or blank means the company of the employee.      - Any other value means accountant clients. Use `/company/>withLoginAccess` to get a list of those.    - **password** is the **sessionToken**.    - If you need to create the header yourself use `Authorization: Basic <encoded token>` where `encoded token` is the string `<target company id or 0>:<your session token>` Base64 encoded.   ## Tags  - `[BETA]` This is a beta endpoint and can be subject to change. - `[DEPRECATED]` Deprecated means that we intend to remove/change this feature or capability in a future \"major\" API release. We therefore discourage all use of this feature/capability.   ## Fields  Use the `fields` parameter to specify which fields should be returned. This also supports fields from sub elements, done via `<field>(<subResourceFields>)`. `*` means all fields for that resource. Example values: - `project,activity,hours`  returns `{project:..., activity:...., hours:...}`. - just `project` returns `\"project\" : { \"id\": 12345, \"url\": \"tripletex.no/v2/projects/12345\"  }`. - `project(*)` returns `\"project\" : { \"id\": 12345 \"name\":\"ProjectName\" \"number.....startDate\": \"2013-01-07\" }`. - `project(name)` returns `\"project\" : { \"name\":\"ProjectName\" }`. - All resources and some subResources :  `*,activity(name),employee(*)`.   ## Sorting  Use the `sorting` parameter to specify sorting. It takes a comma separated list, where a `-` prefix denotes descending. You can sort by sub object with the following format: `<field>.<subObjectField>`. Example values: - `date` - `project.name` - `project.name, -date`   ## Changes  To get the changes for a resource, `changes` have to be explicitly specified as part of the `fields` parameter, e.g. `*,changes`. There are currently two types of change available:  - `CREATE` for when the resource was created - `UPDATE` for when the resource was updated  **NOTE** > For objects created prior to October 24th 2018 the list may be incomplete, but will always contain the CREATE and the last change (if the object has been changed after creation).   ## Rate limiting  Rate limiting is performed on the API calls for an employee for each API consumer. Status regarding the rate limit is returned as headers: - `X-Rate-Limit-Limit` - The number of allowed requests in the current period. - `X-Rate-Limit-Remaining` - The number of remaining requests. - `X-Rate-Limit-Reset` - The number of seconds left in the current period.  Once the rate limit is hit, all requests will return HTTP status code `429` for the remainder of the current period.   ## Response envelope  #### Multiple values  ```json {   \"fullResultSize\": ###, // {number} [DEPRECATED]   \"from\": ###, // {number} Paging starting from   \"count\": ###, // {number} Paging count   \"versionDigest\": \"###\", // {string} Hash of full result, null if no result   \"values\": [...{...object...},{...object...},{...object...}...] } ```  #### Single value  ```json {   \"value\": {...single object...} } ```   ## WebHook envelope  ```json {   \"subscriptionId\": ###, // Subscription id   \"event\": \"object.verb\", // As listed from /v2/event/   \"id\": ###, // Id of object this event is for   \"value\": {... single object, null if object.deleted ...} } ```   ## Error/warning envelope  ```json {   \"status\": ###, // {number} HTTP status code   \"code\": #####, // {number} internal status code of event   \"message\": \"###\", // {string} Basic feedback message in your language   \"link\": \"###\", // {string} Link to doc   \"developerMessage\": \"###\", // {string} More technical message   \"validationMessages\": [ // {array} List of validation messages, can be null     {       \"field\": \"###\", // {string} Name of field       \"message\": \"###\" // {string} Validation message for field     }   ],   \"requestId\": \"###\" // {string} Same as x-tlx-request-id  } ```   ## Status codes / Error codes  - **200 OK** - **201 Created** - From POSTs that create something new. - **204 No Content** - When there is no answer, ex: \"/:anAction\" or DELETE. - **400 Bad request** -   -  **4000** Bad Request Exception   - **11000** Illegal Filter Exception   - **12000** Path Param Exception   - **24000** Cryptography Exception - **401 Unauthorized** - When authentication is required and has failed or has not yet been provided   -  **3000** Authentication Exception - **403 Forbidden** - When AuthorisationManager says no.   -  **9000** Security Exception - **404 Not Found** - For resources that does not exist.   -  **6000** Not Found Exception - **409 Conflict** - Such as an edit conflict between multiple simultaneous updates   -  **7000** Object Exists Exception   -  **8000** Revision Exception   - **10000** Locked Exception   - **14000** Duplicate entry - **422 Bad Request** - For Required fields or things like malformed payload.   - **15000** Value Validation Exception   - **16000** Mapping Exception   - **17000** Sorting Exception   - **18000** Validation Exception   - **21000** Param Exception   - **22000** Invalid JSON Exception   - **23000** Result Set Too Large Exception - **429 Too Many Requests** - Request rate limit hit - **500 Internal Error** - Unexpected condition was encountered and no more specific message is suitable   - **1000** Exception
  *
- * The version of the OpenAPI document: 2.70.19
- * Generated by: https://openapi-generator.tech
- * OpenAPI Generator version: 6.5.0-SNAPSHOT
+ * OpenAPI spec version: 2.70.19
+ * 
+ * Generated by: https://github.com/swagger-api/swagger-codegen.git
+ * Swagger Codegen version: 3.0.41
  */
-
 /**
- * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
- * https://openapi-generator.tech
+ * NOTE: This class is auto generated by the swagger code generator program.
+ * https://github.com/swagger-api/swagger-codegen
  * Do not edit the class manually.
  */
 
@@ -36,437 +36,292 @@ use \Learnist\Tripletex\ObjectSerializer;
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- * @implements \ArrayAccess<string, mixed>
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
-class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializable
+class SegmentationModules implements ModelInterface, ArrayAccess
 {
-    public const DISCRIMINATOR = null;
+    const DISCRIMINATOR = null;
 
     /**
       * The original name of the model.
       *
       * @var string
       */
-    protected static $openAPIModelName = 'SegmentationModules';
+    protected static $swaggerModelName = 'SegmentationModules';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
       *
       * @var string[]
       */
-    protected static $openAPITypes = [
+    protected static $swaggerTypes = [
         'moduleaccountinginternal' => 'bool',
-        'moduleaccountingexternal' => 'bool',
-        'moduledepartment' => 'bool',
-        'moduleprojectprognosis' => 'bool',
-        'moduleresourceallocation' => 'bool',
-        'moduleprojecteconomy' => 'bool',
-        'moduleinvoice' => 'bool',
-        'modulebudget' => 'bool',
-        'modulereferencefee' => 'bool',
-        'module_hour_cost' => 'bool',
-        'moduleemployee' => 'bool',
-        'moduleproject' => 'bool',
-        'moduleprojectcategory' => 'bool',
-        'module_project_budget' => 'bool',
-        'moduletask' => 'bool',
-        'module_travel_expense' => 'bool',
-        'modulecustomer' => 'bool',
-        'modulenote' => 'bool',
-        'modulesubscription' => 'bool',
-        'moduleproduct' => 'bool',
-        'module_voucher_export' => 'bool',
-        'moduleaccountingreports' => 'bool',
-        'module_customer_categories' => 'bool',
-        'module_customer_category1' => 'bool',
-        'module_customer_category2' => 'bool',
-        'module_customer_category3' => 'bool',
-        'moduleprojectsubcontract' => 'bool',
-        'approvehourlists' => 'bool',
-        'approveinvoices' => 'bool',
-        'approvetravelreports' => 'bool',
-        'completeweeklyhourlists' => 'bool',
-        'completemonthlyhourlists' => 'bool',
-        'approvemonthlyhourlists' => 'bool',
-        'invoiceapprovedhoursmandatory' => 'bool',
-        'module_payroll_accounting' => 'bool',
-        'module_payroll_accounting_no' => 'bool',
-        'modulehourlist' => 'bool',
-        'module_time_balance' => 'bool',
-        'module_vacation_balance' => 'bool',
-        'module_working_hours' => 'bool',
-        'module_currency' => 'bool',
-        'module_contact' => 'bool',
-        'module_swedish' => 'bool',
-        'module_auto_project_number' => 'bool',
-        'module_wage_export' => 'bool',
-        'approve_weekly_hourlists' => 'bool',
-        'module_provision_salary' => 'bool',
-        'module_order_number' => 'bool',
-        'module_order_discount' => 'bool',
-        'module_order_markup' => 'bool',
-        'module_order_line_cost' => 'bool',
-        'module_resource_groups' => 'bool',
-        'module_vendor' => 'bool',
-        'module_auto_customer_number' => 'bool',
-        'module_auto_vendor_number' => 'bool',
-        'module_historical' => 'bool',
-        'show_travel_report_letterhead' => 'bool',
-        'module_ocr' => 'bool',
-        'module_remit' => 'bool',
-        'module_remit_nets' => 'bool',
-        'module_remit_ztl' => 'bool',
-        'module_remit_auto_pay' => 'bool',
-        'module_travel_expense_rates' => 'bool',
-        'module_voucher_scanning' => 'bool',
-        'module_invoice_scanning' => 'bool',
-        'module_holyday_plan' => 'bool',
-        'module_employee_category' => 'bool',
-        'multiple_customer_categories' => 'bool',
-        'module_product_invoice' => 'bool',
-        'auto_invoicing' => 'bool',
-        'module_factoring' => 'bool',
-        'module_employee_accounting' => 'bool',
-        'module_department_accounting' => 'bool',
-        'module_project_accounting' => 'bool',
-        'module_wage_project_accounting' => 'bool',
-        'module_product_accounting' => 'bool',
-        'module_electro' => 'bool',
-        'module_nrf' => 'bool',
-        'module_result_budget' => 'bool',
-        'module_voucher_types' => 'bool',
-        'module_warehouse' => 'bool',
-        'module_nets_eboks' => 'bool',
-        'module_nets_print_salary' => 'bool',
-        'module_nets_print_invoice' => 'bool',
-        'hourly_rate_projects_write_up_down' => 'bool',
-        'show_recently_closed_projects_on_supplier_invoice' => 'bool',
-        'module_email' => 'bool',
-        'send_payslips_by_email' => 'bool',
-        'module_approve_voucher' => 'bool',
-        'module_approve_project_voucher' => 'bool',
-        'module_approve_department_voucher' => 'bool',
-        'module_archive' => 'bool',
-        'module_order_out' => 'bool',
-        'module_mesan' => 'bool',
-        'module_accountant_connect_client' => 'bool',
-        'module_divisions' => 'bool',
-        'module_boligmappa' => 'bool',
-        'module_addition_project_markup' => 'bool',
-        'tripletex_support_login_access_company_level' => 'bool',
-        'module_crm' => 'bool',
-        'module_pensionreport' => 'bool',
-        'module_control_schema_required_invoicing' => 'bool',
-        'module_control_schema_required_hour_tracking' => 'bool',
-        'module_invoice_option_vipps' => 'bool',
-        'module_invoice_option_efaktura' => 'bool',
-        'module_invoice_option_paper' => 'bool',
-        'module_invoice_option_avtale_giro' => 'bool',
-        'module_invoice_option_ehf_incoming' => 'bool',
-        'module_invoice_option_ehf_outbound' => 'bool',
-        'module_api20' => 'bool',
-        'module_agro' => 'bool',
-        'module_mamut' => 'bool',
-        'module_factoring_aprila' => 'bool',
-        'module_cash_credit_aprila' => 'bool',
-        'module_invoice_option_autoinvoice_ehf' => 'bool',
-        'module_smart_scan' => 'bool',
-        'module_auto_bank_reconciliation' => 'bool',
-        'module_offer' => 'bool',
-        'module_voucher_automation' => 'bool',
-        'module_amortization' => 'bool',
-        'module_encrypted_pay_slip' => 'bool',
-        'hour_cost_factor_project' => 'bool',
-        'factoring_visma_finance' => 'string',
-        'year_end_report' => 'bool',
-        'module_logistics' => 'bool'
-    ];
+'moduleaccountingexternal' => 'bool',
+'moduledepartment' => 'bool',
+'moduleprojectprognosis' => 'bool',
+'moduleresourceallocation' => 'bool',
+'moduleprojecteconomy' => 'bool',
+'moduleinvoice' => 'bool',
+'modulebudget' => 'bool',
+'modulereferencefee' => 'bool',
+'module_hour_cost' => 'bool',
+'moduleemployee' => 'bool',
+'moduleproject' => 'bool',
+'moduleprojectcategory' => 'bool',
+'module_project_budget' => 'bool',
+'moduletask' => 'bool',
+'module_travel_expense' => 'bool',
+'modulecustomer' => 'bool',
+'modulenote' => 'bool',
+'modulesubscription' => 'bool',
+'moduleproduct' => 'bool',
+'module_voucher_export' => 'bool',
+'moduleaccountingreports' => 'bool',
+'module_customer_categories' => 'bool',
+'module_customer_category1' => 'bool',
+'module_customer_category2' => 'bool',
+'module_customer_category3' => 'bool',
+'moduleprojectsubcontract' => 'bool',
+'approvehourlists' => 'bool',
+'approveinvoices' => 'bool',
+'approvetravelreports' => 'bool',
+'completeweeklyhourlists' => 'bool',
+'completemonthlyhourlists' => 'bool',
+'approvemonthlyhourlists' => 'bool',
+'invoiceapprovedhoursmandatory' => 'bool',
+'module_payroll_accounting' => 'bool',
+'module_payroll_accounting_no' => 'bool',
+'modulehourlist' => 'bool',
+'module_time_balance' => 'bool',
+'module_vacation_balance' => 'bool',
+'module_working_hours' => 'bool',
+'module_currency' => 'bool',
+'module_contact' => 'bool',
+'module_swedish' => 'bool',
+'module_auto_project_number' => 'bool',
+'module_wage_export' => 'bool',
+'approve_weekly_hourlists' => 'bool',
+'module_provision_salary' => 'bool',
+'module_order_number' => 'bool',
+'module_order_discount' => 'bool',
+'module_order_markup' => 'bool',
+'module_order_line_cost' => 'bool',
+'module_resource_groups' => 'bool',
+'module_vendor' => 'bool',
+'module_auto_customer_number' => 'bool',
+'module_auto_vendor_number' => 'bool',
+'module_historical' => 'bool',
+'show_travel_report_letterhead' => 'bool',
+'module_ocr' => 'bool',
+'module_remit' => 'bool',
+'module_remit_nets' => 'bool',
+'module_remit_ztl' => 'bool',
+'module_remit_auto_pay' => 'bool',
+'module_travel_expense_rates' => 'bool',
+'module_voucher_scanning' => 'bool',
+'module_invoice_scanning' => 'bool',
+'module_holyday_plan' => 'bool',
+'module_employee_category' => 'bool',
+'multiple_customer_categories' => 'bool',
+'module_product_invoice' => 'bool',
+'auto_invoicing' => 'bool',
+'module_factoring' => 'bool',
+'module_employee_accounting' => 'bool',
+'module_department_accounting' => 'bool',
+'module_project_accounting' => 'bool',
+'module_wage_project_accounting' => 'bool',
+'module_product_accounting' => 'bool',
+'module_electro' => 'bool',
+'module_nrf' => 'bool',
+'module_result_budget' => 'bool',
+'module_voucher_types' => 'bool',
+'module_warehouse' => 'bool',
+'module_nets_eboks' => 'bool',
+'module_nets_print_salary' => 'bool',
+'module_nets_print_invoice' => 'bool',
+'hourly_rate_projects_write_up_down' => 'bool',
+'show_recently_closed_projects_on_supplier_invoice' => 'bool',
+'module_email' => 'bool',
+'send_payslips_by_email' => 'bool',
+'module_approve_voucher' => 'bool',
+'module_approve_project_voucher' => 'bool',
+'module_approve_department_voucher' => 'bool',
+'module_archive' => 'bool',
+'module_order_out' => 'bool',
+'module_mesan' => 'bool',
+'module_accountant_connect_client' => 'bool',
+'module_divisions' => 'bool',
+'module_boligmappa' => 'bool',
+'module_addition_project_markup' => 'bool',
+'tripletex_support_login_access_company_level' => 'bool',
+'module_crm' => 'bool',
+'module_pensionreport' => 'bool',
+'module_control_schema_required_invoicing' => 'bool',
+'module_control_schema_required_hour_tracking' => 'bool',
+'module_invoice_option_vipps' => 'bool',
+'module_invoice_option_efaktura' => 'bool',
+'module_invoice_option_paper' => 'bool',
+'module_invoice_option_avtale_giro' => 'bool',
+'module_invoice_option_ehf_incoming' => 'bool',
+'module_invoice_option_ehf_outbound' => 'bool',
+'module_api20' => 'bool',
+'module_agro' => 'bool',
+'module_mamut' => 'bool',
+'module_factoring_aprila' => 'bool',
+'module_cash_credit_aprila' => 'bool',
+'module_invoice_option_autoinvoice_ehf' => 'bool',
+'module_smart_scan' => 'bool',
+'module_auto_bank_reconciliation' => 'bool',
+'module_offer' => 'bool',
+'module_voucher_automation' => 'bool',
+'module_amortization' => 'bool',
+'module_encrypted_pay_slip' => 'bool',
+'hour_cost_factor_project' => 'bool',
+'factoring_visma_finance' => 'string',
+'year_end_report' => 'bool',
+'module_logistics' => 'bool'    ];
 
     /**
       * Array of property to format mappings. Used for (de)serialization
       *
       * @var string[]
-      * @phpstan-var array<string, string|null>
-      * @psalm-var array<string, string|null>
       */
-    protected static $openAPIFormats = [
+    protected static $swaggerFormats = [
         'moduleaccountinginternal' => null,
-        'moduleaccountingexternal' => null,
-        'moduledepartment' => null,
-        'moduleprojectprognosis' => null,
-        'moduleresourceallocation' => null,
-        'moduleprojecteconomy' => null,
-        'moduleinvoice' => null,
-        'modulebudget' => null,
-        'modulereferencefee' => null,
-        'module_hour_cost' => null,
-        'moduleemployee' => null,
-        'moduleproject' => null,
-        'moduleprojectcategory' => null,
-        'module_project_budget' => null,
-        'moduletask' => null,
-        'module_travel_expense' => null,
-        'modulecustomer' => null,
-        'modulenote' => null,
-        'modulesubscription' => null,
-        'moduleproduct' => null,
-        'module_voucher_export' => null,
-        'moduleaccountingreports' => null,
-        'module_customer_categories' => null,
-        'module_customer_category1' => null,
-        'module_customer_category2' => null,
-        'module_customer_category3' => null,
-        'moduleprojectsubcontract' => null,
-        'approvehourlists' => null,
-        'approveinvoices' => null,
-        'approvetravelreports' => null,
-        'completeweeklyhourlists' => null,
-        'completemonthlyhourlists' => null,
-        'approvemonthlyhourlists' => null,
-        'invoiceapprovedhoursmandatory' => null,
-        'module_payroll_accounting' => null,
-        'module_payroll_accounting_no' => null,
-        'modulehourlist' => null,
-        'module_time_balance' => null,
-        'module_vacation_balance' => null,
-        'module_working_hours' => null,
-        'module_currency' => null,
-        'module_contact' => null,
-        'module_swedish' => null,
-        'module_auto_project_number' => null,
-        'module_wage_export' => null,
-        'approve_weekly_hourlists' => null,
-        'module_provision_salary' => null,
-        'module_order_number' => null,
-        'module_order_discount' => null,
-        'module_order_markup' => null,
-        'module_order_line_cost' => null,
-        'module_resource_groups' => null,
-        'module_vendor' => null,
-        'module_auto_customer_number' => null,
-        'module_auto_vendor_number' => null,
-        'module_historical' => null,
-        'show_travel_report_letterhead' => null,
-        'module_ocr' => null,
-        'module_remit' => null,
-        'module_remit_nets' => null,
-        'module_remit_ztl' => null,
-        'module_remit_auto_pay' => null,
-        'module_travel_expense_rates' => null,
-        'module_voucher_scanning' => null,
-        'module_invoice_scanning' => null,
-        'module_holyday_plan' => null,
-        'module_employee_category' => null,
-        'multiple_customer_categories' => null,
-        'module_product_invoice' => null,
-        'auto_invoicing' => null,
-        'module_factoring' => null,
-        'module_employee_accounting' => null,
-        'module_department_accounting' => null,
-        'module_project_accounting' => null,
-        'module_wage_project_accounting' => null,
-        'module_product_accounting' => null,
-        'module_electro' => null,
-        'module_nrf' => null,
-        'module_result_budget' => null,
-        'module_voucher_types' => null,
-        'module_warehouse' => null,
-        'module_nets_eboks' => null,
-        'module_nets_print_salary' => null,
-        'module_nets_print_invoice' => null,
-        'hourly_rate_projects_write_up_down' => null,
-        'show_recently_closed_projects_on_supplier_invoice' => null,
-        'module_email' => null,
-        'send_payslips_by_email' => null,
-        'module_approve_voucher' => null,
-        'module_approve_project_voucher' => null,
-        'module_approve_department_voucher' => null,
-        'module_archive' => null,
-        'module_order_out' => null,
-        'module_mesan' => null,
-        'module_accountant_connect_client' => null,
-        'module_divisions' => null,
-        'module_boligmappa' => null,
-        'module_addition_project_markup' => null,
-        'tripletex_support_login_access_company_level' => null,
-        'module_crm' => null,
-        'module_pensionreport' => null,
-        'module_control_schema_required_invoicing' => null,
-        'module_control_schema_required_hour_tracking' => null,
-        'module_invoice_option_vipps' => null,
-        'module_invoice_option_efaktura' => null,
-        'module_invoice_option_paper' => null,
-        'module_invoice_option_avtale_giro' => null,
-        'module_invoice_option_ehf_incoming' => null,
-        'module_invoice_option_ehf_outbound' => null,
-        'module_api20' => null,
-        'module_agro' => null,
-        'module_mamut' => null,
-        'module_factoring_aprila' => null,
-        'module_cash_credit_aprila' => null,
-        'module_invoice_option_autoinvoice_ehf' => null,
-        'module_smart_scan' => null,
-        'module_auto_bank_reconciliation' => null,
-        'module_offer' => null,
-        'module_voucher_automation' => null,
-        'module_amortization' => null,
-        'module_encrypted_pay_slip' => null,
-        'hour_cost_factor_project' => null,
-        'factoring_visma_finance' => null,
-        'year_end_report' => null,
-        'module_logistics' => null
-    ];
-
-    /**
-      * Array of nullable properties. Used for (de)serialization
-      *
-      * @var boolean[]
-      */
-    protected static array $openAPINullables = [
-        'moduleaccountinginternal' => false,
-		'moduleaccountingexternal' => false,
-		'moduledepartment' => false,
-		'moduleprojectprognosis' => false,
-		'moduleresourceallocation' => false,
-		'moduleprojecteconomy' => false,
-		'moduleinvoice' => false,
-		'modulebudget' => false,
-		'modulereferencefee' => false,
-		'module_hour_cost' => false,
-		'moduleemployee' => false,
-		'moduleproject' => false,
-		'moduleprojectcategory' => false,
-		'module_project_budget' => false,
-		'moduletask' => false,
-		'module_travel_expense' => false,
-		'modulecustomer' => false,
-		'modulenote' => false,
-		'modulesubscription' => false,
-		'moduleproduct' => false,
-		'module_voucher_export' => false,
-		'moduleaccountingreports' => false,
-		'module_customer_categories' => false,
-		'module_customer_category1' => false,
-		'module_customer_category2' => false,
-		'module_customer_category3' => false,
-		'moduleprojectsubcontract' => false,
-		'approvehourlists' => false,
-		'approveinvoices' => false,
-		'approvetravelreports' => false,
-		'completeweeklyhourlists' => false,
-		'completemonthlyhourlists' => false,
-		'approvemonthlyhourlists' => false,
-		'invoiceapprovedhoursmandatory' => false,
-		'module_payroll_accounting' => false,
-		'module_payroll_accounting_no' => false,
-		'modulehourlist' => false,
-		'module_time_balance' => false,
-		'module_vacation_balance' => false,
-		'module_working_hours' => false,
-		'module_currency' => false,
-		'module_contact' => false,
-		'module_swedish' => false,
-		'module_auto_project_number' => false,
-		'module_wage_export' => false,
-		'approve_weekly_hourlists' => false,
-		'module_provision_salary' => false,
-		'module_order_number' => false,
-		'module_order_discount' => false,
-		'module_order_markup' => false,
-		'module_order_line_cost' => false,
-		'module_resource_groups' => false,
-		'module_vendor' => false,
-		'module_auto_customer_number' => false,
-		'module_auto_vendor_number' => false,
-		'module_historical' => false,
-		'show_travel_report_letterhead' => false,
-		'module_ocr' => false,
-		'module_remit' => false,
-		'module_remit_nets' => false,
-		'module_remit_ztl' => false,
-		'module_remit_auto_pay' => false,
-		'module_travel_expense_rates' => false,
-		'module_voucher_scanning' => false,
-		'module_invoice_scanning' => false,
-		'module_holyday_plan' => false,
-		'module_employee_category' => false,
-		'multiple_customer_categories' => false,
-		'module_product_invoice' => false,
-		'auto_invoicing' => false,
-		'module_factoring' => false,
-		'module_employee_accounting' => false,
-		'module_department_accounting' => false,
-		'module_project_accounting' => false,
-		'module_wage_project_accounting' => false,
-		'module_product_accounting' => false,
-		'module_electro' => false,
-		'module_nrf' => false,
-		'module_result_budget' => false,
-		'module_voucher_types' => false,
-		'module_warehouse' => false,
-		'module_nets_eboks' => false,
-		'module_nets_print_salary' => false,
-		'module_nets_print_invoice' => false,
-		'hourly_rate_projects_write_up_down' => false,
-		'show_recently_closed_projects_on_supplier_invoice' => false,
-		'module_email' => false,
-		'send_payslips_by_email' => false,
-		'module_approve_voucher' => false,
-		'module_approve_project_voucher' => false,
-		'module_approve_department_voucher' => false,
-		'module_archive' => false,
-		'module_order_out' => false,
-		'module_mesan' => false,
-		'module_accountant_connect_client' => false,
-		'module_divisions' => false,
-		'module_boligmappa' => false,
-		'module_addition_project_markup' => false,
-		'tripletex_support_login_access_company_level' => false,
-		'module_crm' => false,
-		'module_pensionreport' => false,
-		'module_control_schema_required_invoicing' => false,
-		'module_control_schema_required_hour_tracking' => false,
-		'module_invoice_option_vipps' => false,
-		'module_invoice_option_efaktura' => false,
-		'module_invoice_option_paper' => false,
-		'module_invoice_option_avtale_giro' => false,
-		'module_invoice_option_ehf_incoming' => false,
-		'module_invoice_option_ehf_outbound' => false,
-		'module_api20' => false,
-		'module_agro' => false,
-		'module_mamut' => false,
-		'module_factoring_aprila' => false,
-		'module_cash_credit_aprila' => false,
-		'module_invoice_option_autoinvoice_ehf' => false,
-		'module_smart_scan' => false,
-		'module_auto_bank_reconciliation' => false,
-		'module_offer' => false,
-		'module_voucher_automation' => false,
-		'module_amortization' => false,
-		'module_encrypted_pay_slip' => false,
-		'hour_cost_factor_project' => false,
-		'factoring_visma_finance' => false,
-		'year_end_report' => false,
-		'module_logistics' => false
-    ];
-
-    /**
-      * If a nullable field gets set to null, insert it here
-      *
-      * @var boolean[]
-      */
-    protected array $openAPINullablesSetToNull = [];
+'moduleaccountingexternal' => null,
+'moduledepartment' => null,
+'moduleprojectprognosis' => null,
+'moduleresourceallocation' => null,
+'moduleprojecteconomy' => null,
+'moduleinvoice' => null,
+'modulebudget' => null,
+'modulereferencefee' => null,
+'module_hour_cost' => null,
+'moduleemployee' => null,
+'moduleproject' => null,
+'moduleprojectcategory' => null,
+'module_project_budget' => null,
+'moduletask' => null,
+'module_travel_expense' => null,
+'modulecustomer' => null,
+'modulenote' => null,
+'modulesubscription' => null,
+'moduleproduct' => null,
+'module_voucher_export' => null,
+'moduleaccountingreports' => null,
+'module_customer_categories' => null,
+'module_customer_category1' => null,
+'module_customer_category2' => null,
+'module_customer_category3' => null,
+'moduleprojectsubcontract' => null,
+'approvehourlists' => null,
+'approveinvoices' => null,
+'approvetravelreports' => null,
+'completeweeklyhourlists' => null,
+'completemonthlyhourlists' => null,
+'approvemonthlyhourlists' => null,
+'invoiceapprovedhoursmandatory' => null,
+'module_payroll_accounting' => null,
+'module_payroll_accounting_no' => null,
+'modulehourlist' => null,
+'module_time_balance' => null,
+'module_vacation_balance' => null,
+'module_working_hours' => null,
+'module_currency' => null,
+'module_contact' => null,
+'module_swedish' => null,
+'module_auto_project_number' => null,
+'module_wage_export' => null,
+'approve_weekly_hourlists' => null,
+'module_provision_salary' => null,
+'module_order_number' => null,
+'module_order_discount' => null,
+'module_order_markup' => null,
+'module_order_line_cost' => null,
+'module_resource_groups' => null,
+'module_vendor' => null,
+'module_auto_customer_number' => null,
+'module_auto_vendor_number' => null,
+'module_historical' => null,
+'show_travel_report_letterhead' => null,
+'module_ocr' => null,
+'module_remit' => null,
+'module_remit_nets' => null,
+'module_remit_ztl' => null,
+'module_remit_auto_pay' => null,
+'module_travel_expense_rates' => null,
+'module_voucher_scanning' => null,
+'module_invoice_scanning' => null,
+'module_holyday_plan' => null,
+'module_employee_category' => null,
+'multiple_customer_categories' => null,
+'module_product_invoice' => null,
+'auto_invoicing' => null,
+'module_factoring' => null,
+'module_employee_accounting' => null,
+'module_department_accounting' => null,
+'module_project_accounting' => null,
+'module_wage_project_accounting' => null,
+'module_product_accounting' => null,
+'module_electro' => null,
+'module_nrf' => null,
+'module_result_budget' => null,
+'module_voucher_types' => null,
+'module_warehouse' => null,
+'module_nets_eboks' => null,
+'module_nets_print_salary' => null,
+'module_nets_print_invoice' => null,
+'hourly_rate_projects_write_up_down' => null,
+'show_recently_closed_projects_on_supplier_invoice' => null,
+'module_email' => null,
+'send_payslips_by_email' => null,
+'module_approve_voucher' => null,
+'module_approve_project_voucher' => null,
+'module_approve_department_voucher' => null,
+'module_archive' => null,
+'module_order_out' => null,
+'module_mesan' => null,
+'module_accountant_connect_client' => null,
+'module_divisions' => null,
+'module_boligmappa' => null,
+'module_addition_project_markup' => null,
+'tripletex_support_login_access_company_level' => null,
+'module_crm' => null,
+'module_pensionreport' => null,
+'module_control_schema_required_invoicing' => null,
+'module_control_schema_required_hour_tracking' => null,
+'module_invoice_option_vipps' => null,
+'module_invoice_option_efaktura' => null,
+'module_invoice_option_paper' => null,
+'module_invoice_option_avtale_giro' => null,
+'module_invoice_option_ehf_incoming' => null,
+'module_invoice_option_ehf_outbound' => null,
+'module_api20' => null,
+'module_agro' => null,
+'module_mamut' => null,
+'module_factoring_aprila' => null,
+'module_cash_credit_aprila' => null,
+'module_invoice_option_autoinvoice_ehf' => null,
+'module_smart_scan' => null,
+'module_auto_bank_reconciliation' => null,
+'module_offer' => null,
+'module_voucher_automation' => null,
+'module_amortization' => null,
+'module_encrypted_pay_slip' => null,
+'hour_cost_factor_project' => null,
+'factoring_visma_finance' => null,
+'year_end_report' => null,
+'module_logistics' => null    ];
 
     /**
      * Array of property to type mappings. Used for (de)serialization
      *
      * @return array
      */
-    public static function openAPITypes()
+    public static function swaggerTypes()
     {
-        return self::$openAPITypes;
+        return self::$swaggerTypes;
     }
 
     /**
@@ -474,61 +329,9 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
      *
      * @return array
      */
-    public static function openAPIFormats()
+    public static function swaggerFormats()
     {
-        return self::$openAPIFormats;
-    }
-
-    /**
-     * Array of nullable properties
-     *
-     * @return array
-     */
-    protected static function openAPINullables(): array
-    {
-        return self::$openAPINullables;
-    }
-
-    /**
-     * Array of nullable field names deliberately set to null
-     *
-     * @return boolean[]
-     */
-    private function getOpenAPINullablesSetToNull(): array
-    {
-        return $this->openAPINullablesSetToNull;
-    }
-
-    /**
-     * Setter - Array of nullable field names deliberately set to null
-     *
-     * @param boolean[] $openAPINullablesSetToNull
-     */
-    private function setOpenAPINullablesSetToNull(array $openAPINullablesSetToNull): void
-    {
-        $this->openAPINullablesSetToNull = $openAPINullablesSetToNull;
-    }
-
-    /**
-     * Checks if a property is nullable
-     *
-     * @param string $property
-     * @return bool
-     */
-    public static function isNullable(string $property): bool
-    {
-        return self::openAPINullables()[$property] ?? false;
-    }
-
-    /**
-     * Checks if a nullable property is set to null.
-     *
-     * @param string $property
-     * @return bool
-     */
-    public function isNullableSetToNull(string $property): bool
-    {
-        return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+        return self::$swaggerFormats;
     }
 
     /**
@@ -539,131 +342,130 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
      */
     protected static $attributeMap = [
         'moduleaccountinginternal' => 'moduleaccountinginternal',
-        'moduleaccountingexternal' => 'moduleaccountingexternal',
-        'moduledepartment' => 'moduledepartment',
-        'moduleprojectprognosis' => 'moduleprojectprognosis',
-        'moduleresourceallocation' => 'moduleresourceallocation',
-        'moduleprojecteconomy' => 'moduleprojecteconomy',
-        'moduleinvoice' => 'moduleinvoice',
-        'modulebudget' => 'modulebudget',
-        'modulereferencefee' => 'modulereferencefee',
-        'module_hour_cost' => 'moduleHourCost',
-        'moduleemployee' => 'moduleemployee',
-        'moduleproject' => 'moduleproject',
-        'moduleprojectcategory' => 'moduleprojectcategory',
-        'module_project_budget' => 'moduleProjectBudget',
-        'moduletask' => 'moduletask',
-        'module_travel_expense' => 'moduleTravelExpense',
-        'modulecustomer' => 'modulecustomer',
-        'modulenote' => 'modulenote',
-        'modulesubscription' => 'modulesubscription',
-        'moduleproduct' => 'moduleproduct',
-        'module_voucher_export' => 'moduleVoucherExport',
-        'moduleaccountingreports' => 'moduleaccountingreports',
-        'module_customer_categories' => 'moduleCustomerCategories',
-        'module_customer_category1' => 'moduleCustomerCategory1',
-        'module_customer_category2' => 'moduleCustomerCategory2',
-        'module_customer_category3' => 'moduleCustomerCategory3',
-        'moduleprojectsubcontract' => 'moduleprojectsubcontract',
-        'approvehourlists' => 'approvehourlists',
-        'approveinvoices' => 'approveinvoices',
-        'approvetravelreports' => 'approvetravelreports',
-        'completeweeklyhourlists' => 'completeweeklyhourlists',
-        'completemonthlyhourlists' => 'completemonthlyhourlists',
-        'approvemonthlyhourlists' => 'approvemonthlyhourlists',
-        'invoiceapprovedhoursmandatory' => 'invoiceapprovedhoursmandatory',
-        'module_payroll_accounting' => 'modulePayrollAccounting',
-        'module_payroll_accounting_no' => 'modulePayrollAccountingNO',
-        'modulehourlist' => 'modulehourlist',
-        'module_time_balance' => 'moduleTimeBalance',
-        'module_vacation_balance' => 'moduleVacationBalance',
-        'module_working_hours' => 'moduleWorkingHours',
-        'module_currency' => 'moduleCurrency',
-        'module_contact' => 'moduleContact',
-        'module_swedish' => 'moduleSwedish',
-        'module_auto_project_number' => 'moduleAutoProjectNumber',
-        'module_wage_export' => 'moduleWageExport',
-        'approve_weekly_hourlists' => 'approveWeeklyHourlists',
-        'module_provision_salary' => 'moduleProvisionSalary',
-        'module_order_number' => 'moduleOrderNumber',
-        'module_order_discount' => 'moduleOrderDiscount',
-        'module_order_markup' => 'moduleOrderMarkup',
-        'module_order_line_cost' => 'moduleOrderLineCost',
-        'module_resource_groups' => 'moduleResourceGroups',
-        'module_vendor' => 'moduleVendor',
-        'module_auto_customer_number' => 'moduleAutoCustomerNumber',
-        'module_auto_vendor_number' => 'moduleAutoVendorNumber',
-        'module_historical' => 'moduleHistorical',
-        'show_travel_report_letterhead' => 'showTravelReportLetterhead',
-        'module_ocr' => 'moduleOcr',
-        'module_remit' => 'moduleRemit',
-        'module_remit_nets' => 'moduleRemitNets',
-        'module_remit_ztl' => 'moduleRemitZtl',
-        'module_remit_auto_pay' => 'moduleRemitAutoPay',
-        'module_travel_expense_rates' => 'moduleTravelExpenseRates',
-        'module_voucher_scanning' => 'moduleVoucherScanning',
-        'module_invoice_scanning' => 'moduleInvoiceScanning',
-        'module_holyday_plan' => 'moduleHolydayPlan',
-        'module_employee_category' => 'moduleEmployeeCategory',
-        'multiple_customer_categories' => 'multipleCustomerCategories',
-        'module_product_invoice' => 'moduleProductInvoice',
-        'auto_invoicing' => 'autoInvoicing',
-        'module_factoring' => 'moduleFactoring',
-        'module_employee_accounting' => 'moduleEmployeeAccounting',
-        'module_department_accounting' => 'moduleDepartmentAccounting',
-        'module_project_accounting' => 'moduleProjectAccounting',
-        'module_wage_project_accounting' => 'moduleWageProjectAccounting',
-        'module_product_accounting' => 'moduleProductAccounting',
-        'module_electro' => 'moduleElectro',
-        'module_nrf' => 'moduleNrf',
-        'module_result_budget' => 'moduleResultBudget',
-        'module_voucher_types' => 'moduleVoucherTypes',
-        'module_warehouse' => 'moduleWarehouse',
-        'module_nets_eboks' => 'moduleNetsEboks',
-        'module_nets_print_salary' => 'moduleNetsPrintSalary',
-        'module_nets_print_invoice' => 'moduleNetsPrintInvoice',
-        'hourly_rate_projects_write_up_down' => 'hourlyRateProjectsWriteUpDown',
-        'show_recently_closed_projects_on_supplier_invoice' => 'showRecentlyClosedProjectsOnSupplierInvoice',
-        'module_email' => 'moduleEmail',
-        'send_payslips_by_email' => 'sendPayslipsByEmail',
-        'module_approve_voucher' => 'moduleApproveVoucher',
-        'module_approve_project_voucher' => 'moduleApproveProjectVoucher',
-        'module_approve_department_voucher' => 'moduleApproveDepartmentVoucher',
-        'module_archive' => 'moduleArchive',
-        'module_order_out' => 'moduleOrderOut',
-        'module_mesan' => 'moduleMesan',
-        'module_accountant_connect_client' => 'moduleAccountantConnectClient',
-        'module_divisions' => 'moduleDivisions',
-        'module_boligmappa' => 'moduleBoligmappa',
-        'module_addition_project_markup' => 'moduleAdditionProjectMarkup',
-        'tripletex_support_login_access_company_level' => 'tripletexSupportLoginAccessCompanyLevel',
-        'module_crm' => 'moduleCRM',
-        'module_pensionreport' => 'modulePensionreport',
-        'module_control_schema_required_invoicing' => 'moduleControlSchemaRequiredInvoicing',
-        'module_control_schema_required_hour_tracking' => 'moduleControlSchemaRequiredHourTracking',
-        'module_invoice_option_vipps' => 'moduleInvoiceOptionVipps',
-        'module_invoice_option_efaktura' => 'moduleInvoiceOptionEfaktura',
-        'module_invoice_option_paper' => 'moduleInvoiceOptionPaper',
-        'module_invoice_option_avtale_giro' => 'moduleInvoiceOptionAvtaleGiro',
-        'module_invoice_option_ehf_incoming' => 'moduleInvoiceOptionEhfIncoming',
-        'module_invoice_option_ehf_outbound' => 'moduleInvoiceOptionEhfOutbound',
-        'module_api20' => 'moduleAPI20',
-        'module_agro' => 'moduleAgro',
-        'module_mamut' => 'moduleMamut',
-        'module_factoring_aprila' => 'moduleFactoringAprila',
-        'module_cash_credit_aprila' => 'moduleCashCreditAprila',
-        'module_invoice_option_autoinvoice_ehf' => 'moduleInvoiceOptionAutoinvoiceEhf',
-        'module_smart_scan' => 'moduleSmartScan',
-        'module_auto_bank_reconciliation' => 'moduleAutoBankReconciliation',
-        'module_offer' => 'moduleOffer',
-        'module_voucher_automation' => 'moduleVoucherAutomation',
-        'module_amortization' => 'moduleAmortization',
-        'module_encrypted_pay_slip' => 'moduleEncryptedPaySlip',
-        'hour_cost_factor_project' => 'hourCostFactorProject',
-        'factoring_visma_finance' => 'factoringVismaFinance',
-        'year_end_report' => 'yearEndReport',
-        'module_logistics' => 'moduleLogistics'
-    ];
+'moduleaccountingexternal' => 'moduleaccountingexternal',
+'moduledepartment' => 'moduledepartment',
+'moduleprojectprognosis' => 'moduleprojectprognosis',
+'moduleresourceallocation' => 'moduleresourceallocation',
+'moduleprojecteconomy' => 'moduleprojecteconomy',
+'moduleinvoice' => 'moduleinvoice',
+'modulebudget' => 'modulebudget',
+'modulereferencefee' => 'modulereferencefee',
+'module_hour_cost' => 'moduleHourCost',
+'moduleemployee' => 'moduleemployee',
+'moduleproject' => 'moduleproject',
+'moduleprojectcategory' => 'moduleprojectcategory',
+'module_project_budget' => 'moduleProjectBudget',
+'moduletask' => 'moduletask',
+'module_travel_expense' => 'moduleTravelExpense',
+'modulecustomer' => 'modulecustomer',
+'modulenote' => 'modulenote',
+'modulesubscription' => 'modulesubscription',
+'moduleproduct' => 'moduleproduct',
+'module_voucher_export' => 'moduleVoucherExport',
+'moduleaccountingreports' => 'moduleaccountingreports',
+'module_customer_categories' => 'moduleCustomerCategories',
+'module_customer_category1' => 'moduleCustomerCategory1',
+'module_customer_category2' => 'moduleCustomerCategory2',
+'module_customer_category3' => 'moduleCustomerCategory3',
+'moduleprojectsubcontract' => 'moduleprojectsubcontract',
+'approvehourlists' => 'approvehourlists',
+'approveinvoices' => 'approveinvoices',
+'approvetravelreports' => 'approvetravelreports',
+'completeweeklyhourlists' => 'completeweeklyhourlists',
+'completemonthlyhourlists' => 'completemonthlyhourlists',
+'approvemonthlyhourlists' => 'approvemonthlyhourlists',
+'invoiceapprovedhoursmandatory' => 'invoiceapprovedhoursmandatory',
+'module_payroll_accounting' => 'modulePayrollAccounting',
+'module_payroll_accounting_no' => 'modulePayrollAccountingNO',
+'modulehourlist' => 'modulehourlist',
+'module_time_balance' => 'moduleTimeBalance',
+'module_vacation_balance' => 'moduleVacationBalance',
+'module_working_hours' => 'moduleWorkingHours',
+'module_currency' => 'moduleCurrency',
+'module_contact' => 'moduleContact',
+'module_swedish' => 'moduleSwedish',
+'module_auto_project_number' => 'moduleAutoProjectNumber',
+'module_wage_export' => 'moduleWageExport',
+'approve_weekly_hourlists' => 'approveWeeklyHourlists',
+'module_provision_salary' => 'moduleProvisionSalary',
+'module_order_number' => 'moduleOrderNumber',
+'module_order_discount' => 'moduleOrderDiscount',
+'module_order_markup' => 'moduleOrderMarkup',
+'module_order_line_cost' => 'moduleOrderLineCost',
+'module_resource_groups' => 'moduleResourceGroups',
+'module_vendor' => 'moduleVendor',
+'module_auto_customer_number' => 'moduleAutoCustomerNumber',
+'module_auto_vendor_number' => 'moduleAutoVendorNumber',
+'module_historical' => 'moduleHistorical',
+'show_travel_report_letterhead' => 'showTravelReportLetterhead',
+'module_ocr' => 'moduleOcr',
+'module_remit' => 'moduleRemit',
+'module_remit_nets' => 'moduleRemitNets',
+'module_remit_ztl' => 'moduleRemitZtl',
+'module_remit_auto_pay' => 'moduleRemitAutoPay',
+'module_travel_expense_rates' => 'moduleTravelExpenseRates',
+'module_voucher_scanning' => 'moduleVoucherScanning',
+'module_invoice_scanning' => 'moduleInvoiceScanning',
+'module_holyday_plan' => 'moduleHolydayPlan',
+'module_employee_category' => 'moduleEmployeeCategory',
+'multiple_customer_categories' => 'multipleCustomerCategories',
+'module_product_invoice' => 'moduleProductInvoice',
+'auto_invoicing' => 'autoInvoicing',
+'module_factoring' => 'moduleFactoring',
+'module_employee_accounting' => 'moduleEmployeeAccounting',
+'module_department_accounting' => 'moduleDepartmentAccounting',
+'module_project_accounting' => 'moduleProjectAccounting',
+'module_wage_project_accounting' => 'moduleWageProjectAccounting',
+'module_product_accounting' => 'moduleProductAccounting',
+'module_electro' => 'moduleElectro',
+'module_nrf' => 'moduleNrf',
+'module_result_budget' => 'moduleResultBudget',
+'module_voucher_types' => 'moduleVoucherTypes',
+'module_warehouse' => 'moduleWarehouse',
+'module_nets_eboks' => 'moduleNetsEboks',
+'module_nets_print_salary' => 'moduleNetsPrintSalary',
+'module_nets_print_invoice' => 'moduleNetsPrintInvoice',
+'hourly_rate_projects_write_up_down' => 'hourlyRateProjectsWriteUpDown',
+'show_recently_closed_projects_on_supplier_invoice' => 'showRecentlyClosedProjectsOnSupplierInvoice',
+'module_email' => 'moduleEmail',
+'send_payslips_by_email' => 'sendPayslipsByEmail',
+'module_approve_voucher' => 'moduleApproveVoucher',
+'module_approve_project_voucher' => 'moduleApproveProjectVoucher',
+'module_approve_department_voucher' => 'moduleApproveDepartmentVoucher',
+'module_archive' => 'moduleArchive',
+'module_order_out' => 'moduleOrderOut',
+'module_mesan' => 'moduleMesan',
+'module_accountant_connect_client' => 'moduleAccountantConnectClient',
+'module_divisions' => 'moduleDivisions',
+'module_boligmappa' => 'moduleBoligmappa',
+'module_addition_project_markup' => 'moduleAdditionProjectMarkup',
+'tripletex_support_login_access_company_level' => 'tripletexSupportLoginAccessCompanyLevel',
+'module_crm' => 'moduleCRM',
+'module_pensionreport' => 'modulePensionreport',
+'module_control_schema_required_invoicing' => 'moduleControlSchemaRequiredInvoicing',
+'module_control_schema_required_hour_tracking' => 'moduleControlSchemaRequiredHourTracking',
+'module_invoice_option_vipps' => 'moduleInvoiceOptionVipps',
+'module_invoice_option_efaktura' => 'moduleInvoiceOptionEfaktura',
+'module_invoice_option_paper' => 'moduleInvoiceOptionPaper',
+'module_invoice_option_avtale_giro' => 'moduleInvoiceOptionAvtaleGiro',
+'module_invoice_option_ehf_incoming' => 'moduleInvoiceOptionEhfIncoming',
+'module_invoice_option_ehf_outbound' => 'moduleInvoiceOptionEhfOutbound',
+'module_api20' => 'moduleAPI20',
+'module_agro' => 'moduleAgro',
+'module_mamut' => 'moduleMamut',
+'module_factoring_aprila' => 'moduleFactoringAprila',
+'module_cash_credit_aprila' => 'moduleCashCreditAprila',
+'module_invoice_option_autoinvoice_ehf' => 'moduleInvoiceOptionAutoinvoiceEhf',
+'module_smart_scan' => 'moduleSmartScan',
+'module_auto_bank_reconciliation' => 'moduleAutoBankReconciliation',
+'module_offer' => 'moduleOffer',
+'module_voucher_automation' => 'moduleVoucherAutomation',
+'module_amortization' => 'moduleAmortization',
+'module_encrypted_pay_slip' => 'moduleEncryptedPaySlip',
+'hour_cost_factor_project' => 'hourCostFactorProject',
+'factoring_visma_finance' => 'factoringVismaFinance',
+'year_end_report' => 'yearEndReport',
+'module_logistics' => 'moduleLogistics'    ];
 
     /**
      * Array of attributes to setter functions (for deserialization of responses)
@@ -672,131 +474,130 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
      */
     protected static $setters = [
         'moduleaccountinginternal' => 'setModuleaccountinginternal',
-        'moduleaccountingexternal' => 'setModuleaccountingexternal',
-        'moduledepartment' => 'setModuledepartment',
-        'moduleprojectprognosis' => 'setModuleprojectprognosis',
-        'moduleresourceallocation' => 'setModuleresourceallocation',
-        'moduleprojecteconomy' => 'setModuleprojecteconomy',
-        'moduleinvoice' => 'setModuleinvoice',
-        'modulebudget' => 'setModulebudget',
-        'modulereferencefee' => 'setModulereferencefee',
-        'module_hour_cost' => 'setModuleHourCost',
-        'moduleemployee' => 'setModuleemployee',
-        'moduleproject' => 'setModuleproject',
-        'moduleprojectcategory' => 'setModuleprojectcategory',
-        'module_project_budget' => 'setModuleProjectBudget',
-        'moduletask' => 'setModuletask',
-        'module_travel_expense' => 'setModuleTravelExpense',
-        'modulecustomer' => 'setModulecustomer',
-        'modulenote' => 'setModulenote',
-        'modulesubscription' => 'setModulesubscription',
-        'moduleproduct' => 'setModuleproduct',
-        'module_voucher_export' => 'setModuleVoucherExport',
-        'moduleaccountingreports' => 'setModuleaccountingreports',
-        'module_customer_categories' => 'setModuleCustomerCategories',
-        'module_customer_category1' => 'setModuleCustomerCategory1',
-        'module_customer_category2' => 'setModuleCustomerCategory2',
-        'module_customer_category3' => 'setModuleCustomerCategory3',
-        'moduleprojectsubcontract' => 'setModuleprojectsubcontract',
-        'approvehourlists' => 'setApprovehourlists',
-        'approveinvoices' => 'setApproveinvoices',
-        'approvetravelreports' => 'setApprovetravelreports',
-        'completeweeklyhourlists' => 'setCompleteweeklyhourlists',
-        'completemonthlyhourlists' => 'setCompletemonthlyhourlists',
-        'approvemonthlyhourlists' => 'setApprovemonthlyhourlists',
-        'invoiceapprovedhoursmandatory' => 'setInvoiceapprovedhoursmandatory',
-        'module_payroll_accounting' => 'setModulePayrollAccounting',
-        'module_payroll_accounting_no' => 'setModulePayrollAccountingNo',
-        'modulehourlist' => 'setModulehourlist',
-        'module_time_balance' => 'setModuleTimeBalance',
-        'module_vacation_balance' => 'setModuleVacationBalance',
-        'module_working_hours' => 'setModuleWorkingHours',
-        'module_currency' => 'setModuleCurrency',
-        'module_contact' => 'setModuleContact',
-        'module_swedish' => 'setModuleSwedish',
-        'module_auto_project_number' => 'setModuleAutoProjectNumber',
-        'module_wage_export' => 'setModuleWageExport',
-        'approve_weekly_hourlists' => 'setApproveWeeklyHourlists',
-        'module_provision_salary' => 'setModuleProvisionSalary',
-        'module_order_number' => 'setModuleOrderNumber',
-        'module_order_discount' => 'setModuleOrderDiscount',
-        'module_order_markup' => 'setModuleOrderMarkup',
-        'module_order_line_cost' => 'setModuleOrderLineCost',
-        'module_resource_groups' => 'setModuleResourceGroups',
-        'module_vendor' => 'setModuleVendor',
-        'module_auto_customer_number' => 'setModuleAutoCustomerNumber',
-        'module_auto_vendor_number' => 'setModuleAutoVendorNumber',
-        'module_historical' => 'setModuleHistorical',
-        'show_travel_report_letterhead' => 'setShowTravelReportLetterhead',
-        'module_ocr' => 'setModuleOcr',
-        'module_remit' => 'setModuleRemit',
-        'module_remit_nets' => 'setModuleRemitNets',
-        'module_remit_ztl' => 'setModuleRemitZtl',
-        'module_remit_auto_pay' => 'setModuleRemitAutoPay',
-        'module_travel_expense_rates' => 'setModuleTravelExpenseRates',
-        'module_voucher_scanning' => 'setModuleVoucherScanning',
-        'module_invoice_scanning' => 'setModuleInvoiceScanning',
-        'module_holyday_plan' => 'setModuleHolydayPlan',
-        'module_employee_category' => 'setModuleEmployeeCategory',
-        'multiple_customer_categories' => 'setMultipleCustomerCategories',
-        'module_product_invoice' => 'setModuleProductInvoice',
-        'auto_invoicing' => 'setAutoInvoicing',
-        'module_factoring' => 'setModuleFactoring',
-        'module_employee_accounting' => 'setModuleEmployeeAccounting',
-        'module_department_accounting' => 'setModuleDepartmentAccounting',
-        'module_project_accounting' => 'setModuleProjectAccounting',
-        'module_wage_project_accounting' => 'setModuleWageProjectAccounting',
-        'module_product_accounting' => 'setModuleProductAccounting',
-        'module_electro' => 'setModuleElectro',
-        'module_nrf' => 'setModuleNrf',
-        'module_result_budget' => 'setModuleResultBudget',
-        'module_voucher_types' => 'setModuleVoucherTypes',
-        'module_warehouse' => 'setModuleWarehouse',
-        'module_nets_eboks' => 'setModuleNetsEboks',
-        'module_nets_print_salary' => 'setModuleNetsPrintSalary',
-        'module_nets_print_invoice' => 'setModuleNetsPrintInvoice',
-        'hourly_rate_projects_write_up_down' => 'setHourlyRateProjectsWriteUpDown',
-        'show_recently_closed_projects_on_supplier_invoice' => 'setShowRecentlyClosedProjectsOnSupplierInvoice',
-        'module_email' => 'setModuleEmail',
-        'send_payslips_by_email' => 'setSendPayslipsByEmail',
-        'module_approve_voucher' => 'setModuleApproveVoucher',
-        'module_approve_project_voucher' => 'setModuleApproveProjectVoucher',
-        'module_approve_department_voucher' => 'setModuleApproveDepartmentVoucher',
-        'module_archive' => 'setModuleArchive',
-        'module_order_out' => 'setModuleOrderOut',
-        'module_mesan' => 'setModuleMesan',
-        'module_accountant_connect_client' => 'setModuleAccountantConnectClient',
-        'module_divisions' => 'setModuleDivisions',
-        'module_boligmappa' => 'setModuleBoligmappa',
-        'module_addition_project_markup' => 'setModuleAdditionProjectMarkup',
-        'tripletex_support_login_access_company_level' => 'setTripletexSupportLoginAccessCompanyLevel',
-        'module_crm' => 'setModuleCrm',
-        'module_pensionreport' => 'setModulePensionreport',
-        'module_control_schema_required_invoicing' => 'setModuleControlSchemaRequiredInvoicing',
-        'module_control_schema_required_hour_tracking' => 'setModuleControlSchemaRequiredHourTracking',
-        'module_invoice_option_vipps' => 'setModuleInvoiceOptionVipps',
-        'module_invoice_option_efaktura' => 'setModuleInvoiceOptionEfaktura',
-        'module_invoice_option_paper' => 'setModuleInvoiceOptionPaper',
-        'module_invoice_option_avtale_giro' => 'setModuleInvoiceOptionAvtaleGiro',
-        'module_invoice_option_ehf_incoming' => 'setModuleInvoiceOptionEhfIncoming',
-        'module_invoice_option_ehf_outbound' => 'setModuleInvoiceOptionEhfOutbound',
-        'module_api20' => 'setModuleApi20',
-        'module_agro' => 'setModuleAgro',
-        'module_mamut' => 'setModuleMamut',
-        'module_factoring_aprila' => 'setModuleFactoringAprila',
-        'module_cash_credit_aprila' => 'setModuleCashCreditAprila',
-        'module_invoice_option_autoinvoice_ehf' => 'setModuleInvoiceOptionAutoinvoiceEhf',
-        'module_smart_scan' => 'setModuleSmartScan',
-        'module_auto_bank_reconciliation' => 'setModuleAutoBankReconciliation',
-        'module_offer' => 'setModuleOffer',
-        'module_voucher_automation' => 'setModuleVoucherAutomation',
-        'module_amortization' => 'setModuleAmortization',
-        'module_encrypted_pay_slip' => 'setModuleEncryptedPaySlip',
-        'hour_cost_factor_project' => 'setHourCostFactorProject',
-        'factoring_visma_finance' => 'setFactoringVismaFinance',
-        'year_end_report' => 'setYearEndReport',
-        'module_logistics' => 'setModuleLogistics'
-    ];
+'moduleaccountingexternal' => 'setModuleaccountingexternal',
+'moduledepartment' => 'setModuledepartment',
+'moduleprojectprognosis' => 'setModuleprojectprognosis',
+'moduleresourceallocation' => 'setModuleresourceallocation',
+'moduleprojecteconomy' => 'setModuleprojecteconomy',
+'moduleinvoice' => 'setModuleinvoice',
+'modulebudget' => 'setModulebudget',
+'modulereferencefee' => 'setModulereferencefee',
+'module_hour_cost' => 'setModuleHourCost',
+'moduleemployee' => 'setModuleemployee',
+'moduleproject' => 'setModuleproject',
+'moduleprojectcategory' => 'setModuleprojectcategory',
+'module_project_budget' => 'setModuleProjectBudget',
+'moduletask' => 'setModuletask',
+'module_travel_expense' => 'setModuleTravelExpense',
+'modulecustomer' => 'setModulecustomer',
+'modulenote' => 'setModulenote',
+'modulesubscription' => 'setModulesubscription',
+'moduleproduct' => 'setModuleproduct',
+'module_voucher_export' => 'setModuleVoucherExport',
+'moduleaccountingreports' => 'setModuleaccountingreports',
+'module_customer_categories' => 'setModuleCustomerCategories',
+'module_customer_category1' => 'setModuleCustomerCategory1',
+'module_customer_category2' => 'setModuleCustomerCategory2',
+'module_customer_category3' => 'setModuleCustomerCategory3',
+'moduleprojectsubcontract' => 'setModuleprojectsubcontract',
+'approvehourlists' => 'setApprovehourlists',
+'approveinvoices' => 'setApproveinvoices',
+'approvetravelreports' => 'setApprovetravelreports',
+'completeweeklyhourlists' => 'setCompleteweeklyhourlists',
+'completemonthlyhourlists' => 'setCompletemonthlyhourlists',
+'approvemonthlyhourlists' => 'setApprovemonthlyhourlists',
+'invoiceapprovedhoursmandatory' => 'setInvoiceapprovedhoursmandatory',
+'module_payroll_accounting' => 'setModulePayrollAccounting',
+'module_payroll_accounting_no' => 'setModulePayrollAccountingNo',
+'modulehourlist' => 'setModulehourlist',
+'module_time_balance' => 'setModuleTimeBalance',
+'module_vacation_balance' => 'setModuleVacationBalance',
+'module_working_hours' => 'setModuleWorkingHours',
+'module_currency' => 'setModuleCurrency',
+'module_contact' => 'setModuleContact',
+'module_swedish' => 'setModuleSwedish',
+'module_auto_project_number' => 'setModuleAutoProjectNumber',
+'module_wage_export' => 'setModuleWageExport',
+'approve_weekly_hourlists' => 'setApproveWeeklyHourlists',
+'module_provision_salary' => 'setModuleProvisionSalary',
+'module_order_number' => 'setModuleOrderNumber',
+'module_order_discount' => 'setModuleOrderDiscount',
+'module_order_markup' => 'setModuleOrderMarkup',
+'module_order_line_cost' => 'setModuleOrderLineCost',
+'module_resource_groups' => 'setModuleResourceGroups',
+'module_vendor' => 'setModuleVendor',
+'module_auto_customer_number' => 'setModuleAutoCustomerNumber',
+'module_auto_vendor_number' => 'setModuleAutoVendorNumber',
+'module_historical' => 'setModuleHistorical',
+'show_travel_report_letterhead' => 'setShowTravelReportLetterhead',
+'module_ocr' => 'setModuleOcr',
+'module_remit' => 'setModuleRemit',
+'module_remit_nets' => 'setModuleRemitNets',
+'module_remit_ztl' => 'setModuleRemitZtl',
+'module_remit_auto_pay' => 'setModuleRemitAutoPay',
+'module_travel_expense_rates' => 'setModuleTravelExpenseRates',
+'module_voucher_scanning' => 'setModuleVoucherScanning',
+'module_invoice_scanning' => 'setModuleInvoiceScanning',
+'module_holyday_plan' => 'setModuleHolydayPlan',
+'module_employee_category' => 'setModuleEmployeeCategory',
+'multiple_customer_categories' => 'setMultipleCustomerCategories',
+'module_product_invoice' => 'setModuleProductInvoice',
+'auto_invoicing' => 'setAutoInvoicing',
+'module_factoring' => 'setModuleFactoring',
+'module_employee_accounting' => 'setModuleEmployeeAccounting',
+'module_department_accounting' => 'setModuleDepartmentAccounting',
+'module_project_accounting' => 'setModuleProjectAccounting',
+'module_wage_project_accounting' => 'setModuleWageProjectAccounting',
+'module_product_accounting' => 'setModuleProductAccounting',
+'module_electro' => 'setModuleElectro',
+'module_nrf' => 'setModuleNrf',
+'module_result_budget' => 'setModuleResultBudget',
+'module_voucher_types' => 'setModuleVoucherTypes',
+'module_warehouse' => 'setModuleWarehouse',
+'module_nets_eboks' => 'setModuleNetsEboks',
+'module_nets_print_salary' => 'setModuleNetsPrintSalary',
+'module_nets_print_invoice' => 'setModuleNetsPrintInvoice',
+'hourly_rate_projects_write_up_down' => 'setHourlyRateProjectsWriteUpDown',
+'show_recently_closed_projects_on_supplier_invoice' => 'setShowRecentlyClosedProjectsOnSupplierInvoice',
+'module_email' => 'setModuleEmail',
+'send_payslips_by_email' => 'setSendPayslipsByEmail',
+'module_approve_voucher' => 'setModuleApproveVoucher',
+'module_approve_project_voucher' => 'setModuleApproveProjectVoucher',
+'module_approve_department_voucher' => 'setModuleApproveDepartmentVoucher',
+'module_archive' => 'setModuleArchive',
+'module_order_out' => 'setModuleOrderOut',
+'module_mesan' => 'setModuleMesan',
+'module_accountant_connect_client' => 'setModuleAccountantConnectClient',
+'module_divisions' => 'setModuleDivisions',
+'module_boligmappa' => 'setModuleBoligmappa',
+'module_addition_project_markup' => 'setModuleAdditionProjectMarkup',
+'tripletex_support_login_access_company_level' => 'setTripletexSupportLoginAccessCompanyLevel',
+'module_crm' => 'setModuleCrm',
+'module_pensionreport' => 'setModulePensionreport',
+'module_control_schema_required_invoicing' => 'setModuleControlSchemaRequiredInvoicing',
+'module_control_schema_required_hour_tracking' => 'setModuleControlSchemaRequiredHourTracking',
+'module_invoice_option_vipps' => 'setModuleInvoiceOptionVipps',
+'module_invoice_option_efaktura' => 'setModuleInvoiceOptionEfaktura',
+'module_invoice_option_paper' => 'setModuleInvoiceOptionPaper',
+'module_invoice_option_avtale_giro' => 'setModuleInvoiceOptionAvtaleGiro',
+'module_invoice_option_ehf_incoming' => 'setModuleInvoiceOptionEhfIncoming',
+'module_invoice_option_ehf_outbound' => 'setModuleInvoiceOptionEhfOutbound',
+'module_api20' => 'setModuleApi20',
+'module_agro' => 'setModuleAgro',
+'module_mamut' => 'setModuleMamut',
+'module_factoring_aprila' => 'setModuleFactoringAprila',
+'module_cash_credit_aprila' => 'setModuleCashCreditAprila',
+'module_invoice_option_autoinvoice_ehf' => 'setModuleInvoiceOptionAutoinvoiceEhf',
+'module_smart_scan' => 'setModuleSmartScan',
+'module_auto_bank_reconciliation' => 'setModuleAutoBankReconciliation',
+'module_offer' => 'setModuleOffer',
+'module_voucher_automation' => 'setModuleVoucherAutomation',
+'module_amortization' => 'setModuleAmortization',
+'module_encrypted_pay_slip' => 'setModuleEncryptedPaySlip',
+'hour_cost_factor_project' => 'setHourCostFactorProject',
+'factoring_visma_finance' => 'setFactoringVismaFinance',
+'year_end_report' => 'setYearEndReport',
+'module_logistics' => 'setModuleLogistics'    ];
 
     /**
      * Array of attributes to getter functions (for serialization of requests)
@@ -805,131 +606,130 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
      */
     protected static $getters = [
         'moduleaccountinginternal' => 'getModuleaccountinginternal',
-        'moduleaccountingexternal' => 'getModuleaccountingexternal',
-        'moduledepartment' => 'getModuledepartment',
-        'moduleprojectprognosis' => 'getModuleprojectprognosis',
-        'moduleresourceallocation' => 'getModuleresourceallocation',
-        'moduleprojecteconomy' => 'getModuleprojecteconomy',
-        'moduleinvoice' => 'getModuleinvoice',
-        'modulebudget' => 'getModulebudget',
-        'modulereferencefee' => 'getModulereferencefee',
-        'module_hour_cost' => 'getModuleHourCost',
-        'moduleemployee' => 'getModuleemployee',
-        'moduleproject' => 'getModuleproject',
-        'moduleprojectcategory' => 'getModuleprojectcategory',
-        'module_project_budget' => 'getModuleProjectBudget',
-        'moduletask' => 'getModuletask',
-        'module_travel_expense' => 'getModuleTravelExpense',
-        'modulecustomer' => 'getModulecustomer',
-        'modulenote' => 'getModulenote',
-        'modulesubscription' => 'getModulesubscription',
-        'moduleproduct' => 'getModuleproduct',
-        'module_voucher_export' => 'getModuleVoucherExport',
-        'moduleaccountingreports' => 'getModuleaccountingreports',
-        'module_customer_categories' => 'getModuleCustomerCategories',
-        'module_customer_category1' => 'getModuleCustomerCategory1',
-        'module_customer_category2' => 'getModuleCustomerCategory2',
-        'module_customer_category3' => 'getModuleCustomerCategory3',
-        'moduleprojectsubcontract' => 'getModuleprojectsubcontract',
-        'approvehourlists' => 'getApprovehourlists',
-        'approveinvoices' => 'getApproveinvoices',
-        'approvetravelreports' => 'getApprovetravelreports',
-        'completeweeklyhourlists' => 'getCompleteweeklyhourlists',
-        'completemonthlyhourlists' => 'getCompletemonthlyhourlists',
-        'approvemonthlyhourlists' => 'getApprovemonthlyhourlists',
-        'invoiceapprovedhoursmandatory' => 'getInvoiceapprovedhoursmandatory',
-        'module_payroll_accounting' => 'getModulePayrollAccounting',
-        'module_payroll_accounting_no' => 'getModulePayrollAccountingNo',
-        'modulehourlist' => 'getModulehourlist',
-        'module_time_balance' => 'getModuleTimeBalance',
-        'module_vacation_balance' => 'getModuleVacationBalance',
-        'module_working_hours' => 'getModuleWorkingHours',
-        'module_currency' => 'getModuleCurrency',
-        'module_contact' => 'getModuleContact',
-        'module_swedish' => 'getModuleSwedish',
-        'module_auto_project_number' => 'getModuleAutoProjectNumber',
-        'module_wage_export' => 'getModuleWageExport',
-        'approve_weekly_hourlists' => 'getApproveWeeklyHourlists',
-        'module_provision_salary' => 'getModuleProvisionSalary',
-        'module_order_number' => 'getModuleOrderNumber',
-        'module_order_discount' => 'getModuleOrderDiscount',
-        'module_order_markup' => 'getModuleOrderMarkup',
-        'module_order_line_cost' => 'getModuleOrderLineCost',
-        'module_resource_groups' => 'getModuleResourceGroups',
-        'module_vendor' => 'getModuleVendor',
-        'module_auto_customer_number' => 'getModuleAutoCustomerNumber',
-        'module_auto_vendor_number' => 'getModuleAutoVendorNumber',
-        'module_historical' => 'getModuleHistorical',
-        'show_travel_report_letterhead' => 'getShowTravelReportLetterhead',
-        'module_ocr' => 'getModuleOcr',
-        'module_remit' => 'getModuleRemit',
-        'module_remit_nets' => 'getModuleRemitNets',
-        'module_remit_ztl' => 'getModuleRemitZtl',
-        'module_remit_auto_pay' => 'getModuleRemitAutoPay',
-        'module_travel_expense_rates' => 'getModuleTravelExpenseRates',
-        'module_voucher_scanning' => 'getModuleVoucherScanning',
-        'module_invoice_scanning' => 'getModuleInvoiceScanning',
-        'module_holyday_plan' => 'getModuleHolydayPlan',
-        'module_employee_category' => 'getModuleEmployeeCategory',
-        'multiple_customer_categories' => 'getMultipleCustomerCategories',
-        'module_product_invoice' => 'getModuleProductInvoice',
-        'auto_invoicing' => 'getAutoInvoicing',
-        'module_factoring' => 'getModuleFactoring',
-        'module_employee_accounting' => 'getModuleEmployeeAccounting',
-        'module_department_accounting' => 'getModuleDepartmentAccounting',
-        'module_project_accounting' => 'getModuleProjectAccounting',
-        'module_wage_project_accounting' => 'getModuleWageProjectAccounting',
-        'module_product_accounting' => 'getModuleProductAccounting',
-        'module_electro' => 'getModuleElectro',
-        'module_nrf' => 'getModuleNrf',
-        'module_result_budget' => 'getModuleResultBudget',
-        'module_voucher_types' => 'getModuleVoucherTypes',
-        'module_warehouse' => 'getModuleWarehouse',
-        'module_nets_eboks' => 'getModuleNetsEboks',
-        'module_nets_print_salary' => 'getModuleNetsPrintSalary',
-        'module_nets_print_invoice' => 'getModuleNetsPrintInvoice',
-        'hourly_rate_projects_write_up_down' => 'getHourlyRateProjectsWriteUpDown',
-        'show_recently_closed_projects_on_supplier_invoice' => 'getShowRecentlyClosedProjectsOnSupplierInvoice',
-        'module_email' => 'getModuleEmail',
-        'send_payslips_by_email' => 'getSendPayslipsByEmail',
-        'module_approve_voucher' => 'getModuleApproveVoucher',
-        'module_approve_project_voucher' => 'getModuleApproveProjectVoucher',
-        'module_approve_department_voucher' => 'getModuleApproveDepartmentVoucher',
-        'module_archive' => 'getModuleArchive',
-        'module_order_out' => 'getModuleOrderOut',
-        'module_mesan' => 'getModuleMesan',
-        'module_accountant_connect_client' => 'getModuleAccountantConnectClient',
-        'module_divisions' => 'getModuleDivisions',
-        'module_boligmappa' => 'getModuleBoligmappa',
-        'module_addition_project_markup' => 'getModuleAdditionProjectMarkup',
-        'tripletex_support_login_access_company_level' => 'getTripletexSupportLoginAccessCompanyLevel',
-        'module_crm' => 'getModuleCrm',
-        'module_pensionreport' => 'getModulePensionreport',
-        'module_control_schema_required_invoicing' => 'getModuleControlSchemaRequiredInvoicing',
-        'module_control_schema_required_hour_tracking' => 'getModuleControlSchemaRequiredHourTracking',
-        'module_invoice_option_vipps' => 'getModuleInvoiceOptionVipps',
-        'module_invoice_option_efaktura' => 'getModuleInvoiceOptionEfaktura',
-        'module_invoice_option_paper' => 'getModuleInvoiceOptionPaper',
-        'module_invoice_option_avtale_giro' => 'getModuleInvoiceOptionAvtaleGiro',
-        'module_invoice_option_ehf_incoming' => 'getModuleInvoiceOptionEhfIncoming',
-        'module_invoice_option_ehf_outbound' => 'getModuleInvoiceOptionEhfOutbound',
-        'module_api20' => 'getModuleApi20',
-        'module_agro' => 'getModuleAgro',
-        'module_mamut' => 'getModuleMamut',
-        'module_factoring_aprila' => 'getModuleFactoringAprila',
-        'module_cash_credit_aprila' => 'getModuleCashCreditAprila',
-        'module_invoice_option_autoinvoice_ehf' => 'getModuleInvoiceOptionAutoinvoiceEhf',
-        'module_smart_scan' => 'getModuleSmartScan',
-        'module_auto_bank_reconciliation' => 'getModuleAutoBankReconciliation',
-        'module_offer' => 'getModuleOffer',
-        'module_voucher_automation' => 'getModuleVoucherAutomation',
-        'module_amortization' => 'getModuleAmortization',
-        'module_encrypted_pay_slip' => 'getModuleEncryptedPaySlip',
-        'hour_cost_factor_project' => 'getHourCostFactorProject',
-        'factoring_visma_finance' => 'getFactoringVismaFinance',
-        'year_end_report' => 'getYearEndReport',
-        'module_logistics' => 'getModuleLogistics'
-    ];
+'moduleaccountingexternal' => 'getModuleaccountingexternal',
+'moduledepartment' => 'getModuledepartment',
+'moduleprojectprognosis' => 'getModuleprojectprognosis',
+'moduleresourceallocation' => 'getModuleresourceallocation',
+'moduleprojecteconomy' => 'getModuleprojecteconomy',
+'moduleinvoice' => 'getModuleinvoice',
+'modulebudget' => 'getModulebudget',
+'modulereferencefee' => 'getModulereferencefee',
+'module_hour_cost' => 'getModuleHourCost',
+'moduleemployee' => 'getModuleemployee',
+'moduleproject' => 'getModuleproject',
+'moduleprojectcategory' => 'getModuleprojectcategory',
+'module_project_budget' => 'getModuleProjectBudget',
+'moduletask' => 'getModuletask',
+'module_travel_expense' => 'getModuleTravelExpense',
+'modulecustomer' => 'getModulecustomer',
+'modulenote' => 'getModulenote',
+'modulesubscription' => 'getModulesubscription',
+'moduleproduct' => 'getModuleproduct',
+'module_voucher_export' => 'getModuleVoucherExport',
+'moduleaccountingreports' => 'getModuleaccountingreports',
+'module_customer_categories' => 'getModuleCustomerCategories',
+'module_customer_category1' => 'getModuleCustomerCategory1',
+'module_customer_category2' => 'getModuleCustomerCategory2',
+'module_customer_category3' => 'getModuleCustomerCategory3',
+'moduleprojectsubcontract' => 'getModuleprojectsubcontract',
+'approvehourlists' => 'getApprovehourlists',
+'approveinvoices' => 'getApproveinvoices',
+'approvetravelreports' => 'getApprovetravelreports',
+'completeweeklyhourlists' => 'getCompleteweeklyhourlists',
+'completemonthlyhourlists' => 'getCompletemonthlyhourlists',
+'approvemonthlyhourlists' => 'getApprovemonthlyhourlists',
+'invoiceapprovedhoursmandatory' => 'getInvoiceapprovedhoursmandatory',
+'module_payroll_accounting' => 'getModulePayrollAccounting',
+'module_payroll_accounting_no' => 'getModulePayrollAccountingNo',
+'modulehourlist' => 'getModulehourlist',
+'module_time_balance' => 'getModuleTimeBalance',
+'module_vacation_balance' => 'getModuleVacationBalance',
+'module_working_hours' => 'getModuleWorkingHours',
+'module_currency' => 'getModuleCurrency',
+'module_contact' => 'getModuleContact',
+'module_swedish' => 'getModuleSwedish',
+'module_auto_project_number' => 'getModuleAutoProjectNumber',
+'module_wage_export' => 'getModuleWageExport',
+'approve_weekly_hourlists' => 'getApproveWeeklyHourlists',
+'module_provision_salary' => 'getModuleProvisionSalary',
+'module_order_number' => 'getModuleOrderNumber',
+'module_order_discount' => 'getModuleOrderDiscount',
+'module_order_markup' => 'getModuleOrderMarkup',
+'module_order_line_cost' => 'getModuleOrderLineCost',
+'module_resource_groups' => 'getModuleResourceGroups',
+'module_vendor' => 'getModuleVendor',
+'module_auto_customer_number' => 'getModuleAutoCustomerNumber',
+'module_auto_vendor_number' => 'getModuleAutoVendorNumber',
+'module_historical' => 'getModuleHistorical',
+'show_travel_report_letterhead' => 'getShowTravelReportLetterhead',
+'module_ocr' => 'getModuleOcr',
+'module_remit' => 'getModuleRemit',
+'module_remit_nets' => 'getModuleRemitNets',
+'module_remit_ztl' => 'getModuleRemitZtl',
+'module_remit_auto_pay' => 'getModuleRemitAutoPay',
+'module_travel_expense_rates' => 'getModuleTravelExpenseRates',
+'module_voucher_scanning' => 'getModuleVoucherScanning',
+'module_invoice_scanning' => 'getModuleInvoiceScanning',
+'module_holyday_plan' => 'getModuleHolydayPlan',
+'module_employee_category' => 'getModuleEmployeeCategory',
+'multiple_customer_categories' => 'getMultipleCustomerCategories',
+'module_product_invoice' => 'getModuleProductInvoice',
+'auto_invoicing' => 'getAutoInvoicing',
+'module_factoring' => 'getModuleFactoring',
+'module_employee_accounting' => 'getModuleEmployeeAccounting',
+'module_department_accounting' => 'getModuleDepartmentAccounting',
+'module_project_accounting' => 'getModuleProjectAccounting',
+'module_wage_project_accounting' => 'getModuleWageProjectAccounting',
+'module_product_accounting' => 'getModuleProductAccounting',
+'module_electro' => 'getModuleElectro',
+'module_nrf' => 'getModuleNrf',
+'module_result_budget' => 'getModuleResultBudget',
+'module_voucher_types' => 'getModuleVoucherTypes',
+'module_warehouse' => 'getModuleWarehouse',
+'module_nets_eboks' => 'getModuleNetsEboks',
+'module_nets_print_salary' => 'getModuleNetsPrintSalary',
+'module_nets_print_invoice' => 'getModuleNetsPrintInvoice',
+'hourly_rate_projects_write_up_down' => 'getHourlyRateProjectsWriteUpDown',
+'show_recently_closed_projects_on_supplier_invoice' => 'getShowRecentlyClosedProjectsOnSupplierInvoice',
+'module_email' => 'getModuleEmail',
+'send_payslips_by_email' => 'getSendPayslipsByEmail',
+'module_approve_voucher' => 'getModuleApproveVoucher',
+'module_approve_project_voucher' => 'getModuleApproveProjectVoucher',
+'module_approve_department_voucher' => 'getModuleApproveDepartmentVoucher',
+'module_archive' => 'getModuleArchive',
+'module_order_out' => 'getModuleOrderOut',
+'module_mesan' => 'getModuleMesan',
+'module_accountant_connect_client' => 'getModuleAccountantConnectClient',
+'module_divisions' => 'getModuleDivisions',
+'module_boligmappa' => 'getModuleBoligmappa',
+'module_addition_project_markup' => 'getModuleAdditionProjectMarkup',
+'tripletex_support_login_access_company_level' => 'getTripletexSupportLoginAccessCompanyLevel',
+'module_crm' => 'getModuleCrm',
+'module_pensionreport' => 'getModulePensionreport',
+'module_control_schema_required_invoicing' => 'getModuleControlSchemaRequiredInvoicing',
+'module_control_schema_required_hour_tracking' => 'getModuleControlSchemaRequiredHourTracking',
+'module_invoice_option_vipps' => 'getModuleInvoiceOptionVipps',
+'module_invoice_option_efaktura' => 'getModuleInvoiceOptionEfaktura',
+'module_invoice_option_paper' => 'getModuleInvoiceOptionPaper',
+'module_invoice_option_avtale_giro' => 'getModuleInvoiceOptionAvtaleGiro',
+'module_invoice_option_ehf_incoming' => 'getModuleInvoiceOptionEhfIncoming',
+'module_invoice_option_ehf_outbound' => 'getModuleInvoiceOptionEhfOutbound',
+'module_api20' => 'getModuleApi20',
+'module_agro' => 'getModuleAgro',
+'module_mamut' => 'getModuleMamut',
+'module_factoring_aprila' => 'getModuleFactoringAprila',
+'module_cash_credit_aprila' => 'getModuleCashCreditAprila',
+'module_invoice_option_autoinvoice_ehf' => 'getModuleInvoiceOptionAutoinvoiceEhf',
+'module_smart_scan' => 'getModuleSmartScan',
+'module_auto_bank_reconciliation' => 'getModuleAutoBankReconciliation',
+'module_offer' => 'getModuleOffer',
+'module_voucher_automation' => 'getModuleVoucherAutomation',
+'module_amortization' => 'getModuleAmortization',
+'module_encrypted_pay_slip' => 'getModuleEncryptedPaySlip',
+'hour_cost_factor_project' => 'getHourCostFactorProject',
+'factoring_visma_finance' => 'getFactoringVismaFinance',
+'year_end_report' => 'getYearEndReport',
+'module_logistics' => 'getModuleLogistics'    ];
 
     /**
      * Array of attributes where the key is the local name,
@@ -969,9 +769,10 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
      */
     public function getModelName()
     {
-        return self::$openAPIModelName;
+        return self::$swaggerModelName;
     }
 
+    
 
     /**
      * Associative array for storing property values
@@ -988,149 +789,131 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
      */
     public function __construct(array $data = null)
     {
-        $this->setIfExists('moduleaccountinginternal', $data ?? [], null);
-        $this->setIfExists('moduleaccountingexternal', $data ?? [], null);
-        $this->setIfExists('moduledepartment', $data ?? [], null);
-        $this->setIfExists('moduleprojectprognosis', $data ?? [], null);
-        $this->setIfExists('moduleresourceallocation', $data ?? [], null);
-        $this->setIfExists('moduleprojecteconomy', $data ?? [], null);
-        $this->setIfExists('moduleinvoice', $data ?? [], null);
-        $this->setIfExists('modulebudget', $data ?? [], null);
-        $this->setIfExists('modulereferencefee', $data ?? [], null);
-        $this->setIfExists('module_hour_cost', $data ?? [], null);
-        $this->setIfExists('moduleemployee', $data ?? [], null);
-        $this->setIfExists('moduleproject', $data ?? [], null);
-        $this->setIfExists('moduleprojectcategory', $data ?? [], null);
-        $this->setIfExists('module_project_budget', $data ?? [], null);
-        $this->setIfExists('moduletask', $data ?? [], null);
-        $this->setIfExists('module_travel_expense', $data ?? [], null);
-        $this->setIfExists('modulecustomer', $data ?? [], null);
-        $this->setIfExists('modulenote', $data ?? [], null);
-        $this->setIfExists('modulesubscription', $data ?? [], null);
-        $this->setIfExists('moduleproduct', $data ?? [], null);
-        $this->setIfExists('module_voucher_export', $data ?? [], null);
-        $this->setIfExists('moduleaccountingreports', $data ?? [], null);
-        $this->setIfExists('module_customer_categories', $data ?? [], null);
-        $this->setIfExists('module_customer_category1', $data ?? [], null);
-        $this->setIfExists('module_customer_category2', $data ?? [], null);
-        $this->setIfExists('module_customer_category3', $data ?? [], null);
-        $this->setIfExists('moduleprojectsubcontract', $data ?? [], null);
-        $this->setIfExists('approvehourlists', $data ?? [], null);
-        $this->setIfExists('approveinvoices', $data ?? [], null);
-        $this->setIfExists('approvetravelreports', $data ?? [], null);
-        $this->setIfExists('completeweeklyhourlists', $data ?? [], null);
-        $this->setIfExists('completemonthlyhourlists', $data ?? [], null);
-        $this->setIfExists('approvemonthlyhourlists', $data ?? [], null);
-        $this->setIfExists('invoiceapprovedhoursmandatory', $data ?? [], null);
-        $this->setIfExists('module_payroll_accounting', $data ?? [], null);
-        $this->setIfExists('module_payroll_accounting_no', $data ?? [], null);
-        $this->setIfExists('modulehourlist', $data ?? [], null);
-        $this->setIfExists('module_time_balance', $data ?? [], null);
-        $this->setIfExists('module_vacation_balance', $data ?? [], null);
-        $this->setIfExists('module_working_hours', $data ?? [], null);
-        $this->setIfExists('module_currency', $data ?? [], null);
-        $this->setIfExists('module_contact', $data ?? [], null);
-        $this->setIfExists('module_swedish', $data ?? [], null);
-        $this->setIfExists('module_auto_project_number', $data ?? [], null);
-        $this->setIfExists('module_wage_export', $data ?? [], null);
-        $this->setIfExists('approve_weekly_hourlists', $data ?? [], null);
-        $this->setIfExists('module_provision_salary', $data ?? [], null);
-        $this->setIfExists('module_order_number', $data ?? [], null);
-        $this->setIfExists('module_order_discount', $data ?? [], null);
-        $this->setIfExists('module_order_markup', $data ?? [], null);
-        $this->setIfExists('module_order_line_cost', $data ?? [], null);
-        $this->setIfExists('module_resource_groups', $data ?? [], null);
-        $this->setIfExists('module_vendor', $data ?? [], null);
-        $this->setIfExists('module_auto_customer_number', $data ?? [], null);
-        $this->setIfExists('module_auto_vendor_number', $data ?? [], null);
-        $this->setIfExists('module_historical', $data ?? [], null);
-        $this->setIfExists('show_travel_report_letterhead', $data ?? [], null);
-        $this->setIfExists('module_ocr', $data ?? [], null);
-        $this->setIfExists('module_remit', $data ?? [], null);
-        $this->setIfExists('module_remit_nets', $data ?? [], null);
-        $this->setIfExists('module_remit_ztl', $data ?? [], null);
-        $this->setIfExists('module_remit_auto_pay', $data ?? [], null);
-        $this->setIfExists('module_travel_expense_rates', $data ?? [], null);
-        $this->setIfExists('module_voucher_scanning', $data ?? [], null);
-        $this->setIfExists('module_invoice_scanning', $data ?? [], null);
-        $this->setIfExists('module_holyday_plan', $data ?? [], null);
-        $this->setIfExists('module_employee_category', $data ?? [], null);
-        $this->setIfExists('multiple_customer_categories', $data ?? [], null);
-        $this->setIfExists('module_product_invoice', $data ?? [], null);
-        $this->setIfExists('auto_invoicing', $data ?? [], null);
-        $this->setIfExists('module_factoring', $data ?? [], null);
-        $this->setIfExists('module_employee_accounting', $data ?? [], null);
-        $this->setIfExists('module_department_accounting', $data ?? [], null);
-        $this->setIfExists('module_project_accounting', $data ?? [], null);
-        $this->setIfExists('module_wage_project_accounting', $data ?? [], null);
-        $this->setIfExists('module_product_accounting', $data ?? [], null);
-        $this->setIfExists('module_electro', $data ?? [], null);
-        $this->setIfExists('module_nrf', $data ?? [], null);
-        $this->setIfExists('module_result_budget', $data ?? [], null);
-        $this->setIfExists('module_voucher_types', $data ?? [], null);
-        $this->setIfExists('module_warehouse', $data ?? [], null);
-        $this->setIfExists('module_nets_eboks', $data ?? [], null);
-        $this->setIfExists('module_nets_print_salary', $data ?? [], null);
-        $this->setIfExists('module_nets_print_invoice', $data ?? [], null);
-        $this->setIfExists('hourly_rate_projects_write_up_down', $data ?? [], null);
-        $this->setIfExists('show_recently_closed_projects_on_supplier_invoice', $data ?? [], null);
-        $this->setIfExists('module_email', $data ?? [], null);
-        $this->setIfExists('send_payslips_by_email', $data ?? [], null);
-        $this->setIfExists('module_approve_voucher', $data ?? [], null);
-        $this->setIfExists('module_approve_project_voucher', $data ?? [], null);
-        $this->setIfExists('module_approve_department_voucher', $data ?? [], null);
-        $this->setIfExists('module_archive', $data ?? [], null);
-        $this->setIfExists('module_order_out', $data ?? [], null);
-        $this->setIfExists('module_mesan', $data ?? [], null);
-        $this->setIfExists('module_accountant_connect_client', $data ?? [], null);
-        $this->setIfExists('module_divisions', $data ?? [], null);
-        $this->setIfExists('module_boligmappa', $data ?? [], null);
-        $this->setIfExists('module_addition_project_markup', $data ?? [], null);
-        $this->setIfExists('tripletex_support_login_access_company_level', $data ?? [], null);
-        $this->setIfExists('module_crm', $data ?? [], null);
-        $this->setIfExists('module_pensionreport', $data ?? [], null);
-        $this->setIfExists('module_control_schema_required_invoicing', $data ?? [], null);
-        $this->setIfExists('module_control_schema_required_hour_tracking', $data ?? [], null);
-        $this->setIfExists('module_invoice_option_vipps', $data ?? [], null);
-        $this->setIfExists('module_invoice_option_efaktura', $data ?? [], null);
-        $this->setIfExists('module_invoice_option_paper', $data ?? [], null);
-        $this->setIfExists('module_invoice_option_avtale_giro', $data ?? [], null);
-        $this->setIfExists('module_invoice_option_ehf_incoming', $data ?? [], null);
-        $this->setIfExists('module_invoice_option_ehf_outbound', $data ?? [], null);
-        $this->setIfExists('module_api20', $data ?? [], null);
-        $this->setIfExists('module_agro', $data ?? [], null);
-        $this->setIfExists('module_mamut', $data ?? [], null);
-        $this->setIfExists('module_factoring_aprila', $data ?? [], null);
-        $this->setIfExists('module_cash_credit_aprila', $data ?? [], null);
-        $this->setIfExists('module_invoice_option_autoinvoice_ehf', $data ?? [], null);
-        $this->setIfExists('module_smart_scan', $data ?? [], null);
-        $this->setIfExists('module_auto_bank_reconciliation', $data ?? [], null);
-        $this->setIfExists('module_offer', $data ?? [], null);
-        $this->setIfExists('module_voucher_automation', $data ?? [], null);
-        $this->setIfExists('module_amortization', $data ?? [], null);
-        $this->setIfExists('module_encrypted_pay_slip', $data ?? [], null);
-        $this->setIfExists('hour_cost_factor_project', $data ?? [], null);
-        $this->setIfExists('factoring_visma_finance', $data ?? [], null);
-        $this->setIfExists('year_end_report', $data ?? [], null);
-        $this->setIfExists('module_logistics', $data ?? [], null);
-    }
-
-    /**
-    * Sets $this->container[$variableName] to the given data or to the given default Value; if $variableName
-    * is nullable and its value is set to null in the $fields array, then mark it as "set to null" in the
-    * $this->openAPINullablesSetToNull array
-    *
-    * @param string $variableName
-    * @param array  $fields
-    * @param mixed  $defaultValue
-    */
-    private function setIfExists(string $variableName, array $fields, $defaultValue): void
-    {
-        if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
-            $this->openAPINullablesSetToNull[] = $variableName;
-        }
-
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $this->container['moduleaccountinginternal'] = isset($data['moduleaccountinginternal']) ? $data['moduleaccountinginternal'] : null;
+        $this->container['moduleaccountingexternal'] = isset($data['moduleaccountingexternal']) ? $data['moduleaccountingexternal'] : null;
+        $this->container['moduledepartment'] = isset($data['moduledepartment']) ? $data['moduledepartment'] : null;
+        $this->container['moduleprojectprognosis'] = isset($data['moduleprojectprognosis']) ? $data['moduleprojectprognosis'] : null;
+        $this->container['moduleresourceallocation'] = isset($data['moduleresourceallocation']) ? $data['moduleresourceallocation'] : null;
+        $this->container['moduleprojecteconomy'] = isset($data['moduleprojecteconomy']) ? $data['moduleprojecteconomy'] : null;
+        $this->container['moduleinvoice'] = isset($data['moduleinvoice']) ? $data['moduleinvoice'] : null;
+        $this->container['modulebudget'] = isset($data['modulebudget']) ? $data['modulebudget'] : null;
+        $this->container['modulereferencefee'] = isset($data['modulereferencefee']) ? $data['modulereferencefee'] : null;
+        $this->container['module_hour_cost'] = isset($data['module_hour_cost']) ? $data['module_hour_cost'] : null;
+        $this->container['moduleemployee'] = isset($data['moduleemployee']) ? $data['moduleemployee'] : null;
+        $this->container['moduleproject'] = isset($data['moduleproject']) ? $data['moduleproject'] : null;
+        $this->container['moduleprojectcategory'] = isset($data['moduleprojectcategory']) ? $data['moduleprojectcategory'] : null;
+        $this->container['module_project_budget'] = isset($data['module_project_budget']) ? $data['module_project_budget'] : null;
+        $this->container['moduletask'] = isset($data['moduletask']) ? $data['moduletask'] : null;
+        $this->container['module_travel_expense'] = isset($data['module_travel_expense']) ? $data['module_travel_expense'] : null;
+        $this->container['modulecustomer'] = isset($data['modulecustomer']) ? $data['modulecustomer'] : null;
+        $this->container['modulenote'] = isset($data['modulenote']) ? $data['modulenote'] : null;
+        $this->container['modulesubscription'] = isset($data['modulesubscription']) ? $data['modulesubscription'] : null;
+        $this->container['moduleproduct'] = isset($data['moduleproduct']) ? $data['moduleproduct'] : null;
+        $this->container['module_voucher_export'] = isset($data['module_voucher_export']) ? $data['module_voucher_export'] : null;
+        $this->container['moduleaccountingreports'] = isset($data['moduleaccountingreports']) ? $data['moduleaccountingreports'] : null;
+        $this->container['module_customer_categories'] = isset($data['module_customer_categories']) ? $data['module_customer_categories'] : null;
+        $this->container['module_customer_category1'] = isset($data['module_customer_category1']) ? $data['module_customer_category1'] : null;
+        $this->container['module_customer_category2'] = isset($data['module_customer_category2']) ? $data['module_customer_category2'] : null;
+        $this->container['module_customer_category3'] = isset($data['module_customer_category3']) ? $data['module_customer_category3'] : null;
+        $this->container['moduleprojectsubcontract'] = isset($data['moduleprojectsubcontract']) ? $data['moduleprojectsubcontract'] : null;
+        $this->container['approvehourlists'] = isset($data['approvehourlists']) ? $data['approvehourlists'] : null;
+        $this->container['approveinvoices'] = isset($data['approveinvoices']) ? $data['approveinvoices'] : null;
+        $this->container['approvetravelreports'] = isset($data['approvetravelreports']) ? $data['approvetravelreports'] : null;
+        $this->container['completeweeklyhourlists'] = isset($data['completeweeklyhourlists']) ? $data['completeweeklyhourlists'] : null;
+        $this->container['completemonthlyhourlists'] = isset($data['completemonthlyhourlists']) ? $data['completemonthlyhourlists'] : null;
+        $this->container['approvemonthlyhourlists'] = isset($data['approvemonthlyhourlists']) ? $data['approvemonthlyhourlists'] : null;
+        $this->container['invoiceapprovedhoursmandatory'] = isset($data['invoiceapprovedhoursmandatory']) ? $data['invoiceapprovedhoursmandatory'] : null;
+        $this->container['module_payroll_accounting'] = isset($data['module_payroll_accounting']) ? $data['module_payroll_accounting'] : null;
+        $this->container['module_payroll_accounting_no'] = isset($data['module_payroll_accounting_no']) ? $data['module_payroll_accounting_no'] : null;
+        $this->container['modulehourlist'] = isset($data['modulehourlist']) ? $data['modulehourlist'] : null;
+        $this->container['module_time_balance'] = isset($data['module_time_balance']) ? $data['module_time_balance'] : null;
+        $this->container['module_vacation_balance'] = isset($data['module_vacation_balance']) ? $data['module_vacation_balance'] : null;
+        $this->container['module_working_hours'] = isset($data['module_working_hours']) ? $data['module_working_hours'] : null;
+        $this->container['module_currency'] = isset($data['module_currency']) ? $data['module_currency'] : null;
+        $this->container['module_contact'] = isset($data['module_contact']) ? $data['module_contact'] : null;
+        $this->container['module_swedish'] = isset($data['module_swedish']) ? $data['module_swedish'] : null;
+        $this->container['module_auto_project_number'] = isset($data['module_auto_project_number']) ? $data['module_auto_project_number'] : null;
+        $this->container['module_wage_export'] = isset($data['module_wage_export']) ? $data['module_wage_export'] : null;
+        $this->container['approve_weekly_hourlists'] = isset($data['approve_weekly_hourlists']) ? $data['approve_weekly_hourlists'] : null;
+        $this->container['module_provision_salary'] = isset($data['module_provision_salary']) ? $data['module_provision_salary'] : null;
+        $this->container['module_order_number'] = isset($data['module_order_number']) ? $data['module_order_number'] : null;
+        $this->container['module_order_discount'] = isset($data['module_order_discount']) ? $data['module_order_discount'] : null;
+        $this->container['module_order_markup'] = isset($data['module_order_markup']) ? $data['module_order_markup'] : null;
+        $this->container['module_order_line_cost'] = isset($data['module_order_line_cost']) ? $data['module_order_line_cost'] : null;
+        $this->container['module_resource_groups'] = isset($data['module_resource_groups']) ? $data['module_resource_groups'] : null;
+        $this->container['module_vendor'] = isset($data['module_vendor']) ? $data['module_vendor'] : null;
+        $this->container['module_auto_customer_number'] = isset($data['module_auto_customer_number']) ? $data['module_auto_customer_number'] : null;
+        $this->container['module_auto_vendor_number'] = isset($data['module_auto_vendor_number']) ? $data['module_auto_vendor_number'] : null;
+        $this->container['module_historical'] = isset($data['module_historical']) ? $data['module_historical'] : null;
+        $this->container['show_travel_report_letterhead'] = isset($data['show_travel_report_letterhead']) ? $data['show_travel_report_letterhead'] : null;
+        $this->container['module_ocr'] = isset($data['module_ocr']) ? $data['module_ocr'] : null;
+        $this->container['module_remit'] = isset($data['module_remit']) ? $data['module_remit'] : null;
+        $this->container['module_remit_nets'] = isset($data['module_remit_nets']) ? $data['module_remit_nets'] : null;
+        $this->container['module_remit_ztl'] = isset($data['module_remit_ztl']) ? $data['module_remit_ztl'] : null;
+        $this->container['module_remit_auto_pay'] = isset($data['module_remit_auto_pay']) ? $data['module_remit_auto_pay'] : null;
+        $this->container['module_travel_expense_rates'] = isset($data['module_travel_expense_rates']) ? $data['module_travel_expense_rates'] : null;
+        $this->container['module_voucher_scanning'] = isset($data['module_voucher_scanning']) ? $data['module_voucher_scanning'] : null;
+        $this->container['module_invoice_scanning'] = isset($data['module_invoice_scanning']) ? $data['module_invoice_scanning'] : null;
+        $this->container['module_holyday_plan'] = isset($data['module_holyday_plan']) ? $data['module_holyday_plan'] : null;
+        $this->container['module_employee_category'] = isset($data['module_employee_category']) ? $data['module_employee_category'] : null;
+        $this->container['multiple_customer_categories'] = isset($data['multiple_customer_categories']) ? $data['multiple_customer_categories'] : null;
+        $this->container['module_product_invoice'] = isset($data['module_product_invoice']) ? $data['module_product_invoice'] : null;
+        $this->container['auto_invoicing'] = isset($data['auto_invoicing']) ? $data['auto_invoicing'] : null;
+        $this->container['module_factoring'] = isset($data['module_factoring']) ? $data['module_factoring'] : null;
+        $this->container['module_employee_accounting'] = isset($data['module_employee_accounting']) ? $data['module_employee_accounting'] : null;
+        $this->container['module_department_accounting'] = isset($data['module_department_accounting']) ? $data['module_department_accounting'] : null;
+        $this->container['module_project_accounting'] = isset($data['module_project_accounting']) ? $data['module_project_accounting'] : null;
+        $this->container['module_wage_project_accounting'] = isset($data['module_wage_project_accounting']) ? $data['module_wage_project_accounting'] : null;
+        $this->container['module_product_accounting'] = isset($data['module_product_accounting']) ? $data['module_product_accounting'] : null;
+        $this->container['module_electro'] = isset($data['module_electro']) ? $data['module_electro'] : null;
+        $this->container['module_nrf'] = isset($data['module_nrf']) ? $data['module_nrf'] : null;
+        $this->container['module_result_budget'] = isset($data['module_result_budget']) ? $data['module_result_budget'] : null;
+        $this->container['module_voucher_types'] = isset($data['module_voucher_types']) ? $data['module_voucher_types'] : null;
+        $this->container['module_warehouse'] = isset($data['module_warehouse']) ? $data['module_warehouse'] : null;
+        $this->container['module_nets_eboks'] = isset($data['module_nets_eboks']) ? $data['module_nets_eboks'] : null;
+        $this->container['module_nets_print_salary'] = isset($data['module_nets_print_salary']) ? $data['module_nets_print_salary'] : null;
+        $this->container['module_nets_print_invoice'] = isset($data['module_nets_print_invoice']) ? $data['module_nets_print_invoice'] : null;
+        $this->container['hourly_rate_projects_write_up_down'] = isset($data['hourly_rate_projects_write_up_down']) ? $data['hourly_rate_projects_write_up_down'] : null;
+        $this->container['show_recently_closed_projects_on_supplier_invoice'] = isset($data['show_recently_closed_projects_on_supplier_invoice']) ? $data['show_recently_closed_projects_on_supplier_invoice'] : null;
+        $this->container['module_email'] = isset($data['module_email']) ? $data['module_email'] : null;
+        $this->container['send_payslips_by_email'] = isset($data['send_payslips_by_email']) ? $data['send_payslips_by_email'] : null;
+        $this->container['module_approve_voucher'] = isset($data['module_approve_voucher']) ? $data['module_approve_voucher'] : null;
+        $this->container['module_approve_project_voucher'] = isset($data['module_approve_project_voucher']) ? $data['module_approve_project_voucher'] : null;
+        $this->container['module_approve_department_voucher'] = isset($data['module_approve_department_voucher']) ? $data['module_approve_department_voucher'] : null;
+        $this->container['module_archive'] = isset($data['module_archive']) ? $data['module_archive'] : null;
+        $this->container['module_order_out'] = isset($data['module_order_out']) ? $data['module_order_out'] : null;
+        $this->container['module_mesan'] = isset($data['module_mesan']) ? $data['module_mesan'] : null;
+        $this->container['module_accountant_connect_client'] = isset($data['module_accountant_connect_client']) ? $data['module_accountant_connect_client'] : null;
+        $this->container['module_divisions'] = isset($data['module_divisions']) ? $data['module_divisions'] : null;
+        $this->container['module_boligmappa'] = isset($data['module_boligmappa']) ? $data['module_boligmappa'] : null;
+        $this->container['module_addition_project_markup'] = isset($data['module_addition_project_markup']) ? $data['module_addition_project_markup'] : null;
+        $this->container['tripletex_support_login_access_company_level'] = isset($data['tripletex_support_login_access_company_level']) ? $data['tripletex_support_login_access_company_level'] : null;
+        $this->container['module_crm'] = isset($data['module_crm']) ? $data['module_crm'] : null;
+        $this->container['module_pensionreport'] = isset($data['module_pensionreport']) ? $data['module_pensionreport'] : null;
+        $this->container['module_control_schema_required_invoicing'] = isset($data['module_control_schema_required_invoicing']) ? $data['module_control_schema_required_invoicing'] : null;
+        $this->container['module_control_schema_required_hour_tracking'] = isset($data['module_control_schema_required_hour_tracking']) ? $data['module_control_schema_required_hour_tracking'] : null;
+        $this->container['module_invoice_option_vipps'] = isset($data['module_invoice_option_vipps']) ? $data['module_invoice_option_vipps'] : null;
+        $this->container['module_invoice_option_efaktura'] = isset($data['module_invoice_option_efaktura']) ? $data['module_invoice_option_efaktura'] : null;
+        $this->container['module_invoice_option_paper'] = isset($data['module_invoice_option_paper']) ? $data['module_invoice_option_paper'] : null;
+        $this->container['module_invoice_option_avtale_giro'] = isset($data['module_invoice_option_avtale_giro']) ? $data['module_invoice_option_avtale_giro'] : null;
+        $this->container['module_invoice_option_ehf_incoming'] = isset($data['module_invoice_option_ehf_incoming']) ? $data['module_invoice_option_ehf_incoming'] : null;
+        $this->container['module_invoice_option_ehf_outbound'] = isset($data['module_invoice_option_ehf_outbound']) ? $data['module_invoice_option_ehf_outbound'] : null;
+        $this->container['module_api20'] = isset($data['module_api20']) ? $data['module_api20'] : null;
+        $this->container['module_agro'] = isset($data['module_agro']) ? $data['module_agro'] : null;
+        $this->container['module_mamut'] = isset($data['module_mamut']) ? $data['module_mamut'] : null;
+        $this->container['module_factoring_aprila'] = isset($data['module_factoring_aprila']) ? $data['module_factoring_aprila'] : null;
+        $this->container['module_cash_credit_aprila'] = isset($data['module_cash_credit_aprila']) ? $data['module_cash_credit_aprila'] : null;
+        $this->container['module_invoice_option_autoinvoice_ehf'] = isset($data['module_invoice_option_autoinvoice_ehf']) ? $data['module_invoice_option_autoinvoice_ehf'] : null;
+        $this->container['module_smart_scan'] = isset($data['module_smart_scan']) ? $data['module_smart_scan'] : null;
+        $this->container['module_auto_bank_reconciliation'] = isset($data['module_auto_bank_reconciliation']) ? $data['module_auto_bank_reconciliation'] : null;
+        $this->container['module_offer'] = isset($data['module_offer']) ? $data['module_offer'] : null;
+        $this->container['module_voucher_automation'] = isset($data['module_voucher_automation']) ? $data['module_voucher_automation'] : null;
+        $this->container['module_amortization'] = isset($data['module_amortization']) ? $data['module_amortization'] : null;
+        $this->container['module_encrypted_pay_slip'] = isset($data['module_encrypted_pay_slip']) ? $data['module_encrypted_pay_slip'] : null;
+        $this->container['hour_cost_factor_project'] = isset($data['hour_cost_factor_project']) ? $data['hour_cost_factor_project'] : null;
+        $this->container['factoring_visma_finance'] = isset($data['factoring_visma_finance']) ? $data['factoring_visma_finance'] : null;
+        $this->container['year_end_report'] = isset($data['year_end_report']) ? $data['year_end_report'] : null;
+        $this->container['module_logistics'] = isset($data['module_logistics']) ? $data['module_logistics'] : null;
     }
 
     /**
@@ -1160,7 +943,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets moduleaccountinginternal
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleaccountinginternal()
     {
@@ -1170,15 +953,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets moduleaccountinginternal
      *
-     * @param bool|null $moduleaccountinginternal moduleaccountinginternal
+     * @param bool $moduleaccountinginternal moduleaccountinginternal
      *
-     * @return self
+     * @return $this
      */
     public function setModuleaccountinginternal($moduleaccountinginternal)
     {
-        if (is_null($moduleaccountinginternal)) {
-            throw new \InvalidArgumentException('non-nullable moduleaccountinginternal cannot be null');
-        }
         $this->container['moduleaccountinginternal'] = $moduleaccountinginternal;
 
         return $this;
@@ -1187,7 +967,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets moduleaccountingexternal
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleaccountingexternal()
     {
@@ -1197,15 +977,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets moduleaccountingexternal
      *
-     * @param bool|null $moduleaccountingexternal moduleaccountingexternal
+     * @param bool $moduleaccountingexternal moduleaccountingexternal
      *
-     * @return self
+     * @return $this
      */
     public function setModuleaccountingexternal($moduleaccountingexternal)
     {
-        if (is_null($moduleaccountingexternal)) {
-            throw new \InvalidArgumentException('non-nullable moduleaccountingexternal cannot be null');
-        }
         $this->container['moduleaccountingexternal'] = $moduleaccountingexternal;
 
         return $this;
@@ -1214,7 +991,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets moduledepartment
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuledepartment()
     {
@@ -1224,15 +1001,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets moduledepartment
      *
-     * @param bool|null $moduledepartment moduledepartment
+     * @param bool $moduledepartment moduledepartment
      *
-     * @return self
+     * @return $this
      */
     public function setModuledepartment($moduledepartment)
     {
-        if (is_null($moduledepartment)) {
-            throw new \InvalidArgumentException('non-nullable moduledepartment cannot be null');
-        }
         $this->container['moduledepartment'] = $moduledepartment;
 
         return $this;
@@ -1241,7 +1015,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets moduleprojectprognosis
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleprojectprognosis()
     {
@@ -1251,15 +1025,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets moduleprojectprognosis
      *
-     * @param bool|null $moduleprojectprognosis moduleprojectprognosis
+     * @param bool $moduleprojectprognosis moduleprojectprognosis
      *
-     * @return self
+     * @return $this
      */
     public function setModuleprojectprognosis($moduleprojectprognosis)
     {
-        if (is_null($moduleprojectprognosis)) {
-            throw new \InvalidArgumentException('non-nullable moduleprojectprognosis cannot be null');
-        }
         $this->container['moduleprojectprognosis'] = $moduleprojectprognosis;
 
         return $this;
@@ -1268,7 +1039,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets moduleresourceallocation
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleresourceallocation()
     {
@@ -1278,15 +1049,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets moduleresourceallocation
      *
-     * @param bool|null $moduleresourceallocation moduleresourceallocation
+     * @param bool $moduleresourceallocation moduleresourceallocation
      *
-     * @return self
+     * @return $this
      */
     public function setModuleresourceallocation($moduleresourceallocation)
     {
-        if (is_null($moduleresourceallocation)) {
-            throw new \InvalidArgumentException('non-nullable moduleresourceallocation cannot be null');
-        }
         $this->container['moduleresourceallocation'] = $moduleresourceallocation;
 
         return $this;
@@ -1295,7 +1063,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets moduleprojecteconomy
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleprojecteconomy()
     {
@@ -1305,15 +1073,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets moduleprojecteconomy
      *
-     * @param bool|null $moduleprojecteconomy moduleprojecteconomy
+     * @param bool $moduleprojecteconomy moduleprojecteconomy
      *
-     * @return self
+     * @return $this
      */
     public function setModuleprojecteconomy($moduleprojecteconomy)
     {
-        if (is_null($moduleprojecteconomy)) {
-            throw new \InvalidArgumentException('non-nullable moduleprojecteconomy cannot be null');
-        }
         $this->container['moduleprojecteconomy'] = $moduleprojecteconomy;
 
         return $this;
@@ -1322,7 +1087,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets moduleinvoice
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleinvoice()
     {
@@ -1332,15 +1097,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets moduleinvoice
      *
-     * @param bool|null $moduleinvoice moduleinvoice
+     * @param bool $moduleinvoice moduleinvoice
      *
-     * @return self
+     * @return $this
      */
     public function setModuleinvoice($moduleinvoice)
     {
-        if (is_null($moduleinvoice)) {
-            throw new \InvalidArgumentException('non-nullable moduleinvoice cannot be null');
-        }
         $this->container['moduleinvoice'] = $moduleinvoice;
 
         return $this;
@@ -1349,7 +1111,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets modulebudget
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModulebudget()
     {
@@ -1359,15 +1121,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets modulebudget
      *
-     * @param bool|null $modulebudget modulebudget
+     * @param bool $modulebudget modulebudget
      *
-     * @return self
+     * @return $this
      */
     public function setModulebudget($modulebudget)
     {
-        if (is_null($modulebudget)) {
-            throw new \InvalidArgumentException('non-nullable modulebudget cannot be null');
-        }
         $this->container['modulebudget'] = $modulebudget;
 
         return $this;
@@ -1376,7 +1135,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets modulereferencefee
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModulereferencefee()
     {
@@ -1386,15 +1145,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets modulereferencefee
      *
-     * @param bool|null $modulereferencefee modulereferencefee
+     * @param bool $modulereferencefee modulereferencefee
      *
-     * @return self
+     * @return $this
      */
     public function setModulereferencefee($modulereferencefee)
     {
-        if (is_null($modulereferencefee)) {
-            throw new \InvalidArgumentException('non-nullable modulereferencefee cannot be null');
-        }
         $this->container['modulereferencefee'] = $modulereferencefee;
 
         return $this;
@@ -1403,7 +1159,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_hour_cost
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleHourCost()
     {
@@ -1413,15 +1169,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_hour_cost
      *
-     * @param bool|null $module_hour_cost module_hour_cost
+     * @param bool $module_hour_cost module_hour_cost
      *
-     * @return self
+     * @return $this
      */
     public function setModuleHourCost($module_hour_cost)
     {
-        if (is_null($module_hour_cost)) {
-            throw new \InvalidArgumentException('non-nullable module_hour_cost cannot be null');
-        }
         $this->container['module_hour_cost'] = $module_hour_cost;
 
         return $this;
@@ -1430,7 +1183,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets moduleemployee
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleemployee()
     {
@@ -1440,15 +1193,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets moduleemployee
      *
-     * @param bool|null $moduleemployee moduleemployee
+     * @param bool $moduleemployee moduleemployee
      *
-     * @return self
+     * @return $this
      */
     public function setModuleemployee($moduleemployee)
     {
-        if (is_null($moduleemployee)) {
-            throw new \InvalidArgumentException('non-nullable moduleemployee cannot be null');
-        }
         $this->container['moduleemployee'] = $moduleemployee;
 
         return $this;
@@ -1457,7 +1207,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets moduleproject
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleproject()
     {
@@ -1467,15 +1217,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets moduleproject
      *
-     * @param bool|null $moduleproject moduleproject
+     * @param bool $moduleproject moduleproject
      *
-     * @return self
+     * @return $this
      */
     public function setModuleproject($moduleproject)
     {
-        if (is_null($moduleproject)) {
-            throw new \InvalidArgumentException('non-nullable moduleproject cannot be null');
-        }
         $this->container['moduleproject'] = $moduleproject;
 
         return $this;
@@ -1484,7 +1231,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets moduleprojectcategory
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleprojectcategory()
     {
@@ -1494,15 +1241,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets moduleprojectcategory
      *
-     * @param bool|null $moduleprojectcategory moduleprojectcategory
+     * @param bool $moduleprojectcategory moduleprojectcategory
      *
-     * @return self
+     * @return $this
      */
     public function setModuleprojectcategory($moduleprojectcategory)
     {
-        if (is_null($moduleprojectcategory)) {
-            throw new \InvalidArgumentException('non-nullable moduleprojectcategory cannot be null');
-        }
         $this->container['moduleprojectcategory'] = $moduleprojectcategory;
 
         return $this;
@@ -1511,7 +1255,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_project_budget
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleProjectBudget()
     {
@@ -1521,15 +1265,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_project_budget
      *
-     * @param bool|null $module_project_budget module_project_budget
+     * @param bool $module_project_budget module_project_budget
      *
-     * @return self
+     * @return $this
      */
     public function setModuleProjectBudget($module_project_budget)
     {
-        if (is_null($module_project_budget)) {
-            throw new \InvalidArgumentException('non-nullable module_project_budget cannot be null');
-        }
         $this->container['module_project_budget'] = $module_project_budget;
 
         return $this;
@@ -1538,7 +1279,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets moduletask
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuletask()
     {
@@ -1548,15 +1289,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets moduletask
      *
-     * @param bool|null $moduletask moduletask
+     * @param bool $moduletask moduletask
      *
-     * @return self
+     * @return $this
      */
     public function setModuletask($moduletask)
     {
-        if (is_null($moduletask)) {
-            throw new \InvalidArgumentException('non-nullable moduletask cannot be null');
-        }
         $this->container['moduletask'] = $moduletask;
 
         return $this;
@@ -1565,7 +1303,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_travel_expense
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleTravelExpense()
     {
@@ -1575,15 +1313,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_travel_expense
      *
-     * @param bool|null $module_travel_expense module_travel_expense
+     * @param bool $module_travel_expense module_travel_expense
      *
-     * @return self
+     * @return $this
      */
     public function setModuleTravelExpense($module_travel_expense)
     {
-        if (is_null($module_travel_expense)) {
-            throw new \InvalidArgumentException('non-nullable module_travel_expense cannot be null');
-        }
         $this->container['module_travel_expense'] = $module_travel_expense;
 
         return $this;
@@ -1592,7 +1327,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets modulecustomer
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModulecustomer()
     {
@@ -1602,15 +1337,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets modulecustomer
      *
-     * @param bool|null $modulecustomer modulecustomer
+     * @param bool $modulecustomer modulecustomer
      *
-     * @return self
+     * @return $this
      */
     public function setModulecustomer($modulecustomer)
     {
-        if (is_null($modulecustomer)) {
-            throw new \InvalidArgumentException('non-nullable modulecustomer cannot be null');
-        }
         $this->container['modulecustomer'] = $modulecustomer;
 
         return $this;
@@ -1619,7 +1351,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets modulenote
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModulenote()
     {
@@ -1629,15 +1361,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets modulenote
      *
-     * @param bool|null $modulenote modulenote
+     * @param bool $modulenote modulenote
      *
-     * @return self
+     * @return $this
      */
     public function setModulenote($modulenote)
     {
-        if (is_null($modulenote)) {
-            throw new \InvalidArgumentException('non-nullable modulenote cannot be null');
-        }
         $this->container['modulenote'] = $modulenote;
 
         return $this;
@@ -1646,7 +1375,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets modulesubscription
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModulesubscription()
     {
@@ -1656,15 +1385,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets modulesubscription
      *
-     * @param bool|null $modulesubscription modulesubscription
+     * @param bool $modulesubscription modulesubscription
      *
-     * @return self
+     * @return $this
      */
     public function setModulesubscription($modulesubscription)
     {
-        if (is_null($modulesubscription)) {
-            throw new \InvalidArgumentException('non-nullable modulesubscription cannot be null');
-        }
         $this->container['modulesubscription'] = $modulesubscription;
 
         return $this;
@@ -1673,7 +1399,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets moduleproduct
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleproduct()
     {
@@ -1683,15 +1409,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets moduleproduct
      *
-     * @param bool|null $moduleproduct moduleproduct
+     * @param bool $moduleproduct moduleproduct
      *
-     * @return self
+     * @return $this
      */
     public function setModuleproduct($moduleproduct)
     {
-        if (is_null($moduleproduct)) {
-            throw new \InvalidArgumentException('non-nullable moduleproduct cannot be null');
-        }
         $this->container['moduleproduct'] = $moduleproduct;
 
         return $this;
@@ -1700,7 +1423,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_voucher_export
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleVoucherExport()
     {
@@ -1710,15 +1433,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_voucher_export
      *
-     * @param bool|null $module_voucher_export module_voucher_export
+     * @param bool $module_voucher_export module_voucher_export
      *
-     * @return self
+     * @return $this
      */
     public function setModuleVoucherExport($module_voucher_export)
     {
-        if (is_null($module_voucher_export)) {
-            throw new \InvalidArgumentException('non-nullable module_voucher_export cannot be null');
-        }
         $this->container['module_voucher_export'] = $module_voucher_export;
 
         return $this;
@@ -1727,7 +1447,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets moduleaccountingreports
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleaccountingreports()
     {
@@ -1737,15 +1457,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets moduleaccountingreports
      *
-     * @param bool|null $moduleaccountingreports moduleaccountingreports
+     * @param bool $moduleaccountingreports moduleaccountingreports
      *
-     * @return self
+     * @return $this
      */
     public function setModuleaccountingreports($moduleaccountingreports)
     {
-        if (is_null($moduleaccountingreports)) {
-            throw new \InvalidArgumentException('non-nullable moduleaccountingreports cannot be null');
-        }
         $this->container['moduleaccountingreports'] = $moduleaccountingreports;
 
         return $this;
@@ -1754,7 +1471,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_customer_categories
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleCustomerCategories()
     {
@@ -1764,15 +1481,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_customer_categories
      *
-     * @param bool|null $module_customer_categories module_customer_categories
+     * @param bool $module_customer_categories module_customer_categories
      *
-     * @return self
+     * @return $this
      */
     public function setModuleCustomerCategories($module_customer_categories)
     {
-        if (is_null($module_customer_categories)) {
-            throw new \InvalidArgumentException('non-nullable module_customer_categories cannot be null');
-        }
         $this->container['module_customer_categories'] = $module_customer_categories;
 
         return $this;
@@ -1781,7 +1495,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_customer_category1
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleCustomerCategory1()
     {
@@ -1791,15 +1505,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_customer_category1
      *
-     * @param bool|null $module_customer_category1 module_customer_category1
+     * @param bool $module_customer_category1 module_customer_category1
      *
-     * @return self
+     * @return $this
      */
     public function setModuleCustomerCategory1($module_customer_category1)
     {
-        if (is_null($module_customer_category1)) {
-            throw new \InvalidArgumentException('non-nullable module_customer_category1 cannot be null');
-        }
         $this->container['module_customer_category1'] = $module_customer_category1;
 
         return $this;
@@ -1808,7 +1519,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_customer_category2
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleCustomerCategory2()
     {
@@ -1818,15 +1529,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_customer_category2
      *
-     * @param bool|null $module_customer_category2 module_customer_category2
+     * @param bool $module_customer_category2 module_customer_category2
      *
-     * @return self
+     * @return $this
      */
     public function setModuleCustomerCategory2($module_customer_category2)
     {
-        if (is_null($module_customer_category2)) {
-            throw new \InvalidArgumentException('non-nullable module_customer_category2 cannot be null');
-        }
         $this->container['module_customer_category2'] = $module_customer_category2;
 
         return $this;
@@ -1835,7 +1543,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_customer_category3
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleCustomerCategory3()
     {
@@ -1845,15 +1553,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_customer_category3
      *
-     * @param bool|null $module_customer_category3 module_customer_category3
+     * @param bool $module_customer_category3 module_customer_category3
      *
-     * @return self
+     * @return $this
      */
     public function setModuleCustomerCategory3($module_customer_category3)
     {
-        if (is_null($module_customer_category3)) {
-            throw new \InvalidArgumentException('non-nullable module_customer_category3 cannot be null');
-        }
         $this->container['module_customer_category3'] = $module_customer_category3;
 
         return $this;
@@ -1862,7 +1567,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets moduleprojectsubcontract
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleprojectsubcontract()
     {
@@ -1872,15 +1577,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets moduleprojectsubcontract
      *
-     * @param bool|null $moduleprojectsubcontract moduleprojectsubcontract
+     * @param bool $moduleprojectsubcontract moduleprojectsubcontract
      *
-     * @return self
+     * @return $this
      */
     public function setModuleprojectsubcontract($moduleprojectsubcontract)
     {
-        if (is_null($moduleprojectsubcontract)) {
-            throw new \InvalidArgumentException('non-nullable moduleprojectsubcontract cannot be null');
-        }
         $this->container['moduleprojectsubcontract'] = $moduleprojectsubcontract;
 
         return $this;
@@ -1889,7 +1591,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets approvehourlists
      *
-     * @return bool|null
+     * @return bool
      */
     public function getApprovehourlists()
     {
@@ -1899,15 +1601,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets approvehourlists
      *
-     * @param bool|null $approvehourlists approvehourlists
+     * @param bool $approvehourlists approvehourlists
      *
-     * @return self
+     * @return $this
      */
     public function setApprovehourlists($approvehourlists)
     {
-        if (is_null($approvehourlists)) {
-            throw new \InvalidArgumentException('non-nullable approvehourlists cannot be null');
-        }
         $this->container['approvehourlists'] = $approvehourlists;
 
         return $this;
@@ -1916,7 +1615,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets approveinvoices
      *
-     * @return bool|null
+     * @return bool
      */
     public function getApproveinvoices()
     {
@@ -1926,15 +1625,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets approveinvoices
      *
-     * @param bool|null $approveinvoices approveinvoices
+     * @param bool $approveinvoices approveinvoices
      *
-     * @return self
+     * @return $this
      */
     public function setApproveinvoices($approveinvoices)
     {
-        if (is_null($approveinvoices)) {
-            throw new \InvalidArgumentException('non-nullable approveinvoices cannot be null');
-        }
         $this->container['approveinvoices'] = $approveinvoices;
 
         return $this;
@@ -1943,7 +1639,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets approvetravelreports
      *
-     * @return bool|null
+     * @return bool
      */
     public function getApprovetravelreports()
     {
@@ -1953,15 +1649,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets approvetravelreports
      *
-     * @param bool|null $approvetravelreports approvetravelreports
+     * @param bool $approvetravelreports approvetravelreports
      *
-     * @return self
+     * @return $this
      */
     public function setApprovetravelreports($approvetravelreports)
     {
-        if (is_null($approvetravelreports)) {
-            throw new \InvalidArgumentException('non-nullable approvetravelreports cannot be null');
-        }
         $this->container['approvetravelreports'] = $approvetravelreports;
 
         return $this;
@@ -1970,7 +1663,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets completeweeklyhourlists
      *
-     * @return bool|null
+     * @return bool
      */
     public function getCompleteweeklyhourlists()
     {
@@ -1980,15 +1673,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets completeweeklyhourlists
      *
-     * @param bool|null $completeweeklyhourlists completeweeklyhourlists
+     * @param bool $completeweeklyhourlists completeweeklyhourlists
      *
-     * @return self
+     * @return $this
      */
     public function setCompleteweeklyhourlists($completeweeklyhourlists)
     {
-        if (is_null($completeweeklyhourlists)) {
-            throw new \InvalidArgumentException('non-nullable completeweeklyhourlists cannot be null');
-        }
         $this->container['completeweeklyhourlists'] = $completeweeklyhourlists;
 
         return $this;
@@ -1997,7 +1687,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets completemonthlyhourlists
      *
-     * @return bool|null
+     * @return bool
      */
     public function getCompletemonthlyhourlists()
     {
@@ -2007,15 +1697,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets completemonthlyhourlists
      *
-     * @param bool|null $completemonthlyhourlists completemonthlyhourlists
+     * @param bool $completemonthlyhourlists completemonthlyhourlists
      *
-     * @return self
+     * @return $this
      */
     public function setCompletemonthlyhourlists($completemonthlyhourlists)
     {
-        if (is_null($completemonthlyhourlists)) {
-            throw new \InvalidArgumentException('non-nullable completemonthlyhourlists cannot be null');
-        }
         $this->container['completemonthlyhourlists'] = $completemonthlyhourlists;
 
         return $this;
@@ -2024,7 +1711,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets approvemonthlyhourlists
      *
-     * @return bool|null
+     * @return bool
      */
     public function getApprovemonthlyhourlists()
     {
@@ -2034,15 +1721,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets approvemonthlyhourlists
      *
-     * @param bool|null $approvemonthlyhourlists approvemonthlyhourlists
+     * @param bool $approvemonthlyhourlists approvemonthlyhourlists
      *
-     * @return self
+     * @return $this
      */
     public function setApprovemonthlyhourlists($approvemonthlyhourlists)
     {
-        if (is_null($approvemonthlyhourlists)) {
-            throw new \InvalidArgumentException('non-nullable approvemonthlyhourlists cannot be null');
-        }
         $this->container['approvemonthlyhourlists'] = $approvemonthlyhourlists;
 
         return $this;
@@ -2051,7 +1735,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets invoiceapprovedhoursmandatory
      *
-     * @return bool|null
+     * @return bool
      */
     public function getInvoiceapprovedhoursmandatory()
     {
@@ -2061,15 +1745,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets invoiceapprovedhoursmandatory
      *
-     * @param bool|null $invoiceapprovedhoursmandatory invoiceapprovedhoursmandatory
+     * @param bool $invoiceapprovedhoursmandatory invoiceapprovedhoursmandatory
      *
-     * @return self
+     * @return $this
      */
     public function setInvoiceapprovedhoursmandatory($invoiceapprovedhoursmandatory)
     {
-        if (is_null($invoiceapprovedhoursmandatory)) {
-            throw new \InvalidArgumentException('non-nullable invoiceapprovedhoursmandatory cannot be null');
-        }
         $this->container['invoiceapprovedhoursmandatory'] = $invoiceapprovedhoursmandatory;
 
         return $this;
@@ -2078,7 +1759,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_payroll_accounting
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModulePayrollAccounting()
     {
@@ -2088,15 +1769,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_payroll_accounting
      *
-     * @param bool|null $module_payroll_accounting module_payroll_accounting
+     * @param bool $module_payroll_accounting module_payroll_accounting
      *
-     * @return self
+     * @return $this
      */
     public function setModulePayrollAccounting($module_payroll_accounting)
     {
-        if (is_null($module_payroll_accounting)) {
-            throw new \InvalidArgumentException('non-nullable module_payroll_accounting cannot be null');
-        }
         $this->container['module_payroll_accounting'] = $module_payroll_accounting;
 
         return $this;
@@ -2105,7 +1783,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_payroll_accounting_no
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModulePayrollAccountingNo()
     {
@@ -2115,15 +1793,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_payroll_accounting_no
      *
-     * @param bool|null $module_payroll_accounting_no module_payroll_accounting_no
+     * @param bool $module_payroll_accounting_no module_payroll_accounting_no
      *
-     * @return self
+     * @return $this
      */
     public function setModulePayrollAccountingNo($module_payroll_accounting_no)
     {
-        if (is_null($module_payroll_accounting_no)) {
-            throw new \InvalidArgumentException('non-nullable module_payroll_accounting_no cannot be null');
-        }
         $this->container['module_payroll_accounting_no'] = $module_payroll_accounting_no;
 
         return $this;
@@ -2132,7 +1807,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets modulehourlist
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModulehourlist()
     {
@@ -2142,15 +1817,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets modulehourlist
      *
-     * @param bool|null $modulehourlist modulehourlist
+     * @param bool $modulehourlist modulehourlist
      *
-     * @return self
+     * @return $this
      */
     public function setModulehourlist($modulehourlist)
     {
-        if (is_null($modulehourlist)) {
-            throw new \InvalidArgumentException('non-nullable modulehourlist cannot be null');
-        }
         $this->container['modulehourlist'] = $modulehourlist;
 
         return $this;
@@ -2159,7 +1831,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_time_balance
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleTimeBalance()
     {
@@ -2169,15 +1841,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_time_balance
      *
-     * @param bool|null $module_time_balance module_time_balance
+     * @param bool $module_time_balance module_time_balance
      *
-     * @return self
+     * @return $this
      */
     public function setModuleTimeBalance($module_time_balance)
     {
-        if (is_null($module_time_balance)) {
-            throw new \InvalidArgumentException('non-nullable module_time_balance cannot be null');
-        }
         $this->container['module_time_balance'] = $module_time_balance;
 
         return $this;
@@ -2186,7 +1855,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_vacation_balance
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleVacationBalance()
     {
@@ -2196,15 +1865,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_vacation_balance
      *
-     * @param bool|null $module_vacation_balance module_vacation_balance
+     * @param bool $module_vacation_balance module_vacation_balance
      *
-     * @return self
+     * @return $this
      */
     public function setModuleVacationBalance($module_vacation_balance)
     {
-        if (is_null($module_vacation_balance)) {
-            throw new \InvalidArgumentException('non-nullable module_vacation_balance cannot be null');
-        }
         $this->container['module_vacation_balance'] = $module_vacation_balance;
 
         return $this;
@@ -2213,7 +1879,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_working_hours
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleWorkingHours()
     {
@@ -2223,15 +1889,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_working_hours
      *
-     * @param bool|null $module_working_hours module_working_hours
+     * @param bool $module_working_hours module_working_hours
      *
-     * @return self
+     * @return $this
      */
     public function setModuleWorkingHours($module_working_hours)
     {
-        if (is_null($module_working_hours)) {
-            throw new \InvalidArgumentException('non-nullable module_working_hours cannot be null');
-        }
         $this->container['module_working_hours'] = $module_working_hours;
 
         return $this;
@@ -2240,7 +1903,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_currency
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleCurrency()
     {
@@ -2250,15 +1913,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_currency
      *
-     * @param bool|null $module_currency module_currency
+     * @param bool $module_currency module_currency
      *
-     * @return self
+     * @return $this
      */
     public function setModuleCurrency($module_currency)
     {
-        if (is_null($module_currency)) {
-            throw new \InvalidArgumentException('non-nullable module_currency cannot be null');
-        }
         $this->container['module_currency'] = $module_currency;
 
         return $this;
@@ -2267,7 +1927,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_contact
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleContact()
     {
@@ -2277,15 +1937,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_contact
      *
-     * @param bool|null $module_contact module_contact
+     * @param bool $module_contact module_contact
      *
-     * @return self
+     * @return $this
      */
     public function setModuleContact($module_contact)
     {
-        if (is_null($module_contact)) {
-            throw new \InvalidArgumentException('non-nullable module_contact cannot be null');
-        }
         $this->container['module_contact'] = $module_contact;
 
         return $this;
@@ -2294,7 +1951,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_swedish
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleSwedish()
     {
@@ -2304,15 +1961,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_swedish
      *
-     * @param bool|null $module_swedish module_swedish
+     * @param bool $module_swedish module_swedish
      *
-     * @return self
+     * @return $this
      */
     public function setModuleSwedish($module_swedish)
     {
-        if (is_null($module_swedish)) {
-            throw new \InvalidArgumentException('non-nullable module_swedish cannot be null');
-        }
         $this->container['module_swedish'] = $module_swedish;
 
         return $this;
@@ -2321,7 +1975,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_auto_project_number
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleAutoProjectNumber()
     {
@@ -2331,15 +1985,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_auto_project_number
      *
-     * @param bool|null $module_auto_project_number module_auto_project_number
+     * @param bool $module_auto_project_number module_auto_project_number
      *
-     * @return self
+     * @return $this
      */
     public function setModuleAutoProjectNumber($module_auto_project_number)
     {
-        if (is_null($module_auto_project_number)) {
-            throw new \InvalidArgumentException('non-nullable module_auto_project_number cannot be null');
-        }
         $this->container['module_auto_project_number'] = $module_auto_project_number;
 
         return $this;
@@ -2348,7 +1999,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_wage_export
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleWageExport()
     {
@@ -2358,15 +2009,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_wage_export
      *
-     * @param bool|null $module_wage_export module_wage_export
+     * @param bool $module_wage_export module_wage_export
      *
-     * @return self
+     * @return $this
      */
     public function setModuleWageExport($module_wage_export)
     {
-        if (is_null($module_wage_export)) {
-            throw new \InvalidArgumentException('non-nullable module_wage_export cannot be null');
-        }
         $this->container['module_wage_export'] = $module_wage_export;
 
         return $this;
@@ -2375,7 +2023,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets approve_weekly_hourlists
      *
-     * @return bool|null
+     * @return bool
      */
     public function getApproveWeeklyHourlists()
     {
@@ -2385,15 +2033,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets approve_weekly_hourlists
      *
-     * @param bool|null $approve_weekly_hourlists approve_weekly_hourlists
+     * @param bool $approve_weekly_hourlists approve_weekly_hourlists
      *
-     * @return self
+     * @return $this
      */
     public function setApproveWeeklyHourlists($approve_weekly_hourlists)
     {
-        if (is_null($approve_weekly_hourlists)) {
-            throw new \InvalidArgumentException('non-nullable approve_weekly_hourlists cannot be null');
-        }
         $this->container['approve_weekly_hourlists'] = $approve_weekly_hourlists;
 
         return $this;
@@ -2402,7 +2047,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_provision_salary
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleProvisionSalary()
     {
@@ -2412,15 +2057,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_provision_salary
      *
-     * @param bool|null $module_provision_salary module_provision_salary
+     * @param bool $module_provision_salary module_provision_salary
      *
-     * @return self
+     * @return $this
      */
     public function setModuleProvisionSalary($module_provision_salary)
     {
-        if (is_null($module_provision_salary)) {
-            throw new \InvalidArgumentException('non-nullable module_provision_salary cannot be null');
-        }
         $this->container['module_provision_salary'] = $module_provision_salary;
 
         return $this;
@@ -2429,7 +2071,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_order_number
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleOrderNumber()
     {
@@ -2439,15 +2081,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_order_number
      *
-     * @param bool|null $module_order_number module_order_number
+     * @param bool $module_order_number module_order_number
      *
-     * @return self
+     * @return $this
      */
     public function setModuleOrderNumber($module_order_number)
     {
-        if (is_null($module_order_number)) {
-            throw new \InvalidArgumentException('non-nullable module_order_number cannot be null');
-        }
         $this->container['module_order_number'] = $module_order_number;
 
         return $this;
@@ -2456,7 +2095,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_order_discount
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleOrderDiscount()
     {
@@ -2466,15 +2105,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_order_discount
      *
-     * @param bool|null $module_order_discount module_order_discount
+     * @param bool $module_order_discount module_order_discount
      *
-     * @return self
+     * @return $this
      */
     public function setModuleOrderDiscount($module_order_discount)
     {
-        if (is_null($module_order_discount)) {
-            throw new \InvalidArgumentException('non-nullable module_order_discount cannot be null');
-        }
         $this->container['module_order_discount'] = $module_order_discount;
 
         return $this;
@@ -2483,7 +2119,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_order_markup
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleOrderMarkup()
     {
@@ -2493,15 +2129,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_order_markup
      *
-     * @param bool|null $module_order_markup module_order_markup
+     * @param bool $module_order_markup module_order_markup
      *
-     * @return self
+     * @return $this
      */
     public function setModuleOrderMarkup($module_order_markup)
     {
-        if (is_null($module_order_markup)) {
-            throw new \InvalidArgumentException('non-nullable module_order_markup cannot be null');
-        }
         $this->container['module_order_markup'] = $module_order_markup;
 
         return $this;
@@ -2510,7 +2143,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_order_line_cost
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleOrderLineCost()
     {
@@ -2520,15 +2153,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_order_line_cost
      *
-     * @param bool|null $module_order_line_cost module_order_line_cost
+     * @param bool $module_order_line_cost module_order_line_cost
      *
-     * @return self
+     * @return $this
      */
     public function setModuleOrderLineCost($module_order_line_cost)
     {
-        if (is_null($module_order_line_cost)) {
-            throw new \InvalidArgumentException('non-nullable module_order_line_cost cannot be null');
-        }
         $this->container['module_order_line_cost'] = $module_order_line_cost;
 
         return $this;
@@ -2537,7 +2167,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_resource_groups
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleResourceGroups()
     {
@@ -2547,15 +2177,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_resource_groups
      *
-     * @param bool|null $module_resource_groups module_resource_groups
+     * @param bool $module_resource_groups module_resource_groups
      *
-     * @return self
+     * @return $this
      */
     public function setModuleResourceGroups($module_resource_groups)
     {
-        if (is_null($module_resource_groups)) {
-            throw new \InvalidArgumentException('non-nullable module_resource_groups cannot be null');
-        }
         $this->container['module_resource_groups'] = $module_resource_groups;
 
         return $this;
@@ -2564,7 +2191,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_vendor
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleVendor()
     {
@@ -2574,15 +2201,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_vendor
      *
-     * @param bool|null $module_vendor module_vendor
+     * @param bool $module_vendor module_vendor
      *
-     * @return self
+     * @return $this
      */
     public function setModuleVendor($module_vendor)
     {
-        if (is_null($module_vendor)) {
-            throw new \InvalidArgumentException('non-nullable module_vendor cannot be null');
-        }
         $this->container['module_vendor'] = $module_vendor;
 
         return $this;
@@ -2591,7 +2215,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_auto_customer_number
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleAutoCustomerNumber()
     {
@@ -2601,15 +2225,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_auto_customer_number
      *
-     * @param bool|null $module_auto_customer_number module_auto_customer_number
+     * @param bool $module_auto_customer_number module_auto_customer_number
      *
-     * @return self
+     * @return $this
      */
     public function setModuleAutoCustomerNumber($module_auto_customer_number)
     {
-        if (is_null($module_auto_customer_number)) {
-            throw new \InvalidArgumentException('non-nullable module_auto_customer_number cannot be null');
-        }
         $this->container['module_auto_customer_number'] = $module_auto_customer_number;
 
         return $this;
@@ -2618,7 +2239,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_auto_vendor_number
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleAutoVendorNumber()
     {
@@ -2628,15 +2249,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_auto_vendor_number
      *
-     * @param bool|null $module_auto_vendor_number module_auto_vendor_number
+     * @param bool $module_auto_vendor_number module_auto_vendor_number
      *
-     * @return self
+     * @return $this
      */
     public function setModuleAutoVendorNumber($module_auto_vendor_number)
     {
-        if (is_null($module_auto_vendor_number)) {
-            throw new \InvalidArgumentException('non-nullable module_auto_vendor_number cannot be null');
-        }
         $this->container['module_auto_vendor_number'] = $module_auto_vendor_number;
 
         return $this;
@@ -2645,7 +2263,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_historical
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleHistorical()
     {
@@ -2655,15 +2273,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_historical
      *
-     * @param bool|null $module_historical module_historical
+     * @param bool $module_historical module_historical
      *
-     * @return self
+     * @return $this
      */
     public function setModuleHistorical($module_historical)
     {
-        if (is_null($module_historical)) {
-            throw new \InvalidArgumentException('non-nullable module_historical cannot be null');
-        }
         $this->container['module_historical'] = $module_historical;
 
         return $this;
@@ -2672,7 +2287,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets show_travel_report_letterhead
      *
-     * @return bool|null
+     * @return bool
      */
     public function getShowTravelReportLetterhead()
     {
@@ -2682,15 +2297,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets show_travel_report_letterhead
      *
-     * @param bool|null $show_travel_report_letterhead show_travel_report_letterhead
+     * @param bool $show_travel_report_letterhead show_travel_report_letterhead
      *
-     * @return self
+     * @return $this
      */
     public function setShowTravelReportLetterhead($show_travel_report_letterhead)
     {
-        if (is_null($show_travel_report_letterhead)) {
-            throw new \InvalidArgumentException('non-nullable show_travel_report_letterhead cannot be null');
-        }
         $this->container['show_travel_report_letterhead'] = $show_travel_report_letterhead;
 
         return $this;
@@ -2699,7 +2311,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_ocr
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleOcr()
     {
@@ -2709,15 +2321,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_ocr
      *
-     * @param bool|null $module_ocr module_ocr
+     * @param bool $module_ocr module_ocr
      *
-     * @return self
+     * @return $this
      */
     public function setModuleOcr($module_ocr)
     {
-        if (is_null($module_ocr)) {
-            throw new \InvalidArgumentException('non-nullable module_ocr cannot be null');
-        }
         $this->container['module_ocr'] = $module_ocr;
 
         return $this;
@@ -2726,7 +2335,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_remit
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleRemit()
     {
@@ -2736,15 +2345,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_remit
      *
-     * @param bool|null $module_remit module_remit
+     * @param bool $module_remit module_remit
      *
-     * @return self
+     * @return $this
      */
     public function setModuleRemit($module_remit)
     {
-        if (is_null($module_remit)) {
-            throw new \InvalidArgumentException('non-nullable module_remit cannot be null');
-        }
         $this->container['module_remit'] = $module_remit;
 
         return $this;
@@ -2753,7 +2359,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_remit_nets
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleRemitNets()
     {
@@ -2763,15 +2369,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_remit_nets
      *
-     * @param bool|null $module_remit_nets module_remit_nets
+     * @param bool $module_remit_nets module_remit_nets
      *
-     * @return self
+     * @return $this
      */
     public function setModuleRemitNets($module_remit_nets)
     {
-        if (is_null($module_remit_nets)) {
-            throw new \InvalidArgumentException('non-nullable module_remit_nets cannot be null');
-        }
         $this->container['module_remit_nets'] = $module_remit_nets;
 
         return $this;
@@ -2780,7 +2383,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_remit_ztl
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleRemitZtl()
     {
@@ -2790,15 +2393,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_remit_ztl
      *
-     * @param bool|null $module_remit_ztl module_remit_ztl
+     * @param bool $module_remit_ztl module_remit_ztl
      *
-     * @return self
+     * @return $this
      */
     public function setModuleRemitZtl($module_remit_ztl)
     {
-        if (is_null($module_remit_ztl)) {
-            throw new \InvalidArgumentException('non-nullable module_remit_ztl cannot be null');
-        }
         $this->container['module_remit_ztl'] = $module_remit_ztl;
 
         return $this;
@@ -2807,7 +2407,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_remit_auto_pay
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleRemitAutoPay()
     {
@@ -2817,15 +2417,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_remit_auto_pay
      *
-     * @param bool|null $module_remit_auto_pay module_remit_auto_pay
+     * @param bool $module_remit_auto_pay module_remit_auto_pay
      *
-     * @return self
+     * @return $this
      */
     public function setModuleRemitAutoPay($module_remit_auto_pay)
     {
-        if (is_null($module_remit_auto_pay)) {
-            throw new \InvalidArgumentException('non-nullable module_remit_auto_pay cannot be null');
-        }
         $this->container['module_remit_auto_pay'] = $module_remit_auto_pay;
 
         return $this;
@@ -2834,7 +2431,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_travel_expense_rates
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleTravelExpenseRates()
     {
@@ -2844,15 +2441,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_travel_expense_rates
      *
-     * @param bool|null $module_travel_expense_rates module_travel_expense_rates
+     * @param bool $module_travel_expense_rates module_travel_expense_rates
      *
-     * @return self
+     * @return $this
      */
     public function setModuleTravelExpenseRates($module_travel_expense_rates)
     {
-        if (is_null($module_travel_expense_rates)) {
-            throw new \InvalidArgumentException('non-nullable module_travel_expense_rates cannot be null');
-        }
         $this->container['module_travel_expense_rates'] = $module_travel_expense_rates;
 
         return $this;
@@ -2861,7 +2455,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_voucher_scanning
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleVoucherScanning()
     {
@@ -2871,15 +2465,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_voucher_scanning
      *
-     * @param bool|null $module_voucher_scanning module_voucher_scanning
+     * @param bool $module_voucher_scanning module_voucher_scanning
      *
-     * @return self
+     * @return $this
      */
     public function setModuleVoucherScanning($module_voucher_scanning)
     {
-        if (is_null($module_voucher_scanning)) {
-            throw new \InvalidArgumentException('non-nullable module_voucher_scanning cannot be null');
-        }
         $this->container['module_voucher_scanning'] = $module_voucher_scanning;
 
         return $this;
@@ -2888,7 +2479,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_invoice_scanning
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleInvoiceScanning()
     {
@@ -2898,15 +2489,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_invoice_scanning
      *
-     * @param bool|null $module_invoice_scanning module_invoice_scanning
+     * @param bool $module_invoice_scanning module_invoice_scanning
      *
-     * @return self
+     * @return $this
      */
     public function setModuleInvoiceScanning($module_invoice_scanning)
     {
-        if (is_null($module_invoice_scanning)) {
-            throw new \InvalidArgumentException('non-nullable module_invoice_scanning cannot be null');
-        }
         $this->container['module_invoice_scanning'] = $module_invoice_scanning;
 
         return $this;
@@ -2915,7 +2503,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_holyday_plan
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleHolydayPlan()
     {
@@ -2925,15 +2513,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_holyday_plan
      *
-     * @param bool|null $module_holyday_plan module_holyday_plan
+     * @param bool $module_holyday_plan module_holyday_plan
      *
-     * @return self
+     * @return $this
      */
     public function setModuleHolydayPlan($module_holyday_plan)
     {
-        if (is_null($module_holyday_plan)) {
-            throw new \InvalidArgumentException('non-nullable module_holyday_plan cannot be null');
-        }
         $this->container['module_holyday_plan'] = $module_holyday_plan;
 
         return $this;
@@ -2942,7 +2527,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_employee_category
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleEmployeeCategory()
     {
@@ -2952,15 +2537,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_employee_category
      *
-     * @param bool|null $module_employee_category module_employee_category
+     * @param bool $module_employee_category module_employee_category
      *
-     * @return self
+     * @return $this
      */
     public function setModuleEmployeeCategory($module_employee_category)
     {
-        if (is_null($module_employee_category)) {
-            throw new \InvalidArgumentException('non-nullable module_employee_category cannot be null');
-        }
         $this->container['module_employee_category'] = $module_employee_category;
 
         return $this;
@@ -2969,7 +2551,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets multiple_customer_categories
      *
-     * @return bool|null
+     * @return bool
      */
     public function getMultipleCustomerCategories()
     {
@@ -2979,15 +2561,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets multiple_customer_categories
      *
-     * @param bool|null $multiple_customer_categories multiple_customer_categories
+     * @param bool $multiple_customer_categories multiple_customer_categories
      *
-     * @return self
+     * @return $this
      */
     public function setMultipleCustomerCategories($multiple_customer_categories)
     {
-        if (is_null($multiple_customer_categories)) {
-            throw new \InvalidArgumentException('non-nullable multiple_customer_categories cannot be null');
-        }
         $this->container['multiple_customer_categories'] = $multiple_customer_categories;
 
         return $this;
@@ -2996,7 +2575,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_product_invoice
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleProductInvoice()
     {
@@ -3006,15 +2585,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_product_invoice
      *
-     * @param bool|null $module_product_invoice module_product_invoice
+     * @param bool $module_product_invoice module_product_invoice
      *
-     * @return self
+     * @return $this
      */
     public function setModuleProductInvoice($module_product_invoice)
     {
-        if (is_null($module_product_invoice)) {
-            throw new \InvalidArgumentException('non-nullable module_product_invoice cannot be null');
-        }
         $this->container['module_product_invoice'] = $module_product_invoice;
 
         return $this;
@@ -3023,7 +2599,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets auto_invoicing
      *
-     * @return bool|null
+     * @return bool
      */
     public function getAutoInvoicing()
     {
@@ -3033,15 +2609,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets auto_invoicing
      *
-     * @param bool|null $auto_invoicing auto_invoicing
+     * @param bool $auto_invoicing auto_invoicing
      *
-     * @return self
+     * @return $this
      */
     public function setAutoInvoicing($auto_invoicing)
     {
-        if (is_null($auto_invoicing)) {
-            throw new \InvalidArgumentException('non-nullable auto_invoicing cannot be null');
-        }
         $this->container['auto_invoicing'] = $auto_invoicing;
 
         return $this;
@@ -3050,7 +2623,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_factoring
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleFactoring()
     {
@@ -3060,15 +2633,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_factoring
      *
-     * @param bool|null $module_factoring module_factoring
+     * @param bool $module_factoring module_factoring
      *
-     * @return self
+     * @return $this
      */
     public function setModuleFactoring($module_factoring)
     {
-        if (is_null($module_factoring)) {
-            throw new \InvalidArgumentException('non-nullable module_factoring cannot be null');
-        }
         $this->container['module_factoring'] = $module_factoring;
 
         return $this;
@@ -3077,7 +2647,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_employee_accounting
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleEmployeeAccounting()
     {
@@ -3087,15 +2657,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_employee_accounting
      *
-     * @param bool|null $module_employee_accounting module_employee_accounting
+     * @param bool $module_employee_accounting module_employee_accounting
      *
-     * @return self
+     * @return $this
      */
     public function setModuleEmployeeAccounting($module_employee_accounting)
     {
-        if (is_null($module_employee_accounting)) {
-            throw new \InvalidArgumentException('non-nullable module_employee_accounting cannot be null');
-        }
         $this->container['module_employee_accounting'] = $module_employee_accounting;
 
         return $this;
@@ -3104,7 +2671,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_department_accounting
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleDepartmentAccounting()
     {
@@ -3114,15 +2681,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_department_accounting
      *
-     * @param bool|null $module_department_accounting module_department_accounting
+     * @param bool $module_department_accounting module_department_accounting
      *
-     * @return self
+     * @return $this
      */
     public function setModuleDepartmentAccounting($module_department_accounting)
     {
-        if (is_null($module_department_accounting)) {
-            throw new \InvalidArgumentException('non-nullable module_department_accounting cannot be null');
-        }
         $this->container['module_department_accounting'] = $module_department_accounting;
 
         return $this;
@@ -3131,7 +2695,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_project_accounting
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleProjectAccounting()
     {
@@ -3141,15 +2705,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_project_accounting
      *
-     * @param bool|null $module_project_accounting module_project_accounting
+     * @param bool $module_project_accounting module_project_accounting
      *
-     * @return self
+     * @return $this
      */
     public function setModuleProjectAccounting($module_project_accounting)
     {
-        if (is_null($module_project_accounting)) {
-            throw new \InvalidArgumentException('non-nullable module_project_accounting cannot be null');
-        }
         $this->container['module_project_accounting'] = $module_project_accounting;
 
         return $this;
@@ -3158,7 +2719,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_wage_project_accounting
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleWageProjectAccounting()
     {
@@ -3168,15 +2729,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_wage_project_accounting
      *
-     * @param bool|null $module_wage_project_accounting module_wage_project_accounting
+     * @param bool $module_wage_project_accounting module_wage_project_accounting
      *
-     * @return self
+     * @return $this
      */
     public function setModuleWageProjectAccounting($module_wage_project_accounting)
     {
-        if (is_null($module_wage_project_accounting)) {
-            throw new \InvalidArgumentException('non-nullable module_wage_project_accounting cannot be null');
-        }
         $this->container['module_wage_project_accounting'] = $module_wage_project_accounting;
 
         return $this;
@@ -3185,7 +2743,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_product_accounting
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleProductAccounting()
     {
@@ -3195,15 +2753,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_product_accounting
      *
-     * @param bool|null $module_product_accounting module_product_accounting
+     * @param bool $module_product_accounting module_product_accounting
      *
-     * @return self
+     * @return $this
      */
     public function setModuleProductAccounting($module_product_accounting)
     {
-        if (is_null($module_product_accounting)) {
-            throw new \InvalidArgumentException('non-nullable module_product_accounting cannot be null');
-        }
         $this->container['module_product_accounting'] = $module_product_accounting;
 
         return $this;
@@ -3212,7 +2767,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_electro
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleElectro()
     {
@@ -3222,15 +2777,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_electro
      *
-     * @param bool|null $module_electro module_electro
+     * @param bool $module_electro module_electro
      *
-     * @return self
+     * @return $this
      */
     public function setModuleElectro($module_electro)
     {
-        if (is_null($module_electro)) {
-            throw new \InvalidArgumentException('non-nullable module_electro cannot be null');
-        }
         $this->container['module_electro'] = $module_electro;
 
         return $this;
@@ -3239,7 +2791,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_nrf
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleNrf()
     {
@@ -3249,15 +2801,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_nrf
      *
-     * @param bool|null $module_nrf module_nrf
+     * @param bool $module_nrf module_nrf
      *
-     * @return self
+     * @return $this
      */
     public function setModuleNrf($module_nrf)
     {
-        if (is_null($module_nrf)) {
-            throw new \InvalidArgumentException('non-nullable module_nrf cannot be null');
-        }
         $this->container['module_nrf'] = $module_nrf;
 
         return $this;
@@ -3266,7 +2815,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_result_budget
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleResultBudget()
     {
@@ -3276,15 +2825,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_result_budget
      *
-     * @param bool|null $module_result_budget module_result_budget
+     * @param bool $module_result_budget module_result_budget
      *
-     * @return self
+     * @return $this
      */
     public function setModuleResultBudget($module_result_budget)
     {
-        if (is_null($module_result_budget)) {
-            throw new \InvalidArgumentException('non-nullable module_result_budget cannot be null');
-        }
         $this->container['module_result_budget'] = $module_result_budget;
 
         return $this;
@@ -3293,7 +2839,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_voucher_types
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleVoucherTypes()
     {
@@ -3303,15 +2849,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_voucher_types
      *
-     * @param bool|null $module_voucher_types module_voucher_types
+     * @param bool $module_voucher_types module_voucher_types
      *
-     * @return self
+     * @return $this
      */
     public function setModuleVoucherTypes($module_voucher_types)
     {
-        if (is_null($module_voucher_types)) {
-            throw new \InvalidArgumentException('non-nullable module_voucher_types cannot be null');
-        }
         $this->container['module_voucher_types'] = $module_voucher_types;
 
         return $this;
@@ -3320,7 +2863,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_warehouse
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleWarehouse()
     {
@@ -3330,15 +2873,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_warehouse
      *
-     * @param bool|null $module_warehouse module_warehouse
+     * @param bool $module_warehouse module_warehouse
      *
-     * @return self
+     * @return $this
      */
     public function setModuleWarehouse($module_warehouse)
     {
-        if (is_null($module_warehouse)) {
-            throw new \InvalidArgumentException('non-nullable module_warehouse cannot be null');
-        }
         $this->container['module_warehouse'] = $module_warehouse;
 
         return $this;
@@ -3347,7 +2887,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_nets_eboks
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleNetsEboks()
     {
@@ -3357,15 +2897,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_nets_eboks
      *
-     * @param bool|null $module_nets_eboks module_nets_eboks
+     * @param bool $module_nets_eboks module_nets_eboks
      *
-     * @return self
+     * @return $this
      */
     public function setModuleNetsEboks($module_nets_eboks)
     {
-        if (is_null($module_nets_eboks)) {
-            throw new \InvalidArgumentException('non-nullable module_nets_eboks cannot be null');
-        }
         $this->container['module_nets_eboks'] = $module_nets_eboks;
 
         return $this;
@@ -3374,7 +2911,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_nets_print_salary
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleNetsPrintSalary()
     {
@@ -3384,15 +2921,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_nets_print_salary
      *
-     * @param bool|null $module_nets_print_salary module_nets_print_salary
+     * @param bool $module_nets_print_salary module_nets_print_salary
      *
-     * @return self
+     * @return $this
      */
     public function setModuleNetsPrintSalary($module_nets_print_salary)
     {
-        if (is_null($module_nets_print_salary)) {
-            throw new \InvalidArgumentException('non-nullable module_nets_print_salary cannot be null');
-        }
         $this->container['module_nets_print_salary'] = $module_nets_print_salary;
 
         return $this;
@@ -3401,7 +2935,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_nets_print_invoice
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleNetsPrintInvoice()
     {
@@ -3411,15 +2945,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_nets_print_invoice
      *
-     * @param bool|null $module_nets_print_invoice module_nets_print_invoice
+     * @param bool $module_nets_print_invoice module_nets_print_invoice
      *
-     * @return self
+     * @return $this
      */
     public function setModuleNetsPrintInvoice($module_nets_print_invoice)
     {
-        if (is_null($module_nets_print_invoice)) {
-            throw new \InvalidArgumentException('non-nullable module_nets_print_invoice cannot be null');
-        }
         $this->container['module_nets_print_invoice'] = $module_nets_print_invoice;
 
         return $this;
@@ -3428,7 +2959,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets hourly_rate_projects_write_up_down
      *
-     * @return bool|null
+     * @return bool
      */
     public function getHourlyRateProjectsWriteUpDown()
     {
@@ -3438,15 +2969,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets hourly_rate_projects_write_up_down
      *
-     * @param bool|null $hourly_rate_projects_write_up_down hourly_rate_projects_write_up_down
+     * @param bool $hourly_rate_projects_write_up_down hourly_rate_projects_write_up_down
      *
-     * @return self
+     * @return $this
      */
     public function setHourlyRateProjectsWriteUpDown($hourly_rate_projects_write_up_down)
     {
-        if (is_null($hourly_rate_projects_write_up_down)) {
-            throw new \InvalidArgumentException('non-nullable hourly_rate_projects_write_up_down cannot be null');
-        }
         $this->container['hourly_rate_projects_write_up_down'] = $hourly_rate_projects_write_up_down;
 
         return $this;
@@ -3455,7 +2983,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets show_recently_closed_projects_on_supplier_invoice
      *
-     * @return bool|null
+     * @return bool
      */
     public function getShowRecentlyClosedProjectsOnSupplierInvoice()
     {
@@ -3465,15 +2993,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets show_recently_closed_projects_on_supplier_invoice
      *
-     * @param bool|null $show_recently_closed_projects_on_supplier_invoice show_recently_closed_projects_on_supplier_invoice
+     * @param bool $show_recently_closed_projects_on_supplier_invoice show_recently_closed_projects_on_supplier_invoice
      *
-     * @return self
+     * @return $this
      */
     public function setShowRecentlyClosedProjectsOnSupplierInvoice($show_recently_closed_projects_on_supplier_invoice)
     {
-        if (is_null($show_recently_closed_projects_on_supplier_invoice)) {
-            throw new \InvalidArgumentException('non-nullable show_recently_closed_projects_on_supplier_invoice cannot be null');
-        }
         $this->container['show_recently_closed_projects_on_supplier_invoice'] = $show_recently_closed_projects_on_supplier_invoice;
 
         return $this;
@@ -3482,7 +3007,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_email
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleEmail()
     {
@@ -3492,15 +3017,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_email
      *
-     * @param bool|null $module_email module_email
+     * @param bool $module_email module_email
      *
-     * @return self
+     * @return $this
      */
     public function setModuleEmail($module_email)
     {
-        if (is_null($module_email)) {
-            throw new \InvalidArgumentException('non-nullable module_email cannot be null');
-        }
         $this->container['module_email'] = $module_email;
 
         return $this;
@@ -3509,7 +3031,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets send_payslips_by_email
      *
-     * @return bool|null
+     * @return bool
      */
     public function getSendPayslipsByEmail()
     {
@@ -3519,15 +3041,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets send_payslips_by_email
      *
-     * @param bool|null $send_payslips_by_email send_payslips_by_email
+     * @param bool $send_payslips_by_email send_payslips_by_email
      *
-     * @return self
+     * @return $this
      */
     public function setSendPayslipsByEmail($send_payslips_by_email)
     {
-        if (is_null($send_payslips_by_email)) {
-            throw new \InvalidArgumentException('non-nullable send_payslips_by_email cannot be null');
-        }
         $this->container['send_payslips_by_email'] = $send_payslips_by_email;
 
         return $this;
@@ -3536,7 +3055,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_approve_voucher
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleApproveVoucher()
     {
@@ -3546,15 +3065,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_approve_voucher
      *
-     * @param bool|null $module_approve_voucher module_approve_voucher
+     * @param bool $module_approve_voucher module_approve_voucher
      *
-     * @return self
+     * @return $this
      */
     public function setModuleApproveVoucher($module_approve_voucher)
     {
-        if (is_null($module_approve_voucher)) {
-            throw new \InvalidArgumentException('non-nullable module_approve_voucher cannot be null');
-        }
         $this->container['module_approve_voucher'] = $module_approve_voucher;
 
         return $this;
@@ -3563,7 +3079,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_approve_project_voucher
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleApproveProjectVoucher()
     {
@@ -3573,15 +3089,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_approve_project_voucher
      *
-     * @param bool|null $module_approve_project_voucher module_approve_project_voucher
+     * @param bool $module_approve_project_voucher module_approve_project_voucher
      *
-     * @return self
+     * @return $this
      */
     public function setModuleApproveProjectVoucher($module_approve_project_voucher)
     {
-        if (is_null($module_approve_project_voucher)) {
-            throw new \InvalidArgumentException('non-nullable module_approve_project_voucher cannot be null');
-        }
         $this->container['module_approve_project_voucher'] = $module_approve_project_voucher;
 
         return $this;
@@ -3590,7 +3103,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_approve_department_voucher
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleApproveDepartmentVoucher()
     {
@@ -3600,15 +3113,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_approve_department_voucher
      *
-     * @param bool|null $module_approve_department_voucher module_approve_department_voucher
+     * @param bool $module_approve_department_voucher module_approve_department_voucher
      *
-     * @return self
+     * @return $this
      */
     public function setModuleApproveDepartmentVoucher($module_approve_department_voucher)
     {
-        if (is_null($module_approve_department_voucher)) {
-            throw new \InvalidArgumentException('non-nullable module_approve_department_voucher cannot be null');
-        }
         $this->container['module_approve_department_voucher'] = $module_approve_department_voucher;
 
         return $this;
@@ -3617,7 +3127,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_archive
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleArchive()
     {
@@ -3627,15 +3137,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_archive
      *
-     * @param bool|null $module_archive module_archive
+     * @param bool $module_archive module_archive
      *
-     * @return self
+     * @return $this
      */
     public function setModuleArchive($module_archive)
     {
-        if (is_null($module_archive)) {
-            throw new \InvalidArgumentException('non-nullable module_archive cannot be null');
-        }
         $this->container['module_archive'] = $module_archive;
 
         return $this;
@@ -3644,7 +3151,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_order_out
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleOrderOut()
     {
@@ -3654,15 +3161,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_order_out
      *
-     * @param bool|null $module_order_out module_order_out
+     * @param bool $module_order_out module_order_out
      *
-     * @return self
+     * @return $this
      */
     public function setModuleOrderOut($module_order_out)
     {
-        if (is_null($module_order_out)) {
-            throw new \InvalidArgumentException('non-nullable module_order_out cannot be null');
-        }
         $this->container['module_order_out'] = $module_order_out;
 
         return $this;
@@ -3671,7 +3175,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_mesan
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleMesan()
     {
@@ -3681,15 +3185,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_mesan
      *
-     * @param bool|null $module_mesan module_mesan
+     * @param bool $module_mesan module_mesan
      *
-     * @return self
+     * @return $this
      */
     public function setModuleMesan($module_mesan)
     {
-        if (is_null($module_mesan)) {
-            throw new \InvalidArgumentException('non-nullable module_mesan cannot be null');
-        }
         $this->container['module_mesan'] = $module_mesan;
 
         return $this;
@@ -3698,7 +3199,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_accountant_connect_client
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleAccountantConnectClient()
     {
@@ -3708,15 +3209,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_accountant_connect_client
      *
-     * @param bool|null $module_accountant_connect_client module_accountant_connect_client
+     * @param bool $module_accountant_connect_client module_accountant_connect_client
      *
-     * @return self
+     * @return $this
      */
     public function setModuleAccountantConnectClient($module_accountant_connect_client)
     {
-        if (is_null($module_accountant_connect_client)) {
-            throw new \InvalidArgumentException('non-nullable module_accountant_connect_client cannot be null');
-        }
         $this->container['module_accountant_connect_client'] = $module_accountant_connect_client;
 
         return $this;
@@ -3725,7 +3223,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_divisions
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleDivisions()
     {
@@ -3735,15 +3233,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_divisions
      *
-     * @param bool|null $module_divisions module_divisions
+     * @param bool $module_divisions module_divisions
      *
-     * @return self
+     * @return $this
      */
     public function setModuleDivisions($module_divisions)
     {
-        if (is_null($module_divisions)) {
-            throw new \InvalidArgumentException('non-nullable module_divisions cannot be null');
-        }
         $this->container['module_divisions'] = $module_divisions;
 
         return $this;
@@ -3752,7 +3247,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_boligmappa
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleBoligmappa()
     {
@@ -3762,15 +3257,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_boligmappa
      *
-     * @param bool|null $module_boligmappa module_boligmappa
+     * @param bool $module_boligmappa module_boligmappa
      *
-     * @return self
+     * @return $this
      */
     public function setModuleBoligmappa($module_boligmappa)
     {
-        if (is_null($module_boligmappa)) {
-            throw new \InvalidArgumentException('non-nullable module_boligmappa cannot be null');
-        }
         $this->container['module_boligmappa'] = $module_boligmappa;
 
         return $this;
@@ -3779,7 +3271,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_addition_project_markup
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleAdditionProjectMarkup()
     {
@@ -3789,15 +3281,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_addition_project_markup
      *
-     * @param bool|null $module_addition_project_markup module_addition_project_markup
+     * @param bool $module_addition_project_markup module_addition_project_markup
      *
-     * @return self
+     * @return $this
      */
     public function setModuleAdditionProjectMarkup($module_addition_project_markup)
     {
-        if (is_null($module_addition_project_markup)) {
-            throw new \InvalidArgumentException('non-nullable module_addition_project_markup cannot be null');
-        }
         $this->container['module_addition_project_markup'] = $module_addition_project_markup;
 
         return $this;
@@ -3806,7 +3295,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets tripletex_support_login_access_company_level
      *
-     * @return bool|null
+     * @return bool
      */
     public function getTripletexSupportLoginAccessCompanyLevel()
     {
@@ -3816,15 +3305,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets tripletex_support_login_access_company_level
      *
-     * @param bool|null $tripletex_support_login_access_company_level tripletex_support_login_access_company_level
+     * @param bool $tripletex_support_login_access_company_level tripletex_support_login_access_company_level
      *
-     * @return self
+     * @return $this
      */
     public function setTripletexSupportLoginAccessCompanyLevel($tripletex_support_login_access_company_level)
     {
-        if (is_null($tripletex_support_login_access_company_level)) {
-            throw new \InvalidArgumentException('non-nullable tripletex_support_login_access_company_level cannot be null');
-        }
         $this->container['tripletex_support_login_access_company_level'] = $tripletex_support_login_access_company_level;
 
         return $this;
@@ -3833,7 +3319,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_crm
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleCrm()
     {
@@ -3843,15 +3329,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_crm
      *
-     * @param bool|null $module_crm module_crm
+     * @param bool $module_crm module_crm
      *
-     * @return self
+     * @return $this
      */
     public function setModuleCrm($module_crm)
     {
-        if (is_null($module_crm)) {
-            throw new \InvalidArgumentException('non-nullable module_crm cannot be null');
-        }
         $this->container['module_crm'] = $module_crm;
 
         return $this;
@@ -3860,7 +3343,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_pensionreport
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModulePensionreport()
     {
@@ -3870,15 +3353,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_pensionreport
      *
-     * @param bool|null $module_pensionreport module_pensionreport
+     * @param bool $module_pensionreport module_pensionreport
      *
-     * @return self
+     * @return $this
      */
     public function setModulePensionreport($module_pensionreport)
     {
-        if (is_null($module_pensionreport)) {
-            throw new \InvalidArgumentException('non-nullable module_pensionreport cannot be null');
-        }
         $this->container['module_pensionreport'] = $module_pensionreport;
 
         return $this;
@@ -3887,7 +3367,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_control_schema_required_invoicing
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleControlSchemaRequiredInvoicing()
     {
@@ -3897,15 +3377,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_control_schema_required_invoicing
      *
-     * @param bool|null $module_control_schema_required_invoicing module_control_schema_required_invoicing
+     * @param bool $module_control_schema_required_invoicing module_control_schema_required_invoicing
      *
-     * @return self
+     * @return $this
      */
     public function setModuleControlSchemaRequiredInvoicing($module_control_schema_required_invoicing)
     {
-        if (is_null($module_control_schema_required_invoicing)) {
-            throw new \InvalidArgumentException('non-nullable module_control_schema_required_invoicing cannot be null');
-        }
         $this->container['module_control_schema_required_invoicing'] = $module_control_schema_required_invoicing;
 
         return $this;
@@ -3914,7 +3391,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_control_schema_required_hour_tracking
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleControlSchemaRequiredHourTracking()
     {
@@ -3924,15 +3401,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_control_schema_required_hour_tracking
      *
-     * @param bool|null $module_control_schema_required_hour_tracking module_control_schema_required_hour_tracking
+     * @param bool $module_control_schema_required_hour_tracking module_control_schema_required_hour_tracking
      *
-     * @return self
+     * @return $this
      */
     public function setModuleControlSchemaRequiredHourTracking($module_control_schema_required_hour_tracking)
     {
-        if (is_null($module_control_schema_required_hour_tracking)) {
-            throw new \InvalidArgumentException('non-nullable module_control_schema_required_hour_tracking cannot be null');
-        }
         $this->container['module_control_schema_required_hour_tracking'] = $module_control_schema_required_hour_tracking;
 
         return $this;
@@ -3941,7 +3415,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_invoice_option_vipps
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleInvoiceOptionVipps()
     {
@@ -3951,15 +3425,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_invoice_option_vipps
      *
-     * @param bool|null $module_invoice_option_vipps module_invoice_option_vipps
+     * @param bool $module_invoice_option_vipps module_invoice_option_vipps
      *
-     * @return self
+     * @return $this
      */
     public function setModuleInvoiceOptionVipps($module_invoice_option_vipps)
     {
-        if (is_null($module_invoice_option_vipps)) {
-            throw new \InvalidArgumentException('non-nullable module_invoice_option_vipps cannot be null');
-        }
         $this->container['module_invoice_option_vipps'] = $module_invoice_option_vipps;
 
         return $this;
@@ -3968,7 +3439,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_invoice_option_efaktura
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleInvoiceOptionEfaktura()
     {
@@ -3978,15 +3449,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_invoice_option_efaktura
      *
-     * @param bool|null $module_invoice_option_efaktura module_invoice_option_efaktura
+     * @param bool $module_invoice_option_efaktura module_invoice_option_efaktura
      *
-     * @return self
+     * @return $this
      */
     public function setModuleInvoiceOptionEfaktura($module_invoice_option_efaktura)
     {
-        if (is_null($module_invoice_option_efaktura)) {
-            throw new \InvalidArgumentException('non-nullable module_invoice_option_efaktura cannot be null');
-        }
         $this->container['module_invoice_option_efaktura'] = $module_invoice_option_efaktura;
 
         return $this;
@@ -3995,7 +3463,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_invoice_option_paper
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleInvoiceOptionPaper()
     {
@@ -4005,15 +3473,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_invoice_option_paper
      *
-     * @param bool|null $module_invoice_option_paper module_invoice_option_paper
+     * @param bool $module_invoice_option_paper module_invoice_option_paper
      *
-     * @return self
+     * @return $this
      */
     public function setModuleInvoiceOptionPaper($module_invoice_option_paper)
     {
-        if (is_null($module_invoice_option_paper)) {
-            throw new \InvalidArgumentException('non-nullable module_invoice_option_paper cannot be null');
-        }
         $this->container['module_invoice_option_paper'] = $module_invoice_option_paper;
 
         return $this;
@@ -4022,7 +3487,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_invoice_option_avtale_giro
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleInvoiceOptionAvtaleGiro()
     {
@@ -4032,15 +3497,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_invoice_option_avtale_giro
      *
-     * @param bool|null $module_invoice_option_avtale_giro module_invoice_option_avtale_giro
+     * @param bool $module_invoice_option_avtale_giro module_invoice_option_avtale_giro
      *
-     * @return self
+     * @return $this
      */
     public function setModuleInvoiceOptionAvtaleGiro($module_invoice_option_avtale_giro)
     {
-        if (is_null($module_invoice_option_avtale_giro)) {
-            throw new \InvalidArgumentException('non-nullable module_invoice_option_avtale_giro cannot be null');
-        }
         $this->container['module_invoice_option_avtale_giro'] = $module_invoice_option_avtale_giro;
 
         return $this;
@@ -4049,7 +3511,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_invoice_option_ehf_incoming
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleInvoiceOptionEhfIncoming()
     {
@@ -4059,15 +3521,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_invoice_option_ehf_incoming
      *
-     * @param bool|null $module_invoice_option_ehf_incoming module_invoice_option_ehf_incoming
+     * @param bool $module_invoice_option_ehf_incoming module_invoice_option_ehf_incoming
      *
-     * @return self
+     * @return $this
      */
     public function setModuleInvoiceOptionEhfIncoming($module_invoice_option_ehf_incoming)
     {
-        if (is_null($module_invoice_option_ehf_incoming)) {
-            throw new \InvalidArgumentException('non-nullable module_invoice_option_ehf_incoming cannot be null');
-        }
         $this->container['module_invoice_option_ehf_incoming'] = $module_invoice_option_ehf_incoming;
 
         return $this;
@@ -4076,7 +3535,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_invoice_option_ehf_outbound
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleInvoiceOptionEhfOutbound()
     {
@@ -4086,15 +3545,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_invoice_option_ehf_outbound
      *
-     * @param bool|null $module_invoice_option_ehf_outbound module_invoice_option_ehf_outbound
+     * @param bool $module_invoice_option_ehf_outbound module_invoice_option_ehf_outbound
      *
-     * @return self
+     * @return $this
      */
     public function setModuleInvoiceOptionEhfOutbound($module_invoice_option_ehf_outbound)
     {
-        if (is_null($module_invoice_option_ehf_outbound)) {
-            throw new \InvalidArgumentException('non-nullable module_invoice_option_ehf_outbound cannot be null');
-        }
         $this->container['module_invoice_option_ehf_outbound'] = $module_invoice_option_ehf_outbound;
 
         return $this;
@@ -4103,7 +3559,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_api20
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleApi20()
     {
@@ -4113,15 +3569,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_api20
      *
-     * @param bool|null $module_api20 module_api20
+     * @param bool $module_api20 module_api20
      *
-     * @return self
+     * @return $this
      */
     public function setModuleApi20($module_api20)
     {
-        if (is_null($module_api20)) {
-            throw new \InvalidArgumentException('non-nullable module_api20 cannot be null');
-        }
         $this->container['module_api20'] = $module_api20;
 
         return $this;
@@ -4130,7 +3583,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_agro
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleAgro()
     {
@@ -4140,15 +3593,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_agro
      *
-     * @param bool|null $module_agro module_agro
+     * @param bool $module_agro module_agro
      *
-     * @return self
+     * @return $this
      */
     public function setModuleAgro($module_agro)
     {
-        if (is_null($module_agro)) {
-            throw new \InvalidArgumentException('non-nullable module_agro cannot be null');
-        }
         $this->container['module_agro'] = $module_agro;
 
         return $this;
@@ -4157,7 +3607,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_mamut
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleMamut()
     {
@@ -4167,15 +3617,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_mamut
      *
-     * @param bool|null $module_mamut module_mamut
+     * @param bool $module_mamut module_mamut
      *
-     * @return self
+     * @return $this
      */
     public function setModuleMamut($module_mamut)
     {
-        if (is_null($module_mamut)) {
-            throw new \InvalidArgumentException('non-nullable module_mamut cannot be null');
-        }
         $this->container['module_mamut'] = $module_mamut;
 
         return $this;
@@ -4184,7 +3631,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_factoring_aprila
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleFactoringAprila()
     {
@@ -4194,15 +3641,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_factoring_aprila
      *
-     * @param bool|null $module_factoring_aprila module_factoring_aprila
+     * @param bool $module_factoring_aprila module_factoring_aprila
      *
-     * @return self
+     * @return $this
      */
     public function setModuleFactoringAprila($module_factoring_aprila)
     {
-        if (is_null($module_factoring_aprila)) {
-            throw new \InvalidArgumentException('non-nullable module_factoring_aprila cannot be null');
-        }
         $this->container['module_factoring_aprila'] = $module_factoring_aprila;
 
         return $this;
@@ -4211,7 +3655,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_cash_credit_aprila
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleCashCreditAprila()
     {
@@ -4221,15 +3665,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_cash_credit_aprila
      *
-     * @param bool|null $module_cash_credit_aprila module_cash_credit_aprila
+     * @param bool $module_cash_credit_aprila module_cash_credit_aprila
      *
-     * @return self
+     * @return $this
      */
     public function setModuleCashCreditAprila($module_cash_credit_aprila)
     {
-        if (is_null($module_cash_credit_aprila)) {
-            throw new \InvalidArgumentException('non-nullable module_cash_credit_aprila cannot be null');
-        }
         $this->container['module_cash_credit_aprila'] = $module_cash_credit_aprila;
 
         return $this;
@@ -4238,7 +3679,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_invoice_option_autoinvoice_ehf
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleInvoiceOptionAutoinvoiceEhf()
     {
@@ -4248,15 +3689,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_invoice_option_autoinvoice_ehf
      *
-     * @param bool|null $module_invoice_option_autoinvoice_ehf module_invoice_option_autoinvoice_ehf
+     * @param bool $module_invoice_option_autoinvoice_ehf module_invoice_option_autoinvoice_ehf
      *
-     * @return self
+     * @return $this
      */
     public function setModuleInvoiceOptionAutoinvoiceEhf($module_invoice_option_autoinvoice_ehf)
     {
-        if (is_null($module_invoice_option_autoinvoice_ehf)) {
-            throw new \InvalidArgumentException('non-nullable module_invoice_option_autoinvoice_ehf cannot be null');
-        }
         $this->container['module_invoice_option_autoinvoice_ehf'] = $module_invoice_option_autoinvoice_ehf;
 
         return $this;
@@ -4265,7 +3703,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_smart_scan
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleSmartScan()
     {
@@ -4275,15 +3713,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_smart_scan
      *
-     * @param bool|null $module_smart_scan module_smart_scan
+     * @param bool $module_smart_scan module_smart_scan
      *
-     * @return self
+     * @return $this
      */
     public function setModuleSmartScan($module_smart_scan)
     {
-        if (is_null($module_smart_scan)) {
-            throw new \InvalidArgumentException('non-nullable module_smart_scan cannot be null');
-        }
         $this->container['module_smart_scan'] = $module_smart_scan;
 
         return $this;
@@ -4292,7 +3727,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_auto_bank_reconciliation
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleAutoBankReconciliation()
     {
@@ -4302,15 +3737,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_auto_bank_reconciliation
      *
-     * @param bool|null $module_auto_bank_reconciliation module_auto_bank_reconciliation
+     * @param bool $module_auto_bank_reconciliation module_auto_bank_reconciliation
      *
-     * @return self
+     * @return $this
      */
     public function setModuleAutoBankReconciliation($module_auto_bank_reconciliation)
     {
-        if (is_null($module_auto_bank_reconciliation)) {
-            throw new \InvalidArgumentException('non-nullable module_auto_bank_reconciliation cannot be null');
-        }
         $this->container['module_auto_bank_reconciliation'] = $module_auto_bank_reconciliation;
 
         return $this;
@@ -4319,7 +3751,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_offer
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleOffer()
     {
@@ -4329,15 +3761,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_offer
      *
-     * @param bool|null $module_offer module_offer
+     * @param bool $module_offer module_offer
      *
-     * @return self
+     * @return $this
      */
     public function setModuleOffer($module_offer)
     {
-        if (is_null($module_offer)) {
-            throw new \InvalidArgumentException('non-nullable module_offer cannot be null');
-        }
         $this->container['module_offer'] = $module_offer;
 
         return $this;
@@ -4346,7 +3775,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_voucher_automation
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleVoucherAutomation()
     {
@@ -4356,15 +3785,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_voucher_automation
      *
-     * @param bool|null $module_voucher_automation module_voucher_automation
+     * @param bool $module_voucher_automation module_voucher_automation
      *
-     * @return self
+     * @return $this
      */
     public function setModuleVoucherAutomation($module_voucher_automation)
     {
-        if (is_null($module_voucher_automation)) {
-            throw new \InvalidArgumentException('non-nullable module_voucher_automation cannot be null');
-        }
         $this->container['module_voucher_automation'] = $module_voucher_automation;
 
         return $this;
@@ -4373,7 +3799,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_amortization
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleAmortization()
     {
@@ -4383,15 +3809,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_amortization
      *
-     * @param bool|null $module_amortization module_amortization
+     * @param bool $module_amortization module_amortization
      *
-     * @return self
+     * @return $this
      */
     public function setModuleAmortization($module_amortization)
     {
-        if (is_null($module_amortization)) {
-            throw new \InvalidArgumentException('non-nullable module_amortization cannot be null');
-        }
         $this->container['module_amortization'] = $module_amortization;
 
         return $this;
@@ -4400,7 +3823,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_encrypted_pay_slip
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleEncryptedPaySlip()
     {
@@ -4410,15 +3833,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_encrypted_pay_slip
      *
-     * @param bool|null $module_encrypted_pay_slip module_encrypted_pay_slip
+     * @param bool $module_encrypted_pay_slip module_encrypted_pay_slip
      *
-     * @return self
+     * @return $this
      */
     public function setModuleEncryptedPaySlip($module_encrypted_pay_slip)
     {
-        if (is_null($module_encrypted_pay_slip)) {
-            throw new \InvalidArgumentException('non-nullable module_encrypted_pay_slip cannot be null');
-        }
         $this->container['module_encrypted_pay_slip'] = $module_encrypted_pay_slip;
 
         return $this;
@@ -4427,7 +3847,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets hour_cost_factor_project
      *
-     * @return bool|null
+     * @return bool
      */
     public function getHourCostFactorProject()
     {
@@ -4437,15 +3857,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets hour_cost_factor_project
      *
-     * @param bool|null $hour_cost_factor_project hour_cost_factor_project
+     * @param bool $hour_cost_factor_project hour_cost_factor_project
      *
-     * @return self
+     * @return $this
      */
     public function setHourCostFactorProject($hour_cost_factor_project)
     {
-        if (is_null($hour_cost_factor_project)) {
-            throw new \InvalidArgumentException('non-nullable hour_cost_factor_project cannot be null');
-        }
         $this->container['hour_cost_factor_project'] = $hour_cost_factor_project;
 
         return $this;
@@ -4454,7 +3871,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets factoring_visma_finance
      *
-     * @return string|null
+     * @return string
      */
     public function getFactoringVismaFinance()
     {
@@ -4464,15 +3881,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets factoring_visma_finance
      *
-     * @param string|null $factoring_visma_finance factoring_visma_finance
+     * @param string $factoring_visma_finance factoring_visma_finance
      *
-     * @return self
+     * @return $this
      */
     public function setFactoringVismaFinance($factoring_visma_finance)
     {
-        if (is_null($factoring_visma_finance)) {
-            throw new \InvalidArgumentException('non-nullable factoring_visma_finance cannot be null');
-        }
         $this->container['factoring_visma_finance'] = $factoring_visma_finance;
 
         return $this;
@@ -4481,7 +3895,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets year_end_report
      *
-     * @return bool|null
+     * @return bool
      */
     public function getYearEndReport()
     {
@@ -4491,15 +3905,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets year_end_report
      *
-     * @param bool|null $year_end_report year_end_report
+     * @param bool $year_end_report year_end_report
      *
-     * @return self
+     * @return $this
      */
     public function setYearEndReport($year_end_report)
     {
-        if (is_null($year_end_report)) {
-            throw new \InvalidArgumentException('non-nullable year_end_report cannot be null');
-        }
         $this->container['year_end_report'] = $year_end_report;
 
         return $this;
@@ -4508,7 +3919,7 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets module_logistics
      *
-     * @return bool|null
+     * @return bool
      */
     public function getModuleLogistics()
     {
@@ -4518,15 +3929,12 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets module_logistics
      *
-     * @param bool|null $module_logistics module_logistics
+     * @param bool $module_logistics module_logistics
      *
-     * @return self
+     * @return $this
      */
     public function setModuleLogistics($module_logistics)
     {
-        if (is_null($module_logistics)) {
-            throw new \InvalidArgumentException('non-nullable module_logistics cannot be null');
-        }
         $this->container['module_logistics'] = $module_logistics;
 
         return $this;
@@ -4538,7 +3946,8 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
      *
      * @return boolean
      */
-    public function offsetExists($offset): bool
+    #[\ReturnTypeWillChange] 
+    public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
     }
@@ -4548,23 +3957,24 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
      *
      * @param integer $offset Offset
      *
-     * @return mixed|null
+     * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[\ReturnTypeWillChange] 
     public function offsetGet($offset)
     {
-        return $this->container[$offset] ?? null;
+        return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
 
     /**
      * Sets value based on offset.
      *
-     * @param int|null $offset Offset
-     * @param mixed    $value  Value to be set
+     * @param integer $offset Offset
+     * @param mixed   $value  Value to be set
      *
      * @return void
      */
-    public function offsetSet($offset, $value): void
+    #[\ReturnTypeWillChange] 
+    public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -4580,22 +3990,10 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
      *
      * @return void
      */
-    public function offsetUnset($offset): void
+    #[\ReturnTypeWillChange] 
+    public function offsetUnset($offset)
     {
         unset($this->container[$offset]);
-    }
-
-    /**
-     * Serializes the object to a value that can be serialized natively by json_encode().
-     * @link https://www.php.net/manual/en/jsonserializable.jsonserialize.php
-     *
-     * @return mixed Returns data which can be serialized by json_encode(), which is a value
-     * of any type other than a resource.
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
-    {
-       return ObjectSerializer::sanitizeForSerialization($this);
     }
 
     /**
@@ -4605,21 +4003,13 @@ class SegmentationModules implements ModelInterface, ArrayAccess, \JsonSerializa
      */
     public function __toString()
     {
-        return json_encode(
-            ObjectSerializer::sanitizeForSerialization($this),
-            JSON_PRETTY_PRINT
-        );
-    }
+        if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
+            return json_encode(
+                ObjectSerializer::sanitizeForSerialization($this),
+                JSON_PRETTY_PRINT
+            );
+        }
 
-    /**
-     * Gets a header-safe presentation of the object
-     *
-     * @return string
-     */
-    public function toHeaderValue()
-    {
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
 }
-
-

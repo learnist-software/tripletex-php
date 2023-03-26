@@ -1,13 +1,13 @@
-# # YearEndValidationGuidance
+# YearEndValidationGuidance
 
 ## Properties
-
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**guidance_type** | **string** |  | [optional] [readonly]
-**occurrence_identifier** | **string** |  | [optional] [readonly]
-**help_text** | **string** |  | [optional] [readonly]
-**strategy_of_service** | **string** |  | [optional] [readonly]
-**path** | **string** |  | [optional] [readonly]
+**guidance_type** | **string** |  | [optional] 
+**occurrence_identifier** | **string** |  | [optional] 
+**help_text** | **string** |  | [optional] 
+**strategy_of_service** | **string** |  | [optional] 
+**path** | **string** |  | [optional] 
 
-[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)
+[[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
+

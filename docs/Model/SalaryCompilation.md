@@ -1,15 +1,15 @@
-# # SalaryCompilation
+# SalaryCompilation
 
 ## Properties
-
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**employee** | **int** |  | [optional] [readonly]
-**year** | **int** |  | [optional] [readonly]
-**vacation_pay_basis** | **float** |  | [optional] [readonly]
-**wages** | [**\Learnist\Tripletex\Model\SalaryCompilationLine[]**](SalaryCompilationLine.md) |  | [optional] [readonly]
-**expenses** | [**\Learnist\Tripletex\Model\SalaryCompilationLine[]**](SalaryCompilationLine.md) |  | [optional] [readonly]
-**tax_deductions** | [**\Learnist\Tripletex\Model\SalaryCompilationLine[]**](SalaryCompilationLine.md) |  | [optional] [readonly]
-**mandatory_tax_deductions** | [**\Learnist\Tripletex\Model\SalaryCompilationLine[]**](SalaryCompilationLine.md) |  | [optional] [readonly]
+**employee** | **int** |  | [optional] 
+**year** | **int** |  | [optional] 
+**vacation_pay_basis** | **float** |  | [optional] 
+**wages** | [**\Learnist\Tripletex\Model\SalaryCompilationLine[]**](SalaryCompilationLine.md) |  | [optional] 
+**expenses** | [**\Learnist\Tripletex\Model\SalaryCompilationLine[]**](SalaryCompilationLine.md) |  | [optional] 
+**tax_deductions** | [**\Learnist\Tripletex\Model\SalaryCompilationLine[]**](SalaryCompilationLine.md) |  | [optional] 
+**mandatory_tax_deductions** | [**\Learnist\Tripletex\Model\SalaryCompilationLine[]**](SalaryCompilationLine.md) |  | [optional] 
 
-[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)
+[[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
+

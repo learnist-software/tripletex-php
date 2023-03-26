@@ -2,12 +2,12 @@
 /**
  * SalaryAdvanceTaxcardInternal
  *
- * PHP version 7.4
+ * PHP version 5
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
 
 /**
@@ -15,14 +15,14 @@
  *
  * ## Usage  - **Download the spec** [swagger.json](/v2/swagger.json) file, it is a [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification).  - **Generating a client** can easily be done using tools like [swagger-codegen](https://github.com/swagger-api/swagger-codegen) or other that accepts [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) specs.     - For swagger codegen it is recommended to use the flag: **--removeOperationIdPrefix**.        Unique operation ids are about to be introduced to the spec, and this ensures forward compatibility - and results in less verbose generated code.   ## Overview  - Partial resource updating is done using the `PUT` method with optional fields instead of the `PATCH` method.  - **Actions** or **commands** are represented in our RESTful path with a prefixed `:`. Example: `/v2/hours/123/:approve`.  - **Summaries** or **aggregated** results are represented in our RESTful path with a prefixed `>`. Example: `/v2/hours/>thisWeeksBillables`.  - **Request ID** is a key found in all responses in the header with the name `x-tlx-request-id`. For validation and error responses it is also in the response body. If additional log information is absolutely necessary, our support division can locate the key value.  - **version** This is a revision number found on all persisted resources. If included, it will prevent your PUT/POST from overriding any updates to the resource since your GET.  - **Date** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DD`.  - **DateTime** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DDThh:mm:ss`.  - **Searching** is done by entering values in the optional fields for each API call. The values fall into the following categories: range, in, exact and like.  - **Missing fields** or even **no response data** can occur because result objects and fields are filtered on authorization.  - **See [GitHub](https://github.com/Tripletex/tripletex-api2) for more documentation, examples, changelog and more.**  - **See [FAQ](https://tripletex.no/execute/docViewer?articleId=906&language=0) for additional information.**   ## Authentication  - **Tokens:** The Tripletex API uses 3 different tokens    - **consumerToken** is a token provided to the consumer by Tripletex after the API 2.0 registration is completed.    - **employeeToken** is a token created by an administrator in your Tripletex account via the user settings and the tab \"API access\". Each employee token must be given a set of entitlements. [Read more here.](https://tripletex.no/execute/docViewer?articleId=1505&languageId=0)    - **sessionToken** is the token from `/token/session/:create` which requires a consumerToken and an employeeToken created with the same consumer token, but not an authentication header.  - **Authentication** is done via [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)    - **username** is used to specify what company to access.      - `0` or blank means the company of the employee.      - Any other value means accountant clients. Use `/company/>withLoginAccess` to get a list of those.    - **password** is the **sessionToken**.    - If you need to create the header yourself use `Authorization: Basic <encoded token>` where `encoded token` is the string `<target company id or 0>:<your session token>` Base64 encoded.   ## Tags  - `[BETA]` This is a beta endpoint and can be subject to change. - `[DEPRECATED]` Deprecated means that we intend to remove/change this feature or capability in a future \"major\" API release. We therefore discourage all use of this feature/capability.   ## Fields  Use the `fields` parameter to specify which fields should be returned. This also supports fields from sub elements, done via `<field>(<subResourceFields>)`. `*` means all fields for that resource. Example values: - `project,activity,hours`  returns `{project:..., activity:...., hours:...}`. - just `project` returns `\"project\" : { \"id\": 12345, \"url\": \"tripletex.no/v2/projects/12345\"  }`. - `project(*)` returns `\"project\" : { \"id\": 12345 \"name\":\"ProjectName\" \"number.....startDate\": \"2013-01-07\" }`. - `project(name)` returns `\"project\" : { \"name\":\"ProjectName\" }`. - All resources and some subResources :  `*,activity(name),employee(*)`.   ## Sorting  Use the `sorting` parameter to specify sorting. It takes a comma separated list, where a `-` prefix denotes descending. You can sort by sub object with the following format: `<field>.<subObjectField>`. Example values: - `date` - `project.name` - `project.name, -date`   ## Changes  To get the changes for a resource, `changes` have to be explicitly specified as part of the `fields` parameter, e.g. `*,changes`. There are currently two types of change available:  - `CREATE` for when the resource was created - `UPDATE` for when the resource was updated  **NOTE** > For objects created prior to October 24th 2018 the list may be incomplete, but will always contain the CREATE and the last change (if the object has been changed after creation).   ## Rate limiting  Rate limiting is performed on the API calls for an employee for each API consumer. Status regarding the rate limit is returned as headers: - `X-Rate-Limit-Limit` - The number of allowed requests in the current period. - `X-Rate-Limit-Remaining` - The number of remaining requests. - `X-Rate-Limit-Reset` - The number of seconds left in the current period.  Once the rate limit is hit, all requests will return HTTP status code `429` for the remainder of the current period.   ## Response envelope  #### Multiple values  ```json {   \"fullResultSize\": ###, // {number} [DEPRECATED]   \"from\": ###, // {number} Paging starting from   \"count\": ###, // {number} Paging count   \"versionDigest\": \"###\", // {string} Hash of full result, null if no result   \"values\": [...{...object...},{...object...},{...object...}...] } ```  #### Single value  ```json {   \"value\": {...single object...} } ```   ## WebHook envelope  ```json {   \"subscriptionId\": ###, // Subscription id   \"event\": \"object.verb\", // As listed from /v2/event/   \"id\": ###, // Id of object this event is for   \"value\": {... single object, null if object.deleted ...} } ```   ## Error/warning envelope  ```json {   \"status\": ###, // {number} HTTP status code   \"code\": #####, // {number} internal status code of event   \"message\": \"###\", // {string} Basic feedback message in your language   \"link\": \"###\", // {string} Link to doc   \"developerMessage\": \"###\", // {string} More technical message   \"validationMessages\": [ // {array} List of validation messages, can be null     {       \"field\": \"###\", // {string} Name of field       \"message\": \"###\" // {string} Validation message for field     }   ],   \"requestId\": \"###\" // {string} Same as x-tlx-request-id  } ```   ## Status codes / Error codes  - **200 OK** - **201 Created** - From POSTs that create something new. - **204 No Content** - When there is no answer, ex: \"/:anAction\" or DELETE. - **400 Bad request** -   -  **4000** Bad Request Exception   - **11000** Illegal Filter Exception   - **12000** Path Param Exception   - **24000** Cryptography Exception - **401 Unauthorized** - When authentication is required and has failed or has not yet been provided   -  **3000** Authentication Exception - **403 Forbidden** - When AuthorisationManager says no.   -  **9000** Security Exception - **404 Not Found** - For resources that does not exist.   -  **6000** Not Found Exception - **409 Conflict** - Such as an edit conflict between multiple simultaneous updates   -  **7000** Object Exists Exception   -  **8000** Revision Exception   - **10000** Locked Exception   - **14000** Duplicate entry - **422 Bad Request** - For Required fields or things like malformed payload.   - **15000** Value Validation Exception   - **16000** Mapping Exception   - **17000** Sorting Exception   - **18000** Validation Exception   - **21000** Param Exception   - **22000** Invalid JSON Exception   - **23000** Result Set Too Large Exception - **429 Too Many Requests** - Request rate limit hit - **500 Internal Error** - Unexpected condition was encountered and no more specific message is suitable   - **1000** Exception
  *
- * The version of the OpenAPI document: 2.70.19
- * Generated by: https://openapi-generator.tech
- * OpenAPI Generator version: 6.5.0-SNAPSHOT
+ * OpenAPI spec version: 2.70.19
+ * 
+ * Generated by: https://github.com/swagger-api/swagger-codegen.git
+ * Swagger Codegen version: 3.0.41
  */
-
 /**
- * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
- * https://openapi-generator.tech
+ * NOTE: This class is auto generated by the swagger code generator program.
+ * https://github.com/swagger-api/swagger-codegen
  * Do not edit the class manually.
  */
 
@@ -36,95 +36,64 @@ use \Learnist\Tripletex\ObjectSerializer;
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- * @implements \ArrayAccess<string, mixed>
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
-class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \JsonSerializable
+class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess
 {
-    public const DISCRIMINATOR = null;
+    const DISCRIMINATOR = null;
 
     /**
       * The original name of the model.
       *
       * @var string
       */
-    protected static $openAPIModelName = 'SalaryAdvanceTaxcardInternal';
+    protected static $swaggerModelName = 'SalaryAdvanceTaxcardInternal';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
       *
       * @var string[]
       */
-    protected static $openAPITypes = [
+    protected static $swaggerTypes = [
         'altinn_tax_deduction_card_id' => '\Learnist\Tripletex\Model\SalaryTaxcardInternal',
-        'trekkode' => 'string',
-        'trekkode_description' => 'string',
-        'type' => 'int',
-        'type_description' => 'string',
-        'tabelltype' => 'string',
-        'tabellnummer' => 'string',
-        'prosentsats' => 'float',
-        'antall_mnd_for_trekk' => 'float',
-        'frikortbelop' => 'float',
-        'remaining_free_card_amount' => 'float'
-    ];
+'trekkode' => 'string',
+'trekkode_description' => 'string',
+'type' => 'int',
+'type_description' => 'string',
+'tabelltype' => 'string',
+'tabellnummer' => 'string',
+'prosentsats' => 'float',
+'antall_mnd_for_trekk' => 'float',
+'frikortbelop' => 'float',
+'remaining_free_card_amount' => 'float'    ];
 
     /**
       * Array of property to format mappings. Used for (de)serialization
       *
       * @var string[]
-      * @phpstan-var array<string, string|null>
-      * @psalm-var array<string, string|null>
       */
-    protected static $openAPIFormats = [
+    protected static $swaggerFormats = [
         'altinn_tax_deduction_card_id' => null,
-        'trekkode' => null,
-        'trekkode_description' => null,
-        'type' => 'int32',
-        'type_description' => null,
-        'tabelltype' => null,
-        'tabellnummer' => null,
-        'prosentsats' => null,
-        'antall_mnd_for_trekk' => null,
-        'frikortbelop' => null,
-        'remaining_free_card_amount' => null
-    ];
-
-    /**
-      * Array of nullable properties. Used for (de)serialization
-      *
-      * @var boolean[]
-      */
-    protected static array $openAPINullables = [
-        'altinn_tax_deduction_card_id' => false,
-		'trekkode' => false,
-		'trekkode_description' => false,
-		'type' => false,
-		'type_description' => false,
-		'tabelltype' => false,
-		'tabellnummer' => false,
-		'prosentsats' => false,
-		'antall_mnd_for_trekk' => false,
-		'frikortbelop' => false,
-		'remaining_free_card_amount' => false
-    ];
-
-    /**
-      * If a nullable field gets set to null, insert it here
-      *
-      * @var boolean[]
-      */
-    protected array $openAPINullablesSetToNull = [];
+'trekkode' => null,
+'trekkode_description' => null,
+'type' => 'int32',
+'type_description' => null,
+'tabelltype' => null,
+'tabellnummer' => null,
+'prosentsats' => null,
+'antall_mnd_for_trekk' => null,
+'frikortbelop' => null,
+'remaining_free_card_amount' => null    ];
 
     /**
      * Array of property to type mappings. Used for (de)serialization
      *
      * @return array
      */
-    public static function openAPITypes()
+    public static function swaggerTypes()
     {
-        return self::$openAPITypes;
+        return self::$swaggerTypes;
     }
 
     /**
@@ -132,61 +101,9 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
      *
      * @return array
      */
-    public static function openAPIFormats()
+    public static function swaggerFormats()
     {
-        return self::$openAPIFormats;
-    }
-
-    /**
-     * Array of nullable properties
-     *
-     * @return array
-     */
-    protected static function openAPINullables(): array
-    {
-        return self::$openAPINullables;
-    }
-
-    /**
-     * Array of nullable field names deliberately set to null
-     *
-     * @return boolean[]
-     */
-    private function getOpenAPINullablesSetToNull(): array
-    {
-        return $this->openAPINullablesSetToNull;
-    }
-
-    /**
-     * Setter - Array of nullable field names deliberately set to null
-     *
-     * @param boolean[] $openAPINullablesSetToNull
-     */
-    private function setOpenAPINullablesSetToNull(array $openAPINullablesSetToNull): void
-    {
-        $this->openAPINullablesSetToNull = $openAPINullablesSetToNull;
-    }
-
-    /**
-     * Checks if a property is nullable
-     *
-     * @param string $property
-     * @return bool
-     */
-    public static function isNullable(string $property): bool
-    {
-        return self::openAPINullables()[$property] ?? false;
-    }
-
-    /**
-     * Checks if a nullable property is set to null.
-     *
-     * @param string $property
-     * @return bool
-     */
-    public function isNullableSetToNull(string $property): bool
-    {
-        return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+        return self::$swaggerFormats;
     }
 
     /**
@@ -197,17 +114,16 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
      */
     protected static $attributeMap = [
         'altinn_tax_deduction_card_id' => 'altinnTaxDeductionCardId',
-        'trekkode' => 'trekkode',
-        'trekkode_description' => 'trekkodeDescription',
-        'type' => 'type',
-        'type_description' => 'typeDescription',
-        'tabelltype' => 'tabelltype',
-        'tabellnummer' => 'tabellnummer',
-        'prosentsats' => 'prosentsats',
-        'antall_mnd_for_trekk' => 'antallMndForTrekk',
-        'frikortbelop' => 'frikortbelop',
-        'remaining_free_card_amount' => 'remainingFreeCardAmount'
-    ];
+'trekkode' => 'trekkode',
+'trekkode_description' => 'trekkodeDescription',
+'type' => 'type',
+'type_description' => 'typeDescription',
+'tabelltype' => 'tabelltype',
+'tabellnummer' => 'tabellnummer',
+'prosentsats' => 'prosentsats',
+'antall_mnd_for_trekk' => 'antallMndForTrekk',
+'frikortbelop' => 'frikortbelop',
+'remaining_free_card_amount' => 'remainingFreeCardAmount'    ];
 
     /**
      * Array of attributes to setter functions (for deserialization of responses)
@@ -216,17 +132,16 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
      */
     protected static $setters = [
         'altinn_tax_deduction_card_id' => 'setAltinnTaxDeductionCardId',
-        'trekkode' => 'setTrekkode',
-        'trekkode_description' => 'setTrekkodeDescription',
-        'type' => 'setType',
-        'type_description' => 'setTypeDescription',
-        'tabelltype' => 'setTabelltype',
-        'tabellnummer' => 'setTabellnummer',
-        'prosentsats' => 'setProsentsats',
-        'antall_mnd_for_trekk' => 'setAntallMndForTrekk',
-        'frikortbelop' => 'setFrikortbelop',
-        'remaining_free_card_amount' => 'setRemainingFreeCardAmount'
-    ];
+'trekkode' => 'setTrekkode',
+'trekkode_description' => 'setTrekkodeDescription',
+'type' => 'setType',
+'type_description' => 'setTypeDescription',
+'tabelltype' => 'setTabelltype',
+'tabellnummer' => 'setTabellnummer',
+'prosentsats' => 'setProsentsats',
+'antall_mnd_for_trekk' => 'setAntallMndForTrekk',
+'frikortbelop' => 'setFrikortbelop',
+'remaining_free_card_amount' => 'setRemainingFreeCardAmount'    ];
 
     /**
      * Array of attributes to getter functions (for serialization of requests)
@@ -235,17 +150,16 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
      */
     protected static $getters = [
         'altinn_tax_deduction_card_id' => 'getAltinnTaxDeductionCardId',
-        'trekkode' => 'getTrekkode',
-        'trekkode_description' => 'getTrekkodeDescription',
-        'type' => 'getType',
-        'type_description' => 'getTypeDescription',
-        'tabelltype' => 'getTabelltype',
-        'tabellnummer' => 'getTabellnummer',
-        'prosentsats' => 'getProsentsats',
-        'antall_mnd_for_trekk' => 'getAntallMndForTrekk',
-        'frikortbelop' => 'getFrikortbelop',
-        'remaining_free_card_amount' => 'getRemainingFreeCardAmount'
-    ];
+'trekkode' => 'getTrekkode',
+'trekkode_description' => 'getTrekkodeDescription',
+'type' => 'getType',
+'type_description' => 'getTypeDescription',
+'tabelltype' => 'getTabelltype',
+'tabellnummer' => 'getTabellnummer',
+'prosentsats' => 'getProsentsats',
+'antall_mnd_for_trekk' => 'getAntallMndForTrekk',
+'frikortbelop' => 'getFrikortbelop',
+'remaining_free_card_amount' => 'getRemainingFreeCardAmount'    ];
 
     /**
      * Array of attributes where the key is the local name,
@@ -285,9 +199,10 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
      */
     public function getModelName()
     {
-        return self::$openAPIModelName;
+        return self::$swaggerModelName;
     }
 
+    
 
     /**
      * Associative array for storing property values
@@ -304,35 +219,17 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
      */
     public function __construct(array $data = null)
     {
-        $this->setIfExists('altinn_tax_deduction_card_id', $data ?? [], null);
-        $this->setIfExists('trekkode', $data ?? [], null);
-        $this->setIfExists('trekkode_description', $data ?? [], null);
-        $this->setIfExists('type', $data ?? [], null);
-        $this->setIfExists('type_description', $data ?? [], null);
-        $this->setIfExists('tabelltype', $data ?? [], null);
-        $this->setIfExists('tabellnummer', $data ?? [], null);
-        $this->setIfExists('prosentsats', $data ?? [], null);
-        $this->setIfExists('antall_mnd_for_trekk', $data ?? [], null);
-        $this->setIfExists('frikortbelop', $data ?? [], null);
-        $this->setIfExists('remaining_free_card_amount', $data ?? [], null);
-    }
-
-    /**
-    * Sets $this->container[$variableName] to the given data or to the given default Value; if $variableName
-    * is nullable and its value is set to null in the $fields array, then mark it as "set to null" in the
-    * $this->openAPINullablesSetToNull array
-    *
-    * @param string $variableName
-    * @param array  $fields
-    * @param mixed  $defaultValue
-    */
-    private function setIfExists(string $variableName, array $fields, $defaultValue): void
-    {
-        if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
-            $this->openAPINullablesSetToNull[] = $variableName;
-        }
-
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $this->container['altinn_tax_deduction_card_id'] = isset($data['altinn_tax_deduction_card_id']) ? $data['altinn_tax_deduction_card_id'] : null;
+        $this->container['trekkode'] = isset($data['trekkode']) ? $data['trekkode'] : null;
+        $this->container['trekkode_description'] = isset($data['trekkode_description']) ? $data['trekkode_description'] : null;
+        $this->container['type'] = isset($data['type']) ? $data['type'] : null;
+        $this->container['type_description'] = isset($data['type_description']) ? $data['type_description'] : null;
+        $this->container['tabelltype'] = isset($data['tabelltype']) ? $data['tabelltype'] : null;
+        $this->container['tabellnummer'] = isset($data['tabellnummer']) ? $data['tabellnummer'] : null;
+        $this->container['prosentsats'] = isset($data['prosentsats']) ? $data['prosentsats'] : null;
+        $this->container['antall_mnd_for_trekk'] = isset($data['antall_mnd_for_trekk']) ? $data['antall_mnd_for_trekk'] : null;
+        $this->container['frikortbelop'] = isset($data['frikortbelop']) ? $data['frikortbelop'] : null;
+        $this->container['remaining_free_card_amount'] = isset($data['remaining_free_card_amount']) ? $data['remaining_free_card_amount'] : null;
     }
 
     /**
@@ -347,22 +244,6 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
         if ($this->container['altinn_tax_deduction_card_id'] === null) {
             $invalidProperties[] = "'altinn_tax_deduction_card_id' can't be null";
         }
-        if (!is_null($this->container['trekkode']) && (mb_strlen($this->container['trekkode']) > 100)) {
-            $invalidProperties[] = "invalid value for 'trekkode', the character length must be smaller than or equal to 100.";
-        }
-
-        if (!is_null($this->container['type']) && ($this->container['type'] < 0)) {
-            $invalidProperties[] = "invalid value for 'type', must be bigger than or equal to 0.";
-        }
-
-        if (!is_null($this->container['tabelltype']) && (mb_strlen($this->container['tabelltype']) > 100)) {
-            $invalidProperties[] = "invalid value for 'tabelltype', the character length must be smaller than or equal to 100.";
-        }
-
-        if (!is_null($this->container['tabellnummer']) && (mb_strlen($this->container['tabellnummer']) > 20)) {
-            $invalidProperties[] = "invalid value for 'tabellnummer', the character length must be smaller than or equal to 20.";
-        }
-
         return $invalidProperties;
     }
 
@@ -393,13 +274,10 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
      *
      * @param \Learnist\Tripletex\Model\SalaryTaxcardInternal $altinn_tax_deduction_card_id altinn_tax_deduction_card_id
      *
-     * @return self
+     * @return $this
      */
     public function setAltinnTaxDeductionCardId($altinn_tax_deduction_card_id)
     {
-        if (is_null($altinn_tax_deduction_card_id)) {
-            throw new \InvalidArgumentException('non-nullable altinn_tax_deduction_card_id cannot be null');
-        }
         $this->container['altinn_tax_deduction_card_id'] = $altinn_tax_deduction_card_id;
 
         return $this;
@@ -408,7 +286,7 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Gets trekkode
      *
-     * @return string|null
+     * @return string
      */
     public function getTrekkode()
     {
@@ -418,19 +296,12 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Sets trekkode
      *
-     * @param string|null $trekkode trekkode
+     * @param string $trekkode trekkode
      *
-     * @return self
+     * @return $this
      */
     public function setTrekkode($trekkode)
     {
-        if (is_null($trekkode)) {
-            throw new \InvalidArgumentException('non-nullable trekkode cannot be null');
-        }
-        if ((mb_strlen($trekkode) > 100)) {
-            throw new \InvalidArgumentException('invalid length for $trekkode when calling SalaryAdvanceTaxcardInternal., must be smaller than or equal to 100.');
-        }
-
         $this->container['trekkode'] = $trekkode;
 
         return $this;
@@ -439,7 +310,7 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Gets trekkode_description
      *
-     * @return string|null
+     * @return string
      */
     public function getTrekkodeDescription()
     {
@@ -449,15 +320,12 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Sets trekkode_description
      *
-     * @param string|null $trekkode_description trekkode_description
+     * @param string $trekkode_description trekkode_description
      *
-     * @return self
+     * @return $this
      */
     public function setTrekkodeDescription($trekkode_description)
     {
-        if (is_null($trekkode_description)) {
-            throw new \InvalidArgumentException('non-nullable trekkode_description cannot be null');
-        }
         $this->container['trekkode_description'] = $trekkode_description;
 
         return $this;
@@ -466,7 +334,7 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Gets type
      *
-     * @return int|null
+     * @return int
      */
     public function getType()
     {
@@ -476,20 +344,12 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Sets type
      *
-     * @param int|null $type type
+     * @param int $type type
      *
-     * @return self
+     * @return $this
      */
     public function setType($type)
     {
-        if (is_null($type)) {
-            throw new \InvalidArgumentException('non-nullable type cannot be null');
-        }
-
-        if (($type < 0)) {
-            throw new \InvalidArgumentException('invalid value for $type when calling SalaryAdvanceTaxcardInternal., must be bigger than or equal to 0.');
-        }
-
         $this->container['type'] = $type;
 
         return $this;
@@ -498,7 +358,7 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Gets type_description
      *
-     * @return string|null
+     * @return string
      */
     public function getTypeDescription()
     {
@@ -508,15 +368,12 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Sets type_description
      *
-     * @param string|null $type_description type_description
+     * @param string $type_description type_description
      *
-     * @return self
+     * @return $this
      */
     public function setTypeDescription($type_description)
     {
-        if (is_null($type_description)) {
-            throw new \InvalidArgumentException('non-nullable type_description cannot be null');
-        }
         $this->container['type_description'] = $type_description;
 
         return $this;
@@ -525,7 +382,7 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Gets tabelltype
      *
-     * @return string|null
+     * @return string
      */
     public function getTabelltype()
     {
@@ -535,19 +392,12 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Sets tabelltype
      *
-     * @param string|null $tabelltype tabelltype
+     * @param string $tabelltype tabelltype
      *
-     * @return self
+     * @return $this
      */
     public function setTabelltype($tabelltype)
     {
-        if (is_null($tabelltype)) {
-            throw new \InvalidArgumentException('non-nullable tabelltype cannot be null');
-        }
-        if ((mb_strlen($tabelltype) > 100)) {
-            throw new \InvalidArgumentException('invalid length for $tabelltype when calling SalaryAdvanceTaxcardInternal., must be smaller than or equal to 100.');
-        }
-
         $this->container['tabelltype'] = $tabelltype;
 
         return $this;
@@ -556,7 +406,7 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Gets tabellnummer
      *
-     * @return string|null
+     * @return string
      */
     public function getTabellnummer()
     {
@@ -566,19 +416,12 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Sets tabellnummer
      *
-     * @param string|null $tabellnummer tabellnummer
+     * @param string $tabellnummer tabellnummer
      *
-     * @return self
+     * @return $this
      */
     public function setTabellnummer($tabellnummer)
     {
-        if (is_null($tabellnummer)) {
-            throw new \InvalidArgumentException('non-nullable tabellnummer cannot be null');
-        }
-        if ((mb_strlen($tabellnummer) > 20)) {
-            throw new \InvalidArgumentException('invalid length for $tabellnummer when calling SalaryAdvanceTaxcardInternal., must be smaller than or equal to 20.');
-        }
-
         $this->container['tabellnummer'] = $tabellnummer;
 
         return $this;
@@ -587,7 +430,7 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Gets prosentsats
      *
-     * @return float|null
+     * @return float
      */
     public function getProsentsats()
     {
@@ -597,15 +440,12 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Sets prosentsats
      *
-     * @param float|null $prosentsats prosentsats
+     * @param float $prosentsats prosentsats
      *
-     * @return self
+     * @return $this
      */
     public function setProsentsats($prosentsats)
     {
-        if (is_null($prosentsats)) {
-            throw new \InvalidArgumentException('non-nullable prosentsats cannot be null');
-        }
         $this->container['prosentsats'] = $prosentsats;
 
         return $this;
@@ -614,7 +454,7 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Gets antall_mnd_for_trekk
      *
-     * @return float|null
+     * @return float
      */
     public function getAntallMndForTrekk()
     {
@@ -624,15 +464,12 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Sets antall_mnd_for_trekk
      *
-     * @param float|null $antall_mnd_for_trekk antall_mnd_for_trekk
+     * @param float $antall_mnd_for_trekk antall_mnd_for_trekk
      *
-     * @return self
+     * @return $this
      */
     public function setAntallMndForTrekk($antall_mnd_for_trekk)
     {
-        if (is_null($antall_mnd_for_trekk)) {
-            throw new \InvalidArgumentException('non-nullable antall_mnd_for_trekk cannot be null');
-        }
         $this->container['antall_mnd_for_trekk'] = $antall_mnd_for_trekk;
 
         return $this;
@@ -641,7 +478,7 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Gets frikortbelop
      *
-     * @return float|null
+     * @return float
      */
     public function getFrikortbelop()
     {
@@ -651,15 +488,12 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Sets frikortbelop
      *
-     * @param float|null $frikortbelop frikortbelop
+     * @param float $frikortbelop frikortbelop
      *
-     * @return self
+     * @return $this
      */
     public function setFrikortbelop($frikortbelop)
     {
-        if (is_null($frikortbelop)) {
-            throw new \InvalidArgumentException('non-nullable frikortbelop cannot be null');
-        }
         $this->container['frikortbelop'] = $frikortbelop;
 
         return $this;
@@ -668,7 +502,7 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Gets remaining_free_card_amount
      *
-     * @return float|null
+     * @return float
      */
     public function getRemainingFreeCardAmount()
     {
@@ -678,15 +512,12 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
     /**
      * Sets remaining_free_card_amount
      *
-     * @param float|null $remaining_free_card_amount remaining_free_card_amount
+     * @param float $remaining_free_card_amount remaining_free_card_amount
      *
-     * @return self
+     * @return $this
      */
     public function setRemainingFreeCardAmount($remaining_free_card_amount)
     {
-        if (is_null($remaining_free_card_amount)) {
-            throw new \InvalidArgumentException('non-nullable remaining_free_card_amount cannot be null');
-        }
         $this->container['remaining_free_card_amount'] = $remaining_free_card_amount;
 
         return $this;
@@ -698,7 +529,8 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
      *
      * @return boolean
      */
-    public function offsetExists($offset): bool
+    #[\ReturnTypeWillChange] 
+    public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
     }
@@ -708,23 +540,24 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
      *
      * @param integer $offset Offset
      *
-     * @return mixed|null
+     * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[\ReturnTypeWillChange] 
     public function offsetGet($offset)
     {
-        return $this->container[$offset] ?? null;
+        return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
 
     /**
      * Sets value based on offset.
      *
-     * @param int|null $offset Offset
-     * @param mixed    $value  Value to be set
+     * @param integer $offset Offset
+     * @param mixed   $value  Value to be set
      *
      * @return void
      */
-    public function offsetSet($offset, $value): void
+    #[\ReturnTypeWillChange] 
+    public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -740,22 +573,10 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
      *
      * @return void
      */
-    public function offsetUnset($offset): void
+    #[\ReturnTypeWillChange] 
+    public function offsetUnset($offset)
     {
         unset($this->container[$offset]);
-    }
-
-    /**
-     * Serializes the object to a value that can be serialized natively by json_encode().
-     * @link https://www.php.net/manual/en/jsonserializable.jsonserialize.php
-     *
-     * @return mixed Returns data which can be serialized by json_encode(), which is a value
-     * of any type other than a resource.
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
-    {
-       return ObjectSerializer::sanitizeForSerialization($this);
     }
 
     /**
@@ -765,21 +586,13 @@ class SalaryAdvanceTaxcardInternal implements ModelInterface, ArrayAccess, \Json
      */
     public function __toString()
     {
-        return json_encode(
-            ObjectSerializer::sanitizeForSerialization($this),
-            JSON_PRETTY_PRINT
-        );
-    }
+        if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
+            return json_encode(
+                ObjectSerializer::sanitizeForSerialization($this),
+                JSON_PRETTY_PRINT
+            );
+        }
 
-    /**
-     * Gets a header-safe presentation of the object
-     *
-     * @return string
-     */
-    public function toHeaderValue()
-    {
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
 }
-
-

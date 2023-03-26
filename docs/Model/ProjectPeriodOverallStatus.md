@@ -1,10 +1,10 @@
-# # ProjectPeriodOverallStatus
+# ProjectPeriodOverallStatus
 
 ## Properties
-
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**income** | **float** |  | [optional] [readonly]
-**costs** | **float** |  | [optional] [readonly]
+**income** | **float** |  | [optional] 
+**costs** | **float** |  | [optional] 
 
-[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)
+[[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
+

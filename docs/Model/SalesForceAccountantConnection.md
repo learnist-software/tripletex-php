@@ -1,14 +1,14 @@
-# # SalesForceAccountantConnection
+# SalesForceAccountantConnection
 
 ## Properties
-
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **int** |  | [optional]
-**version** | **int** |  | [optional]
-**changes** | [**\Learnist\Tripletex\Model\Change[]**](Change.md) |  | [optional] [readonly]
-**url** | **string** |  | [optional] [readonly]
-**ao_customer_id** | **int** |  | [optional] [readonly]
-**client_customer_id** | **int** |  | [optional] [readonly]
+**id** | **int** |  | [optional] 
+**version** | **int** |  | [optional] 
+**changes** | [**\Learnist\Tripletex\Model\Change[]**](Change.md) |  | [optional] 
+**url** | **string** |  | [optional] 
+**ao_customer_id** | **int** |  | [optional] 
+**client_customer_id** | **int** |  | [optional] 
 
-[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)
+[[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
+

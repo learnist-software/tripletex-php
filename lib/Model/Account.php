@@ -2,12 +2,12 @@
 /**
  * Account
  *
- * PHP version 7.4
+ * PHP version 5
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
 
 /**
@@ -15,14 +15,14 @@
  *
  * ## Usage  - **Download the spec** [swagger.json](/v2/swagger.json) file, it is a [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification).  - **Generating a client** can easily be done using tools like [swagger-codegen](https://github.com/swagger-api/swagger-codegen) or other that accepts [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) specs.     - For swagger codegen it is recommended to use the flag: **--removeOperationIdPrefix**.        Unique operation ids are about to be introduced to the spec, and this ensures forward compatibility - and results in less verbose generated code.   ## Overview  - Partial resource updating is done using the `PUT` method with optional fields instead of the `PATCH` method.  - **Actions** or **commands** are represented in our RESTful path with a prefixed `:`. Example: `/v2/hours/123/:approve`.  - **Summaries** or **aggregated** results are represented in our RESTful path with a prefixed `>`. Example: `/v2/hours/>thisWeeksBillables`.  - **Request ID** is a key found in all responses in the header with the name `x-tlx-request-id`. For validation and error responses it is also in the response body. If additional log information is absolutely necessary, our support division can locate the key value.  - **version** This is a revision number found on all persisted resources. If included, it will prevent your PUT/POST from overriding any updates to the resource since your GET.  - **Date** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DD`.  - **DateTime** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DDThh:mm:ss`.  - **Searching** is done by entering values in the optional fields for each API call. The values fall into the following categories: range, in, exact and like.  - **Missing fields** or even **no response data** can occur because result objects and fields are filtered on authorization.  - **See [GitHub](https://github.com/Tripletex/tripletex-api2) for more documentation, examples, changelog and more.**  - **See [FAQ](https://tripletex.no/execute/docViewer?articleId=906&language=0) for additional information.**   ## Authentication  - **Tokens:** The Tripletex API uses 3 different tokens    - **consumerToken** is a token provided to the consumer by Tripletex after the API 2.0 registration is completed.    - **employeeToken** is a token created by an administrator in your Tripletex account via the user settings and the tab \"API access\". Each employee token must be given a set of entitlements. [Read more here.](https://tripletex.no/execute/docViewer?articleId=1505&languageId=0)    - **sessionToken** is the token from `/token/session/:create` which requires a consumerToken and an employeeToken created with the same consumer token, but not an authentication header.  - **Authentication** is done via [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)    - **username** is used to specify what company to access.      - `0` or blank means the company of the employee.      - Any other value means accountant clients. Use `/company/>withLoginAccess` to get a list of those.    - **password** is the **sessionToken**.    - If you need to create the header yourself use `Authorization: Basic <encoded token>` where `encoded token` is the string `<target company id or 0>:<your session token>` Base64 encoded.   ## Tags  - `[BETA]` This is a beta endpoint and can be subject to change. - `[DEPRECATED]` Deprecated means that we intend to remove/change this feature or capability in a future \"major\" API release. We therefore discourage all use of this feature/capability.   ## Fields  Use the `fields` parameter to specify which fields should be returned. This also supports fields from sub elements, done via `<field>(<subResourceFields>)`. `*` means all fields for that resource. Example values: - `project,activity,hours`  returns `{project:..., activity:...., hours:...}`. - just `project` returns `\"project\" : { \"id\": 12345, \"url\": \"tripletex.no/v2/projects/12345\"  }`. - `project(*)` returns `\"project\" : { \"id\": 12345 \"name\":\"ProjectName\" \"number.....startDate\": \"2013-01-07\" }`. - `project(name)` returns `\"project\" : { \"name\":\"ProjectName\" }`. - All resources and some subResources :  `*,activity(name),employee(*)`.   ## Sorting  Use the `sorting` parameter to specify sorting. It takes a comma separated list, where a `-` prefix denotes descending. You can sort by sub object with the following format: `<field>.<subObjectField>`. Example values: - `date` - `project.name` - `project.name, -date`   ## Changes  To get the changes for a resource, `changes` have to be explicitly specified as part of the `fields` parameter, e.g. `*,changes`. There are currently two types of change available:  - `CREATE` for when the resource was created - `UPDATE` for when the resource was updated  **NOTE** > For objects created prior to October 24th 2018 the list may be incomplete, but will always contain the CREATE and the last change (if the object has been changed after creation).   ## Rate limiting  Rate limiting is performed on the API calls for an employee for each API consumer. Status regarding the rate limit is returned as headers: - `X-Rate-Limit-Limit` - The number of allowed requests in the current period. - `X-Rate-Limit-Remaining` - The number of remaining requests. - `X-Rate-Limit-Reset` - The number of seconds left in the current period.  Once the rate limit is hit, all requests will return HTTP status code `429` for the remainder of the current period.   ## Response envelope  #### Multiple values  ```json {   \"fullResultSize\": ###, // {number} [DEPRECATED]   \"from\": ###, // {number} Paging starting from   \"count\": ###, // {number} Paging count   \"versionDigest\": \"###\", // {string} Hash of full result, null if no result   \"values\": [...{...object...},{...object...},{...object...}...] } ```  #### Single value  ```json {   \"value\": {...single object...} } ```   ## WebHook envelope  ```json {   \"subscriptionId\": ###, // Subscription id   \"event\": \"object.verb\", // As listed from /v2/event/   \"id\": ###, // Id of object this event is for   \"value\": {... single object, null if object.deleted ...} } ```   ## Error/warning envelope  ```json {   \"status\": ###, // {number} HTTP status code   \"code\": #####, // {number} internal status code of event   \"message\": \"###\", // {string} Basic feedback message in your language   \"link\": \"###\", // {string} Link to doc   \"developerMessage\": \"###\", // {string} More technical message   \"validationMessages\": [ // {array} List of validation messages, can be null     {       \"field\": \"###\", // {string} Name of field       \"message\": \"###\" // {string} Validation message for field     }   ],   \"requestId\": \"###\" // {string} Same as x-tlx-request-id  } ```   ## Status codes / Error codes  - **200 OK** - **201 Created** - From POSTs that create something new. - **204 No Content** - When there is no answer, ex: \"/:anAction\" or DELETE. - **400 Bad request** -   -  **4000** Bad Request Exception   - **11000** Illegal Filter Exception   - **12000** Path Param Exception   - **24000** Cryptography Exception - **401 Unauthorized** - When authentication is required and has failed or has not yet been provided   -  **3000** Authentication Exception - **403 Forbidden** - When AuthorisationManager says no.   -  **9000** Security Exception - **404 Not Found** - For resources that does not exist.   -  **6000** Not Found Exception - **409 Conflict** - Such as an edit conflict between multiple simultaneous updates   -  **7000** Object Exists Exception   -  **8000** Revision Exception   - **10000** Locked Exception   - **14000** Duplicate entry - **422 Bad Request** - For Required fields or things like malformed payload.   - **15000** Value Validation Exception   - **16000** Mapping Exception   - **17000** Sorting Exception   - **18000** Validation Exception   - **21000** Param Exception   - **22000** Invalid JSON Exception   - **23000** Result Set Too Large Exception - **429 Too Many Requests** - Request rate limit hit - **500 Internal Error** - Unexpected condition was encountered and no more specific message is suitable   - **1000** Exception
  *
- * The version of the OpenAPI document: 2.70.19
- * Generated by: https://openapi-generator.tech
- * OpenAPI Generator version: 6.5.0-SNAPSHOT
+ * OpenAPI spec version: 2.70.19
+ * 
+ * Generated by: https://github.com/swagger-api/swagger-codegen.git
+ * Swagger Codegen version: 3.0.41
  */
-
 /**
- * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
- * https://openapi-generator.tech
+ * NOTE: This class is auto generated by the swagger code generator program.
+ * https://github.com/swagger-api/swagger-codegen
  * Do not edit the class manually.
  */
 
@@ -36,149 +36,100 @@ use \Learnist\Tripletex\ObjectSerializer;
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- * @implements \ArrayAccess<string, mixed>
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
-class Account implements ModelInterface, ArrayAccess, \JsonSerializable
+class Account implements ModelInterface, ArrayAccess
 {
-    public const DISCRIMINATOR = null;
+    const DISCRIMINATOR = null;
 
     /**
       * The original name of the model.
       *
       * @var string
       */
-    protected static $openAPIModelName = 'Account';
+    protected static $swaggerModelName = 'Account';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
       *
       * @var string[]
       */
-    protected static $openAPITypes = [
+    protected static $swaggerTypes = [
         'id' => 'int',
-        'version' => 'int',
-        'changes' => '\Learnist\Tripletex\Model\Change[]',
-        'url' => 'string',
-        'number' => 'int',
-        'name' => 'string',
-        'description' => 'string',
-        'type' => 'string',
-        'legal_vat_types' => '\Learnist\Tripletex\Model\VatType[]',
-        'ledger_type' => 'string',
-        'vat_type' => '\Learnist\Tripletex\Model\VatType',
-        'vat_locked' => 'bool',
-        'currency' => '\Learnist\Tripletex\Model\Currency',
-        'is_closeable' => 'bool',
-        'is_applicable_for_supplier_invoice' => 'bool',
-        'require_reconciliation' => 'bool',
-        'is_inactive' => 'bool',
-        'is_bank_account' => 'bool',
-        'is_invoice_account' => 'bool',
-        'bank_account_number' => 'string',
-        'bank_account_country' => '\Learnist\Tripletex\Model\Country',
-        'bank_name' => 'string',
-        'bank_account_iban' => 'string',
-        'bank_account_swift' => 'string',
-        'saft_code' => 'string',
-        'display_name' => 'string',
-        'requires_department' => 'bool',
-        'requires_project' => 'bool',
-        'invoicing_department' => '\Learnist\Tripletex\Model\Department'
-    ];
+'version' => 'int',
+'changes' => '\Learnist\Tripletex\Model\Change[]',
+'url' => 'string',
+'number' => 'int',
+'name' => 'string',
+'description' => 'string',
+'type' => 'string',
+'legal_vat_types' => '\Learnist\Tripletex\Model\VatType[]',
+'ledger_type' => 'string',
+'vat_type' => '\Learnist\Tripletex\Model\VatType',
+'vat_locked' => 'bool',
+'currency' => '\Learnist\Tripletex\Model\Currency',
+'is_closeable' => 'bool',
+'is_applicable_for_supplier_invoice' => 'bool',
+'require_reconciliation' => 'bool',
+'is_inactive' => 'bool',
+'is_bank_account' => 'bool',
+'is_invoice_account' => 'bool',
+'bank_account_number' => 'string',
+'bank_account_country' => '\Learnist\Tripletex\Model\Country',
+'bank_name' => 'string',
+'bank_account_iban' => 'string',
+'bank_account_swift' => 'string',
+'saft_code' => 'string',
+'display_name' => 'string',
+'requires_department' => 'bool',
+'requires_project' => 'bool',
+'invoicing_department' => '\Learnist\Tripletex\Model\Department'    ];
 
     /**
       * Array of property to format mappings. Used for (de)serialization
       *
       * @var string[]
-      * @phpstan-var array<string, string|null>
-      * @psalm-var array<string, string|null>
       */
-    protected static $openAPIFormats = [
+    protected static $swaggerFormats = [
         'id' => 'int32',
-        'version' => 'int32',
-        'changes' => null,
-        'url' => null,
-        'number' => 'int32',
-        'name' => null,
-        'description' => null,
-        'type' => null,
-        'legal_vat_types' => null,
-        'ledger_type' => null,
-        'vat_type' => null,
-        'vat_locked' => null,
-        'currency' => null,
-        'is_closeable' => null,
-        'is_applicable_for_supplier_invoice' => null,
-        'require_reconciliation' => null,
-        'is_inactive' => null,
-        'is_bank_account' => null,
-        'is_invoice_account' => null,
-        'bank_account_number' => null,
-        'bank_account_country' => null,
-        'bank_name' => null,
-        'bank_account_iban' => null,
-        'bank_account_swift' => null,
-        'saft_code' => null,
-        'display_name' => null,
-        'requires_department' => null,
-        'requires_project' => null,
-        'invoicing_department' => null
-    ];
-
-    /**
-      * Array of nullable properties. Used for (de)serialization
-      *
-      * @var boolean[]
-      */
-    protected static array $openAPINullables = [
-        'id' => false,
-		'version' => false,
-		'changes' => false,
-		'url' => false,
-		'number' => false,
-		'name' => false,
-		'description' => false,
-		'type' => false,
-		'legal_vat_types' => false,
-		'ledger_type' => false,
-		'vat_type' => false,
-		'vat_locked' => false,
-		'currency' => false,
-		'is_closeable' => false,
-		'is_applicable_for_supplier_invoice' => false,
-		'require_reconciliation' => false,
-		'is_inactive' => false,
-		'is_bank_account' => false,
-		'is_invoice_account' => false,
-		'bank_account_number' => false,
-		'bank_account_country' => false,
-		'bank_name' => false,
-		'bank_account_iban' => false,
-		'bank_account_swift' => false,
-		'saft_code' => false,
-		'display_name' => false,
-		'requires_department' => false,
-		'requires_project' => false,
-		'invoicing_department' => false
-    ];
-
-    /**
-      * If a nullable field gets set to null, insert it here
-      *
-      * @var boolean[]
-      */
-    protected array $openAPINullablesSetToNull = [];
+'version' => 'int32',
+'changes' => null,
+'url' => null,
+'number' => 'int32',
+'name' => null,
+'description' => null,
+'type' => null,
+'legal_vat_types' => null,
+'ledger_type' => null,
+'vat_type' => null,
+'vat_locked' => null,
+'currency' => null,
+'is_closeable' => null,
+'is_applicable_for_supplier_invoice' => null,
+'require_reconciliation' => null,
+'is_inactive' => null,
+'is_bank_account' => null,
+'is_invoice_account' => null,
+'bank_account_number' => null,
+'bank_account_country' => null,
+'bank_name' => null,
+'bank_account_iban' => null,
+'bank_account_swift' => null,
+'saft_code' => null,
+'display_name' => null,
+'requires_department' => null,
+'requires_project' => null,
+'invoicing_department' => null    ];
 
     /**
      * Array of property to type mappings. Used for (de)serialization
      *
      * @return array
      */
-    public static function openAPITypes()
+    public static function swaggerTypes()
     {
-        return self::$openAPITypes;
+        return self::$swaggerTypes;
     }
 
     /**
@@ -186,61 +137,9 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return array
      */
-    public static function openAPIFormats()
+    public static function swaggerFormats()
     {
-        return self::$openAPIFormats;
-    }
-
-    /**
-     * Array of nullable properties
-     *
-     * @return array
-     */
-    protected static function openAPINullables(): array
-    {
-        return self::$openAPINullables;
-    }
-
-    /**
-     * Array of nullable field names deliberately set to null
-     *
-     * @return boolean[]
-     */
-    private function getOpenAPINullablesSetToNull(): array
-    {
-        return $this->openAPINullablesSetToNull;
-    }
-
-    /**
-     * Setter - Array of nullable field names deliberately set to null
-     *
-     * @param boolean[] $openAPINullablesSetToNull
-     */
-    private function setOpenAPINullablesSetToNull(array $openAPINullablesSetToNull): void
-    {
-        $this->openAPINullablesSetToNull = $openAPINullablesSetToNull;
-    }
-
-    /**
-     * Checks if a property is nullable
-     *
-     * @param string $property
-     * @return bool
-     */
-    public static function isNullable(string $property): bool
-    {
-        return self::openAPINullables()[$property] ?? false;
-    }
-
-    /**
-     * Checks if a nullable property is set to null.
-     *
-     * @param string $property
-     * @return bool
-     */
-    public function isNullableSetToNull(string $property): bool
-    {
-        return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+        return self::$swaggerFormats;
     }
 
     /**
@@ -251,35 +150,34 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $attributeMap = [
         'id' => 'id',
-        'version' => 'version',
-        'changes' => 'changes',
-        'url' => 'url',
-        'number' => 'number',
-        'name' => 'name',
-        'description' => 'description',
-        'type' => 'type',
-        'legal_vat_types' => 'legalVatTypes',
-        'ledger_type' => 'ledgerType',
-        'vat_type' => 'vatType',
-        'vat_locked' => 'vatLocked',
-        'currency' => 'currency',
-        'is_closeable' => 'isCloseable',
-        'is_applicable_for_supplier_invoice' => 'isApplicableForSupplierInvoice',
-        'require_reconciliation' => 'requireReconciliation',
-        'is_inactive' => 'isInactive',
-        'is_bank_account' => 'isBankAccount',
-        'is_invoice_account' => 'isInvoiceAccount',
-        'bank_account_number' => 'bankAccountNumber',
-        'bank_account_country' => 'bankAccountCountry',
-        'bank_name' => 'bankName',
-        'bank_account_iban' => 'bankAccountIBAN',
-        'bank_account_swift' => 'bankAccountSWIFT',
-        'saft_code' => 'saftCode',
-        'display_name' => 'displayName',
-        'requires_department' => 'requiresDepartment',
-        'requires_project' => 'requiresProject',
-        'invoicing_department' => 'invoicingDepartment'
-    ];
+'version' => 'version',
+'changes' => 'changes',
+'url' => 'url',
+'number' => 'number',
+'name' => 'name',
+'description' => 'description',
+'type' => 'type',
+'legal_vat_types' => 'legalVatTypes',
+'ledger_type' => 'ledgerType',
+'vat_type' => 'vatType',
+'vat_locked' => 'vatLocked',
+'currency' => 'currency',
+'is_closeable' => 'isCloseable',
+'is_applicable_for_supplier_invoice' => 'isApplicableForSupplierInvoice',
+'require_reconciliation' => 'requireReconciliation',
+'is_inactive' => 'isInactive',
+'is_bank_account' => 'isBankAccount',
+'is_invoice_account' => 'isInvoiceAccount',
+'bank_account_number' => 'bankAccountNumber',
+'bank_account_country' => 'bankAccountCountry',
+'bank_name' => 'bankName',
+'bank_account_iban' => 'bankAccountIBAN',
+'bank_account_swift' => 'bankAccountSWIFT',
+'saft_code' => 'saftCode',
+'display_name' => 'displayName',
+'requires_department' => 'requiresDepartment',
+'requires_project' => 'requiresProject',
+'invoicing_department' => 'invoicingDepartment'    ];
 
     /**
      * Array of attributes to setter functions (for deserialization of responses)
@@ -288,35 +186,34 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $setters = [
         'id' => 'setId',
-        'version' => 'setVersion',
-        'changes' => 'setChanges',
-        'url' => 'setUrl',
-        'number' => 'setNumber',
-        'name' => 'setName',
-        'description' => 'setDescription',
-        'type' => 'setType',
-        'legal_vat_types' => 'setLegalVatTypes',
-        'ledger_type' => 'setLedgerType',
-        'vat_type' => 'setVatType',
-        'vat_locked' => 'setVatLocked',
-        'currency' => 'setCurrency',
-        'is_closeable' => 'setIsCloseable',
-        'is_applicable_for_supplier_invoice' => 'setIsApplicableForSupplierInvoice',
-        'require_reconciliation' => 'setRequireReconciliation',
-        'is_inactive' => 'setIsInactive',
-        'is_bank_account' => 'setIsBankAccount',
-        'is_invoice_account' => 'setIsInvoiceAccount',
-        'bank_account_number' => 'setBankAccountNumber',
-        'bank_account_country' => 'setBankAccountCountry',
-        'bank_name' => 'setBankName',
-        'bank_account_iban' => 'setBankAccountIban',
-        'bank_account_swift' => 'setBankAccountSwift',
-        'saft_code' => 'setSaftCode',
-        'display_name' => 'setDisplayName',
-        'requires_department' => 'setRequiresDepartment',
-        'requires_project' => 'setRequiresProject',
-        'invoicing_department' => 'setInvoicingDepartment'
-    ];
+'version' => 'setVersion',
+'changes' => 'setChanges',
+'url' => 'setUrl',
+'number' => 'setNumber',
+'name' => 'setName',
+'description' => 'setDescription',
+'type' => 'setType',
+'legal_vat_types' => 'setLegalVatTypes',
+'ledger_type' => 'setLedgerType',
+'vat_type' => 'setVatType',
+'vat_locked' => 'setVatLocked',
+'currency' => 'setCurrency',
+'is_closeable' => 'setIsCloseable',
+'is_applicable_for_supplier_invoice' => 'setIsApplicableForSupplierInvoice',
+'require_reconciliation' => 'setRequireReconciliation',
+'is_inactive' => 'setIsInactive',
+'is_bank_account' => 'setIsBankAccount',
+'is_invoice_account' => 'setIsInvoiceAccount',
+'bank_account_number' => 'setBankAccountNumber',
+'bank_account_country' => 'setBankAccountCountry',
+'bank_name' => 'setBankName',
+'bank_account_iban' => 'setBankAccountIban',
+'bank_account_swift' => 'setBankAccountSwift',
+'saft_code' => 'setSaftCode',
+'display_name' => 'setDisplayName',
+'requires_department' => 'setRequiresDepartment',
+'requires_project' => 'setRequiresProject',
+'invoicing_department' => 'setInvoicingDepartment'    ];
 
     /**
      * Array of attributes to getter functions (for serialization of requests)
@@ -325,35 +222,34 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $getters = [
         'id' => 'getId',
-        'version' => 'getVersion',
-        'changes' => 'getChanges',
-        'url' => 'getUrl',
-        'number' => 'getNumber',
-        'name' => 'getName',
-        'description' => 'getDescription',
-        'type' => 'getType',
-        'legal_vat_types' => 'getLegalVatTypes',
-        'ledger_type' => 'getLedgerType',
-        'vat_type' => 'getVatType',
-        'vat_locked' => 'getVatLocked',
-        'currency' => 'getCurrency',
-        'is_closeable' => 'getIsCloseable',
-        'is_applicable_for_supplier_invoice' => 'getIsApplicableForSupplierInvoice',
-        'require_reconciliation' => 'getRequireReconciliation',
-        'is_inactive' => 'getIsInactive',
-        'is_bank_account' => 'getIsBankAccount',
-        'is_invoice_account' => 'getIsInvoiceAccount',
-        'bank_account_number' => 'getBankAccountNumber',
-        'bank_account_country' => 'getBankAccountCountry',
-        'bank_name' => 'getBankName',
-        'bank_account_iban' => 'getBankAccountIban',
-        'bank_account_swift' => 'getBankAccountSwift',
-        'saft_code' => 'getSaftCode',
-        'display_name' => 'getDisplayName',
-        'requires_department' => 'getRequiresDepartment',
-        'requires_project' => 'getRequiresProject',
-        'invoicing_department' => 'getInvoicingDepartment'
-    ];
+'version' => 'getVersion',
+'changes' => 'getChanges',
+'url' => 'getUrl',
+'number' => 'getNumber',
+'name' => 'getName',
+'description' => 'getDescription',
+'type' => 'getType',
+'legal_vat_types' => 'getLegalVatTypes',
+'ledger_type' => 'getLedgerType',
+'vat_type' => 'getVatType',
+'vat_locked' => 'getVatLocked',
+'currency' => 'getCurrency',
+'is_closeable' => 'getIsCloseable',
+'is_applicable_for_supplier_invoice' => 'getIsApplicableForSupplierInvoice',
+'require_reconciliation' => 'getRequireReconciliation',
+'is_inactive' => 'getIsInactive',
+'is_bank_account' => 'getIsBankAccount',
+'is_invoice_account' => 'getIsInvoiceAccount',
+'bank_account_number' => 'getBankAccountNumber',
+'bank_account_country' => 'getBankAccountCountry',
+'bank_name' => 'getBankName',
+'bank_account_iban' => 'getBankAccountIban',
+'bank_account_swift' => 'getBankAccountSwift',
+'saft_code' => 'getSaftCode',
+'display_name' => 'getDisplayName',
+'requires_department' => 'getRequiresDepartment',
+'requires_project' => 'getRequiresProject',
+'invoicing_department' => 'getInvoicingDepartment'    ];
 
     /**
      * Array of attributes where the key is the local name,
@@ -393,27 +289,27 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function getModelName()
     {
-        return self::$openAPIModelName;
+        return self::$swaggerModelName;
     }
 
-    public const TYPE_ASSETS = 'ASSETS';
-    public const TYPE_EQUITY = 'EQUITY';
-    public const TYPE_LIABILITIES = 'LIABILITIES';
-    public const TYPE_OPERATING_REVENUES = 'OPERATING_REVENUES';
-    public const TYPE_OPERATING_EXPENSES = 'OPERATING_EXPENSES';
-    public const TYPE_INVESTMENT_INCOME = 'INVESTMENT_INCOME';
-    public const TYPE_COST_OF_CAPITAL = 'COST_OF_CAPITAL';
-    public const TYPE_TAX_ON_ORDINARY_ACTIVITIES = 'TAX_ON_ORDINARY_ACTIVITIES';
-    public const TYPE_EXTRAORDINARY_INCOME = 'EXTRAORDINARY_INCOME';
-    public const TYPE_EXTRAORDINARY_COST = 'EXTRAORDINARY_COST';
-    public const TYPE_TAX_ON_EXTRAORDINARY_ACTIVITIES = 'TAX_ON_EXTRAORDINARY_ACTIVITIES';
-    public const TYPE_ANNUAL_RESULT = 'ANNUAL_RESULT';
-    public const TYPE_TRANSFERS_AND_ALLOCATIONS = 'TRANSFERS_AND_ALLOCATIONS';
-    public const LEDGER_TYPE_GENERAL = 'GENERAL';
-    public const LEDGER_TYPE_CUSTOMER = 'CUSTOMER';
-    public const LEDGER_TYPE_VENDOR = 'VENDOR';
-    public const LEDGER_TYPE_EMPLOYEE = 'EMPLOYEE';
-    public const LEDGER_TYPE_ASSET = 'ASSET';
+    const TYPE_ASSETS = 'ASSETS';
+const TYPE_EQUITY = 'EQUITY';
+const TYPE_LIABILITIES = 'LIABILITIES';
+const TYPE_OPERATING_REVENUES = 'OPERATING_REVENUES';
+const TYPE_OPERATING_EXPENSES = 'OPERATING_EXPENSES';
+const TYPE_INVESTMENT_INCOME = 'INVESTMENT_INCOME';
+const TYPE_COST_OF_CAPITAL = 'COST_OF_CAPITAL';
+const TYPE_TAX_ON_ORDINARY_ACTIVITIES = 'TAX_ON_ORDINARY_ACTIVITIES';
+const TYPE_EXTRAORDINARY_INCOME = 'EXTRAORDINARY_INCOME';
+const TYPE_EXTRAORDINARY_COST = 'EXTRAORDINARY_COST';
+const TYPE_TAX_ON_EXTRAORDINARY_ACTIVITIES = 'TAX_ON_EXTRAORDINARY_ACTIVITIES';
+const TYPE_ANNUAL_RESULT = 'ANNUAL_RESULT';
+const TYPE_TRANSFERS_AND_ALLOCATIONS = 'TRANSFERS_AND_ALLOCATIONS';
+const LEDGER_TYPE_GENERAL = 'GENERAL';
+const LEDGER_TYPE_CUSTOMER = 'CUSTOMER';
+const LEDGER_TYPE_VENDOR = 'VENDOR';
+const LEDGER_TYPE_EMPLOYEE = 'EMPLOYEE';
+const LEDGER_TYPE_ASSET = 'ASSET';
 
     /**
      * Gets allowable values of the enum
@@ -424,21 +320,19 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     {
         return [
             self::TYPE_ASSETS,
-            self::TYPE_EQUITY,
-            self::TYPE_LIABILITIES,
-            self::TYPE_OPERATING_REVENUES,
-            self::TYPE_OPERATING_EXPENSES,
-            self::TYPE_INVESTMENT_INCOME,
-            self::TYPE_COST_OF_CAPITAL,
-            self::TYPE_TAX_ON_ORDINARY_ACTIVITIES,
-            self::TYPE_EXTRAORDINARY_INCOME,
-            self::TYPE_EXTRAORDINARY_COST,
-            self::TYPE_TAX_ON_EXTRAORDINARY_ACTIVITIES,
-            self::TYPE_ANNUAL_RESULT,
-            self::TYPE_TRANSFERS_AND_ALLOCATIONS,
-        ];
+self::TYPE_EQUITY,
+self::TYPE_LIABILITIES,
+self::TYPE_OPERATING_REVENUES,
+self::TYPE_OPERATING_EXPENSES,
+self::TYPE_INVESTMENT_INCOME,
+self::TYPE_COST_OF_CAPITAL,
+self::TYPE_TAX_ON_ORDINARY_ACTIVITIES,
+self::TYPE_EXTRAORDINARY_INCOME,
+self::TYPE_EXTRAORDINARY_COST,
+self::TYPE_TAX_ON_EXTRAORDINARY_ACTIVITIES,
+self::TYPE_ANNUAL_RESULT,
+self::TYPE_TRANSFERS_AND_ALLOCATIONS,        ];
     }
-
     /**
      * Gets allowable values of the enum
      *
@@ -448,11 +342,10 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     {
         return [
             self::LEDGER_TYPE_GENERAL,
-            self::LEDGER_TYPE_CUSTOMER,
-            self::LEDGER_TYPE_VENDOR,
-            self::LEDGER_TYPE_EMPLOYEE,
-            self::LEDGER_TYPE_ASSET,
-        ];
+self::LEDGER_TYPE_CUSTOMER,
+self::LEDGER_TYPE_VENDOR,
+self::LEDGER_TYPE_EMPLOYEE,
+self::LEDGER_TYPE_ASSET,        ];
     }
 
     /**
@@ -470,53 +363,35 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __construct(array $data = null)
     {
-        $this->setIfExists('id', $data ?? [], null);
-        $this->setIfExists('version', $data ?? [], null);
-        $this->setIfExists('changes', $data ?? [], null);
-        $this->setIfExists('url', $data ?? [], null);
-        $this->setIfExists('number', $data ?? [], null);
-        $this->setIfExists('name', $data ?? [], null);
-        $this->setIfExists('description', $data ?? [], null);
-        $this->setIfExists('type', $data ?? [], null);
-        $this->setIfExists('legal_vat_types', $data ?? [], null);
-        $this->setIfExists('ledger_type', $data ?? [], null);
-        $this->setIfExists('vat_type', $data ?? [], null);
-        $this->setIfExists('vat_locked', $data ?? [], null);
-        $this->setIfExists('currency', $data ?? [], null);
-        $this->setIfExists('is_closeable', $data ?? [], null);
-        $this->setIfExists('is_applicable_for_supplier_invoice', $data ?? [], null);
-        $this->setIfExists('require_reconciliation', $data ?? [], null);
-        $this->setIfExists('is_inactive', $data ?? [], null);
-        $this->setIfExists('is_bank_account', $data ?? [], null);
-        $this->setIfExists('is_invoice_account', $data ?? [], null);
-        $this->setIfExists('bank_account_number', $data ?? [], null);
-        $this->setIfExists('bank_account_country', $data ?? [], null);
-        $this->setIfExists('bank_name', $data ?? [], null);
-        $this->setIfExists('bank_account_iban', $data ?? [], null);
-        $this->setIfExists('bank_account_swift', $data ?? [], null);
-        $this->setIfExists('saft_code', $data ?? [], null);
-        $this->setIfExists('display_name', $data ?? [], null);
-        $this->setIfExists('requires_department', $data ?? [], null);
-        $this->setIfExists('requires_project', $data ?? [], null);
-        $this->setIfExists('invoicing_department', $data ?? [], null);
-    }
-
-    /**
-    * Sets $this->container[$variableName] to the given data or to the given default Value; if $variableName
-    * is nullable and its value is set to null in the $fields array, then mark it as "set to null" in the
-    * $this->openAPINullablesSetToNull array
-    *
-    * @param string $variableName
-    * @param array  $fields
-    * @param mixed  $defaultValue
-    */
-    private function setIfExists(string $variableName, array $fields, $defaultValue): void
-    {
-        if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
-            $this->openAPINullablesSetToNull[] = $variableName;
-        }
-
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $this->container['id'] = isset($data['id']) ? $data['id'] : null;
+        $this->container['version'] = isset($data['version']) ? $data['version'] : null;
+        $this->container['changes'] = isset($data['changes']) ? $data['changes'] : null;
+        $this->container['url'] = isset($data['url']) ? $data['url'] : null;
+        $this->container['number'] = isset($data['number']) ? $data['number'] : null;
+        $this->container['name'] = isset($data['name']) ? $data['name'] : null;
+        $this->container['description'] = isset($data['description']) ? $data['description'] : null;
+        $this->container['type'] = isset($data['type']) ? $data['type'] : null;
+        $this->container['legal_vat_types'] = isset($data['legal_vat_types']) ? $data['legal_vat_types'] : null;
+        $this->container['ledger_type'] = isset($data['ledger_type']) ? $data['ledger_type'] : null;
+        $this->container['vat_type'] = isset($data['vat_type']) ? $data['vat_type'] : null;
+        $this->container['vat_locked'] = isset($data['vat_locked']) ? $data['vat_locked'] : null;
+        $this->container['currency'] = isset($data['currency']) ? $data['currency'] : null;
+        $this->container['is_closeable'] = isset($data['is_closeable']) ? $data['is_closeable'] : null;
+        $this->container['is_applicable_for_supplier_invoice'] = isset($data['is_applicable_for_supplier_invoice']) ? $data['is_applicable_for_supplier_invoice'] : null;
+        $this->container['require_reconciliation'] = isset($data['require_reconciliation']) ? $data['require_reconciliation'] : null;
+        $this->container['is_inactive'] = isset($data['is_inactive']) ? $data['is_inactive'] : null;
+        $this->container['is_bank_account'] = isset($data['is_bank_account']) ? $data['is_bank_account'] : null;
+        $this->container['is_invoice_account'] = isset($data['is_invoice_account']) ? $data['is_invoice_account'] : null;
+        $this->container['bank_account_number'] = isset($data['bank_account_number']) ? $data['bank_account_number'] : null;
+        $this->container['bank_account_country'] = isset($data['bank_account_country']) ? $data['bank_account_country'] : null;
+        $this->container['bank_name'] = isset($data['bank_name']) ? $data['bank_name'] : null;
+        $this->container['bank_account_iban'] = isset($data['bank_account_iban']) ? $data['bank_account_iban'] : null;
+        $this->container['bank_account_swift'] = isset($data['bank_account_swift']) ? $data['bank_account_swift'] : null;
+        $this->container['saft_code'] = isset($data['saft_code']) ? $data['saft_code'] : null;
+        $this->container['display_name'] = isset($data['display_name']) ? $data['display_name'] : null;
+        $this->container['requires_department'] = isset($data['requires_department']) ? $data['requires_department'] : null;
+        $this->container['requires_project'] = isset($data['requires_project']) ? $data['requires_project'] : null;
+        $this->container['invoicing_department'] = isset($data['invoicing_department']) ? $data['invoicing_department'] : null;
     }
 
     /**
@@ -531,22 +406,13 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
         if ($this->container['number'] === null) {
             $invalidProperties[] = "'number' can't be null";
         }
-        if (($this->container['number'] < 0)) {
-            $invalidProperties[] = "invalid value for 'number', must be bigger than or equal to 0.";
-        }
-
         if ($this->container['name'] === null) {
             $invalidProperties[] = "'name' can't be null";
         }
-        if ((mb_strlen($this->container['name']) > 255)) {
-            $invalidProperties[] = "invalid value for 'name', the character length must be smaller than or equal to 255.";
-        }
-
         $allowedValues = $this->getTypeAllowableValues();
         if (!is_null($this->container['type']) && !in_array($this->container['type'], $allowedValues, true)) {
             $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'type', must be one of '%s'",
-                $this->container['type'],
+                "invalid value for 'type', must be one of '%s'",
                 implode("', '", $allowedValues)
             );
         }
@@ -554,30 +420,9 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
         $allowedValues = $this->getLedgerTypeAllowableValues();
         if (!is_null($this->container['ledger_type']) && !in_array($this->container['ledger_type'], $allowedValues, true)) {
             $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'ledger_type', must be one of '%s'",
-                $this->container['ledger_type'],
+                "invalid value for 'ledger_type', must be one of '%s'",
                 implode("', '", $allowedValues)
             );
-        }
-
-        if (!is_null($this->container['bank_account_number']) && (mb_strlen($this->container['bank_account_number']) > 100)) {
-            $invalidProperties[] = "invalid value for 'bank_account_number', the character length must be smaller than or equal to 100.";
-        }
-
-        if (!is_null($this->container['bank_name']) && (mb_strlen($this->container['bank_name']) > 255)) {
-            $invalidProperties[] = "invalid value for 'bank_name', the character length must be smaller than or equal to 255.";
-        }
-
-        if (!is_null($this->container['bank_account_iban']) && (mb_strlen($this->container['bank_account_iban']) > 100)) {
-            $invalidProperties[] = "invalid value for 'bank_account_iban', the character length must be smaller than or equal to 100.";
-        }
-
-        if (!is_null($this->container['bank_account_swift']) && (mb_strlen($this->container['bank_account_swift']) > 100)) {
-            $invalidProperties[] = "invalid value for 'bank_account_swift', the character length must be smaller than or equal to 100.";
-        }
-
-        if (!is_null($this->container['saft_code']) && (mb_strlen($this->container['saft_code']) > 4)) {
-            $invalidProperties[] = "invalid value for 'saft_code', the character length must be smaller than or equal to 4.";
         }
 
         return $invalidProperties;
@@ -598,7 +443,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets id
      *
-     * @return int|null
+     * @return int
      */
     public function getId()
     {
@@ -608,15 +453,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets id
      *
-     * @param int|null $id id
+     * @param int $id id
      *
-     * @return self
+     * @return $this
      */
     public function setId($id)
     {
-        if (is_null($id)) {
-            throw new \InvalidArgumentException('non-nullable id cannot be null');
-        }
         $this->container['id'] = $id;
 
         return $this;
@@ -625,7 +467,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets version
      *
-     * @return int|null
+     * @return int
      */
     public function getVersion()
     {
@@ -635,15 +477,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets version
      *
-     * @param int|null $version version
+     * @param int $version version
      *
-     * @return self
+     * @return $this
      */
     public function setVersion($version)
     {
-        if (is_null($version)) {
-            throw new \InvalidArgumentException('non-nullable version cannot be null');
-        }
         $this->container['version'] = $version;
 
         return $this;
@@ -652,7 +491,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets changes
      *
-     * @return \Learnist\Tripletex\Model\Change[]|null
+     * @return \Learnist\Tripletex\Model\Change[]
      */
     public function getChanges()
     {
@@ -662,15 +501,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets changes
      *
-     * @param \Learnist\Tripletex\Model\Change[]|null $changes changes
+     * @param \Learnist\Tripletex\Model\Change[] $changes changes
      *
-     * @return self
+     * @return $this
      */
     public function setChanges($changes)
     {
-        if (is_null($changes)) {
-            throw new \InvalidArgumentException('non-nullable changes cannot be null');
-        }
         $this->container['changes'] = $changes;
 
         return $this;
@@ -679,7 +515,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets url
      *
-     * @return string|null
+     * @return string
      */
     public function getUrl()
     {
@@ -689,15 +525,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets url
      *
-     * @param string|null $url url
+     * @param string $url url
      *
-     * @return self
+     * @return $this
      */
     public function setUrl($url)
     {
-        if (is_null($url)) {
-            throw new \InvalidArgumentException('non-nullable url cannot be null');
-        }
         $this->container['url'] = $url;
 
         return $this;
@@ -718,18 +551,10 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @param int $number number
      *
-     * @return self
+     * @return $this
      */
     public function setNumber($number)
     {
-        if (is_null($number)) {
-            throw new \InvalidArgumentException('non-nullable number cannot be null');
-        }
-
-        if (($number < 0)) {
-            throw new \InvalidArgumentException('invalid value for $number when calling Account., must be bigger than or equal to 0.');
-        }
-
         $this->container['number'] = $number;
 
         return $this;
@@ -750,17 +575,10 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @param string $name name
      *
-     * @return self
+     * @return $this
      */
     public function setName($name)
     {
-        if (is_null($name)) {
-            throw new \InvalidArgumentException('non-nullable name cannot be null');
-        }
-        if ((mb_strlen($name) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $name when calling Account., must be smaller than or equal to 255.');
-        }
-
         $this->container['name'] = $name;
 
         return $this;
@@ -769,7 +587,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets description
      *
-     * @return string|null
+     * @return string
      */
     public function getDescription()
     {
@@ -779,15 +597,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets description
      *
-     * @param string|null $description description
+     * @param string $description description
      *
-     * @return self
+     * @return $this
      */
     public function setDescription($description)
     {
-        if (is_null($description)) {
-            throw new \InvalidArgumentException('non-nullable description cannot be null');
-        }
         $this->container['description'] = $description;
 
         return $this;
@@ -796,7 +611,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets type
      *
-     * @return string|null
+     * @return string
      */
     public function getType()
     {
@@ -806,21 +621,17 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets type
      *
-     * @param string|null $type type
+     * @param string $type type
      *
-     * @return self
+     * @return $this
      */
     public function setType($type)
     {
-        if (is_null($type)) {
-            throw new \InvalidArgumentException('non-nullable type cannot be null');
-        }
         $allowedValues = $this->getTypeAllowableValues();
-        if (!in_array($type, $allowedValues, true)) {
+        if (!is_null($type) && !in_array($type, $allowedValues, true)) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    "Invalid value '%s' for 'type', must be one of '%s'",
-                    $type,
+                    "Invalid value for 'type', must be one of '%s'",
                     implode("', '", $allowedValues)
                 )
             );
@@ -833,7 +644,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets legal_vat_types
      *
-     * @return \Learnist\Tripletex\Model\VatType[]|null
+     * @return \Learnist\Tripletex\Model\VatType[]
      */
     public function getLegalVatTypes()
     {
@@ -843,15 +654,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets legal_vat_types
      *
-     * @param \Learnist\Tripletex\Model\VatType[]|null $legal_vat_types List of legal vat types for this account.
+     * @param \Learnist\Tripletex\Model\VatType[] $legal_vat_types List of legal vat types for this account.
      *
-     * @return self
+     * @return $this
      */
     public function setLegalVatTypes($legal_vat_types)
     {
-        if (is_null($legal_vat_types)) {
-            throw new \InvalidArgumentException('non-nullable legal_vat_types cannot be null');
-        }
         $this->container['legal_vat_types'] = $legal_vat_types;
 
         return $this;
@@ -860,7 +668,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets ledger_type
      *
-     * @return string|null
+     * @return string
      */
     public function getLedgerType()
     {
@@ -870,21 +678,17 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets ledger_type
      *
-     * @param string|null $ledger_type Supported ledger types, default is GENERAL. Only available for customers with the module multiple ledgers.
+     * @param string $ledger_type Supported ledger types, default is GENERAL. Only available for customers with the module multiple ledgers.
      *
-     * @return self
+     * @return $this
      */
     public function setLedgerType($ledger_type)
     {
-        if (is_null($ledger_type)) {
-            throw new \InvalidArgumentException('non-nullable ledger_type cannot be null');
-        }
         $allowedValues = $this->getLedgerTypeAllowableValues();
-        if (!in_array($ledger_type, $allowedValues, true)) {
+        if (!is_null($ledger_type) && !in_array($ledger_type, $allowedValues, true)) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    "Invalid value '%s' for 'ledger_type', must be one of '%s'",
-                    $ledger_type,
+                    "Invalid value for 'ledger_type', must be one of '%s'",
                     implode("', '", $allowedValues)
                 )
             );
@@ -897,7 +701,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets vat_type
      *
-     * @return \Learnist\Tripletex\Model\VatType|null
+     * @return \Learnist\Tripletex\Model\VatType
      */
     public function getVatType()
     {
@@ -907,15 +711,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets vat_type
      *
-     * @param \Learnist\Tripletex\Model\VatType|null $vat_type vat_type
+     * @param \Learnist\Tripletex\Model\VatType $vat_type vat_type
      *
-     * @return self
+     * @return $this
      */
     public function setVatType($vat_type)
     {
-        if (is_null($vat_type)) {
-            throw new \InvalidArgumentException('non-nullable vat_type cannot be null');
-        }
         $this->container['vat_type'] = $vat_type;
 
         return $this;
@@ -924,7 +725,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets vat_locked
      *
-     * @return bool|null
+     * @return bool
      */
     public function getVatLocked()
     {
@@ -934,15 +735,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets vat_locked
      *
-     * @param bool|null $vat_locked True if all entries on this account must have the vat type given by vatType.
+     * @param bool $vat_locked True if all entries on this account must have the vat type given by vatType.
      *
-     * @return self
+     * @return $this
      */
     public function setVatLocked($vat_locked)
     {
-        if (is_null($vat_locked)) {
-            throw new \InvalidArgumentException('non-nullable vat_locked cannot be null');
-        }
         $this->container['vat_locked'] = $vat_locked;
 
         return $this;
@@ -951,7 +749,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets currency
      *
-     * @return \Learnist\Tripletex\Model\Currency|null
+     * @return \Learnist\Tripletex\Model\Currency
      */
     public function getCurrency()
     {
@@ -961,15 +759,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets currency
      *
-     * @param \Learnist\Tripletex\Model\Currency|null $currency currency
+     * @param \Learnist\Tripletex\Model\Currency $currency currency
      *
-     * @return self
+     * @return $this
      */
     public function setCurrency($currency)
     {
-        if (is_null($currency)) {
-            throw new \InvalidArgumentException('non-nullable currency cannot be null');
-        }
         $this->container['currency'] = $currency;
 
         return $this;
@@ -978,7 +773,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets is_closeable
      *
-     * @return bool|null
+     * @return bool
      */
     public function getIsCloseable()
     {
@@ -988,15 +783,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets is_closeable
      *
-     * @param bool|null $is_closeable True if it should be possible to close entries on this account and it is possible to filter on open entries.
+     * @param bool $is_closeable True if it should be possible to close entries on this account and it is possible to filter on open entries.
      *
-     * @return self
+     * @return $this
      */
     public function setIsCloseable($is_closeable)
     {
-        if (is_null($is_closeable)) {
-            throw new \InvalidArgumentException('non-nullable is_closeable cannot be null');
-        }
         $this->container['is_closeable'] = $is_closeable;
 
         return $this;
@@ -1005,7 +797,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets is_applicable_for_supplier_invoice
      *
-     * @return bool|null
+     * @return bool
      */
     public function getIsApplicableForSupplierInvoice()
     {
@@ -1015,15 +807,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets is_applicable_for_supplier_invoice
      *
-     * @param bool|null $is_applicable_for_supplier_invoice True if this account is applicable for supplier invoice registration.
+     * @param bool $is_applicable_for_supplier_invoice True if this account is applicable for supplier invoice registration.
      *
-     * @return self
+     * @return $this
      */
     public function setIsApplicableForSupplierInvoice($is_applicable_for_supplier_invoice)
     {
-        if (is_null($is_applicable_for_supplier_invoice)) {
-            throw new \InvalidArgumentException('non-nullable is_applicable_for_supplier_invoice cannot be null');
-        }
         $this->container['is_applicable_for_supplier_invoice'] = $is_applicable_for_supplier_invoice;
 
         return $this;
@@ -1032,7 +821,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets require_reconciliation
      *
-     * @return bool|null
+     * @return bool
      */
     public function getRequireReconciliation()
     {
@@ -1042,15 +831,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets require_reconciliation
      *
-     * @param bool|null $require_reconciliation True if this account must be reconciled before the accounting period closure.
+     * @param bool $require_reconciliation True if this account must be reconciled before the accounting period closure.
      *
-     * @return self
+     * @return $this
      */
     public function setRequireReconciliation($require_reconciliation)
     {
-        if (is_null($require_reconciliation)) {
-            throw new \InvalidArgumentException('non-nullable require_reconciliation cannot be null');
-        }
         $this->container['require_reconciliation'] = $require_reconciliation;
 
         return $this;
@@ -1059,7 +845,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets is_inactive
      *
-     * @return bool|null
+     * @return bool
      */
     public function getIsInactive()
     {
@@ -1069,15 +855,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets is_inactive
      *
-     * @param bool|null $is_inactive Inactive accounts will not show up in UI lists.
+     * @param bool $is_inactive Inactive accounts will not show up in UI lists.
      *
-     * @return self
+     * @return $this
      */
     public function setIsInactive($is_inactive)
     {
-        if (is_null($is_inactive)) {
-            throw new \InvalidArgumentException('non-nullable is_inactive cannot be null');
-        }
         $this->container['is_inactive'] = $is_inactive;
 
         return $this;
@@ -1086,7 +869,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets is_bank_account
      *
-     * @return bool|null
+     * @return bool
      */
     public function getIsBankAccount()
     {
@@ -1096,15 +879,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets is_bank_account
      *
-     * @param bool|null $is_bank_account is_bank_account
+     * @param bool $is_bank_account is_bank_account
      *
-     * @return self
+     * @return $this
      */
     public function setIsBankAccount($is_bank_account)
     {
-        if (is_null($is_bank_account)) {
-            throw new \InvalidArgumentException('non-nullable is_bank_account cannot be null');
-        }
         $this->container['is_bank_account'] = $is_bank_account;
 
         return $this;
@@ -1113,7 +893,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets is_invoice_account
      *
-     * @return bool|null
+     * @return bool
      */
     public function getIsInvoiceAccount()
     {
@@ -1123,15 +903,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets is_invoice_account
      *
-     * @param bool|null $is_invoice_account is_invoice_account
+     * @param bool $is_invoice_account is_invoice_account
      *
-     * @return self
+     * @return $this
      */
     public function setIsInvoiceAccount($is_invoice_account)
     {
-        if (is_null($is_invoice_account)) {
-            throw new \InvalidArgumentException('non-nullable is_invoice_account cannot be null');
-        }
         $this->container['is_invoice_account'] = $is_invoice_account;
 
         return $this;
@@ -1140,7 +917,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets bank_account_number
      *
-     * @return string|null
+     * @return string
      */
     public function getBankAccountNumber()
     {
@@ -1150,19 +927,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets bank_account_number
      *
-     * @param string|null $bank_account_number bank_account_number
+     * @param string $bank_account_number bank_account_number
      *
-     * @return self
+     * @return $this
      */
     public function setBankAccountNumber($bank_account_number)
     {
-        if (is_null($bank_account_number)) {
-            throw new \InvalidArgumentException('non-nullable bank_account_number cannot be null');
-        }
-        if ((mb_strlen($bank_account_number) > 100)) {
-            throw new \InvalidArgumentException('invalid length for $bank_account_number when calling Account., must be smaller than or equal to 100.');
-        }
-
         $this->container['bank_account_number'] = $bank_account_number;
 
         return $this;
@@ -1171,7 +941,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets bank_account_country
      *
-     * @return \Learnist\Tripletex\Model\Country|null
+     * @return \Learnist\Tripletex\Model\Country
      */
     public function getBankAccountCountry()
     {
@@ -1181,15 +951,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets bank_account_country
      *
-     * @param \Learnist\Tripletex\Model\Country|null $bank_account_country bank_account_country
+     * @param \Learnist\Tripletex\Model\Country $bank_account_country bank_account_country
      *
-     * @return self
+     * @return $this
      */
     public function setBankAccountCountry($bank_account_country)
     {
-        if (is_null($bank_account_country)) {
-            throw new \InvalidArgumentException('non-nullable bank_account_country cannot be null');
-        }
         $this->container['bank_account_country'] = $bank_account_country;
 
         return $this;
@@ -1198,7 +965,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets bank_name
      *
-     * @return string|null
+     * @return string
      */
     public function getBankName()
     {
@@ -1208,19 +975,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets bank_name
      *
-     * @param string|null $bank_name bank_name
+     * @param string $bank_name bank_name
      *
-     * @return self
+     * @return $this
      */
     public function setBankName($bank_name)
     {
-        if (is_null($bank_name)) {
-            throw new \InvalidArgumentException('non-nullable bank_name cannot be null');
-        }
-        if ((mb_strlen($bank_name) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $bank_name when calling Account., must be smaller than or equal to 255.');
-        }
-
         $this->container['bank_name'] = $bank_name;
 
         return $this;
@@ -1229,7 +989,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets bank_account_iban
      *
-     * @return string|null
+     * @return string
      */
     public function getBankAccountIban()
     {
@@ -1239,19 +999,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets bank_account_iban
      *
-     * @param string|null $bank_account_iban bank_account_iban
+     * @param string $bank_account_iban bank_account_iban
      *
-     * @return self
+     * @return $this
      */
     public function setBankAccountIban($bank_account_iban)
     {
-        if (is_null($bank_account_iban)) {
-            throw new \InvalidArgumentException('non-nullable bank_account_iban cannot be null');
-        }
-        if ((mb_strlen($bank_account_iban) > 100)) {
-            throw new \InvalidArgumentException('invalid length for $bank_account_iban when calling Account., must be smaller than or equal to 100.');
-        }
-
         $this->container['bank_account_iban'] = $bank_account_iban;
 
         return $this;
@@ -1260,7 +1013,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets bank_account_swift
      *
-     * @return string|null
+     * @return string
      */
     public function getBankAccountSwift()
     {
@@ -1270,19 +1023,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets bank_account_swift
      *
-     * @param string|null $bank_account_swift bank_account_swift
+     * @param string $bank_account_swift bank_account_swift
      *
-     * @return self
+     * @return $this
      */
     public function setBankAccountSwift($bank_account_swift)
     {
-        if (is_null($bank_account_swift)) {
-            throw new \InvalidArgumentException('non-nullable bank_account_swift cannot be null');
-        }
-        if ((mb_strlen($bank_account_swift) > 100)) {
-            throw new \InvalidArgumentException('invalid length for $bank_account_swift when calling Account., must be smaller than or equal to 100.');
-        }
-
         $this->container['bank_account_swift'] = $bank_account_swift;
 
         return $this;
@@ -1291,7 +1037,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets saft_code
      *
-     * @return string|null
+     * @return string
      */
     public function getSaftCode()
     {
@@ -1301,19 +1047,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets saft_code
      *
-     * @param string|null $saft_code SAF-T code for account. It will be given a default value based on account number if empty.
+     * @param string $saft_code SAF-T code for account. It will be given a default value based on account number if empty.
      *
-     * @return self
+     * @return $this
      */
     public function setSaftCode($saft_code)
     {
-        if (is_null($saft_code)) {
-            throw new \InvalidArgumentException('non-nullable saft_code cannot be null');
-        }
-        if ((mb_strlen($saft_code) > 4)) {
-            throw new \InvalidArgumentException('invalid length for $saft_code when calling Account., must be smaller than or equal to 4.');
-        }
-
         $this->container['saft_code'] = $saft_code;
 
         return $this;
@@ -1322,7 +1061,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets display_name
      *
-     * @return string|null
+     * @return string
      */
     public function getDisplayName()
     {
@@ -1332,15 +1071,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets display_name
      *
-     * @param string|null $display_name display_name
+     * @param string $display_name display_name
      *
-     * @return self
+     * @return $this
      */
     public function setDisplayName($display_name)
     {
-        if (is_null($display_name)) {
-            throw new \InvalidArgumentException('non-nullable display_name cannot be null');
-        }
         $this->container['display_name'] = $display_name;
 
         return $this;
@@ -1349,7 +1085,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets requires_department
      *
-     * @return bool|null
+     * @return bool
      */
     public function getRequiresDepartment()
     {
@@ -1359,15 +1095,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets requires_department
      *
-     * @param bool|null $requires_department Posting against this account requires department.
+     * @param bool $requires_department Posting against this account requires department.
      *
-     * @return self
+     * @return $this
      */
     public function setRequiresDepartment($requires_department)
     {
-        if (is_null($requires_department)) {
-            throw new \InvalidArgumentException('non-nullable requires_department cannot be null');
-        }
         $this->container['requires_department'] = $requires_department;
 
         return $this;
@@ -1376,7 +1109,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets requires_project
      *
-     * @return bool|null
+     * @return bool
      */
     public function getRequiresProject()
     {
@@ -1386,15 +1119,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets requires_project
      *
-     * @param bool|null $requires_project Posting against this account requires project.
+     * @param bool $requires_project Posting against this account requires project.
      *
-     * @return self
+     * @return $this
      */
     public function setRequiresProject($requires_project)
     {
-        if (is_null($requires_project)) {
-            throw new \InvalidArgumentException('non-nullable requires_project cannot be null');
-        }
         $this->container['requires_project'] = $requires_project;
 
         return $this;
@@ -1403,7 +1133,7 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets invoicing_department
      *
-     * @return \Learnist\Tripletex\Model\Department|null
+     * @return \Learnist\Tripletex\Model\Department
      */
     public function getInvoicingDepartment()
     {
@@ -1413,15 +1143,12 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets invoicing_department
      *
-     * @param \Learnist\Tripletex\Model\Department|null $invoicing_department invoicing_department
+     * @param \Learnist\Tripletex\Model\Department $invoicing_department invoicing_department
      *
-     * @return self
+     * @return $this
      */
     public function setInvoicingDepartment($invoicing_department)
     {
-        if (is_null($invoicing_department)) {
-            throw new \InvalidArgumentException('non-nullable invoicing_department cannot be null');
-        }
         $this->container['invoicing_department'] = $invoicing_department;
 
         return $this;
@@ -1433,7 +1160,8 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return boolean
      */
-    public function offsetExists($offset): bool
+    #[\ReturnTypeWillChange] 
+    public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
     }
@@ -1443,23 +1171,24 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @param integer $offset Offset
      *
-     * @return mixed|null
+     * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[\ReturnTypeWillChange] 
     public function offsetGet($offset)
     {
-        return $this->container[$offset] ?? null;
+        return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
 
     /**
      * Sets value based on offset.
      *
-     * @param int|null $offset Offset
-     * @param mixed    $value  Value to be set
+     * @param integer $offset Offset
+     * @param mixed   $value  Value to be set
      *
      * @return void
      */
-    public function offsetSet($offset, $value): void
+    #[\ReturnTypeWillChange] 
+    public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -1475,22 +1204,10 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetUnset($offset): void
+    #[\ReturnTypeWillChange] 
+    public function offsetUnset($offset)
     {
         unset($this->container[$offset]);
-    }
-
-    /**
-     * Serializes the object to a value that can be serialized natively by json_encode().
-     * @link https://www.php.net/manual/en/jsonserializable.jsonserialize.php
-     *
-     * @return mixed Returns data which can be serialized by json_encode(), which is a value
-     * of any type other than a resource.
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
-    {
-       return ObjectSerializer::sanitizeForSerialization($this);
     }
 
     /**
@@ -1500,21 +1217,13 @@ class Account implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __toString()
     {
-        return json_encode(
-            ObjectSerializer::sanitizeForSerialization($this),
-            JSON_PRETTY_PRINT
-        );
-    }
+        if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
+            return json_encode(
+                ObjectSerializer::sanitizeForSerialization($this),
+                JSON_PRETTY_PRINT
+            );
+        }
 
-    /**
-     * Gets a header-safe presentation of the object
-     *
-     * @return string
-     */
-    public function toHeaderValue()
-    {
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
 }
-
-

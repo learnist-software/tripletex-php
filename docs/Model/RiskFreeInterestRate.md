@@ -1,15 +1,15 @@
-# # RiskFreeInterestRate
+# RiskFreeInterestRate
 
 ## Properties
-
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **int** |  | [optional]
-**version** | **int** |  | [optional]
-**changes** | [**\Learnist\Tripletex\Model\Change[]**](Change.md) |  | [optional] [readonly]
-**url** | **string** |  | [optional] [readonly]
-**year** | **int** |  | [optional] [readonly]
-**company_type** | **int** |  | [optional] [readonly]
-**rate** | **float** |  | [optional] [readonly]
+**id** | **int** |  | [optional] 
+**version** | **int** |  | [optional] 
+**changes** | [**\Learnist\Tripletex\Model\Change[]**](Change.md) |  | [optional] 
+**url** | **string** |  | [optional] 
+**year** | **int** |  | [optional] 
+**company_type** | **int** |  | [optional] 
+**rate** | **float** |  | [optional] 
 
-[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)
+[[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
+

@@ -1,15 +1,15 @@
-# # IncomeStatement
+# IncomeStatement
 
 ## Properties
-
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**business_income** | **float** |  | [optional] [readonly]
-**taxable_business_income** | **float** |  | [optional] [readonly]
-**total_addition** | **float** |  | [optional] [readonly]
-**total_deduction** | **float** |  | [optional] [readonly]
-**changes** | **float** |  | [optional] [readonly]
-**received_group_contribution** | **float** |  | [optional] [readonly]
-**payed_group_contribution** | **float** |  | [optional] [readonly]
+**business_income** | **float** |  | [optional] 
+**taxable_business_income** | **float** |  | [optional] 
+**total_addition** | **float** |  | [optional] 
+**total_deduction** | **float** |  | [optional] 
+**changes** | **float** |  | [optional] 
+**received_group_contribution** | **float** |  | [optional] 
+**payed_group_contribution** | **float** |  | [optional] 
 
-[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)
+[[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
+

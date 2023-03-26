@@ -2,12 +2,12 @@
 /**
  * BankBalanceEstimation
  *
- * PHP version 7.4
+ * PHP version 5
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
 
 /**
@@ -15,14 +15,14 @@
  *
  * ## Usage  - **Download the spec** [swagger.json](/v2/swagger.json) file, it is a [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification).  - **Generating a client** can easily be done using tools like [swagger-codegen](https://github.com/swagger-api/swagger-codegen) or other that accepts [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) specs.     - For swagger codegen it is recommended to use the flag: **--removeOperationIdPrefix**.        Unique operation ids are about to be introduced to the spec, and this ensures forward compatibility - and results in less verbose generated code.   ## Overview  - Partial resource updating is done using the `PUT` method with optional fields instead of the `PATCH` method.  - **Actions** or **commands** are represented in our RESTful path with a prefixed `:`. Example: `/v2/hours/123/:approve`.  - **Summaries** or **aggregated** results are represented in our RESTful path with a prefixed `>`. Example: `/v2/hours/>thisWeeksBillables`.  - **Request ID** is a key found in all responses in the header with the name `x-tlx-request-id`. For validation and error responses it is also in the response body. If additional log information is absolutely necessary, our support division can locate the key value.  - **version** This is a revision number found on all persisted resources. If included, it will prevent your PUT/POST from overriding any updates to the resource since your GET.  - **Date** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DD`.  - **DateTime** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DDThh:mm:ss`.  - **Searching** is done by entering values in the optional fields for each API call. The values fall into the following categories: range, in, exact and like.  - **Missing fields** or even **no response data** can occur because result objects and fields are filtered on authorization.  - **See [GitHub](https://github.com/Tripletex/tripletex-api2) for more documentation, examples, changelog and more.**  - **See [FAQ](https://tripletex.no/execute/docViewer?articleId=906&language=0) for additional information.**   ## Authentication  - **Tokens:** The Tripletex API uses 3 different tokens    - **consumerToken** is a token provided to the consumer by Tripletex after the API 2.0 registration is completed.    - **employeeToken** is a token created by an administrator in your Tripletex account via the user settings and the tab \"API access\". Each employee token must be given a set of entitlements. [Read more here.](https://tripletex.no/execute/docViewer?articleId=1505&languageId=0)    - **sessionToken** is the token from `/token/session/:create` which requires a consumerToken and an employeeToken created with the same consumer token, but not an authentication header.  - **Authentication** is done via [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)    - **username** is used to specify what company to access.      - `0` or blank means the company of the employee.      - Any other value means accountant clients. Use `/company/>withLoginAccess` to get a list of those.    - **password** is the **sessionToken**.    - If you need to create the header yourself use `Authorization: Basic <encoded token>` where `encoded token` is the string `<target company id or 0>:<your session token>` Base64 encoded.   ## Tags  - `[BETA]` This is a beta endpoint and can be subject to change. - `[DEPRECATED]` Deprecated means that we intend to remove/change this feature or capability in a future \"major\" API release. We therefore discourage all use of this feature/capability.   ## Fields  Use the `fields` parameter to specify which fields should be returned. This also supports fields from sub elements, done via `<field>(<subResourceFields>)`. `*` means all fields for that resource. Example values: - `project,activity,hours`  returns `{project:..., activity:...., hours:...}`. - just `project` returns `\"project\" : { \"id\": 12345, \"url\": \"tripletex.no/v2/projects/12345\"  }`. - `project(*)` returns `\"project\" : { \"id\": 12345 \"name\":\"ProjectName\" \"number.....startDate\": \"2013-01-07\" }`. - `project(name)` returns `\"project\" : { \"name\":\"ProjectName\" }`. - All resources and some subResources :  `*,activity(name),employee(*)`.   ## Sorting  Use the `sorting` parameter to specify sorting. It takes a comma separated list, where a `-` prefix denotes descending. You can sort by sub object with the following format: `<field>.<subObjectField>`. Example values: - `date` - `project.name` - `project.name, -date`   ## Changes  To get the changes for a resource, `changes` have to be explicitly specified as part of the `fields` parameter, e.g. `*,changes`. There are currently two types of change available:  - `CREATE` for when the resource was created - `UPDATE` for when the resource was updated  **NOTE** > For objects created prior to October 24th 2018 the list may be incomplete, but will always contain the CREATE and the last change (if the object has been changed after creation).   ## Rate limiting  Rate limiting is performed on the API calls for an employee for each API consumer. Status regarding the rate limit is returned as headers: - `X-Rate-Limit-Limit` - The number of allowed requests in the current period. - `X-Rate-Limit-Remaining` - The number of remaining requests. - `X-Rate-Limit-Reset` - The number of seconds left in the current period.  Once the rate limit is hit, all requests will return HTTP status code `429` for the remainder of the current period.   ## Response envelope  #### Multiple values  ```json {   \"fullResultSize\": ###, // {number} [DEPRECATED]   \"from\": ###, // {number} Paging starting from   \"count\": ###, // {number} Paging count   \"versionDigest\": \"###\", // {string} Hash of full result, null if no result   \"values\": [...{...object...},{...object...},{...object...}...] } ```  #### Single value  ```json {   \"value\": {...single object...} } ```   ## WebHook envelope  ```json {   \"subscriptionId\": ###, // Subscription id   \"event\": \"object.verb\", // As listed from /v2/event/   \"id\": ###, // Id of object this event is for   \"value\": {... single object, null if object.deleted ...} } ```   ## Error/warning envelope  ```json {   \"status\": ###, // {number} HTTP status code   \"code\": #####, // {number} internal status code of event   \"message\": \"###\", // {string} Basic feedback message in your language   \"link\": \"###\", // {string} Link to doc   \"developerMessage\": \"###\", // {string} More technical message   \"validationMessages\": [ // {array} List of validation messages, can be null     {       \"field\": \"###\", // {string} Name of field       \"message\": \"###\" // {string} Validation message for field     }   ],   \"requestId\": \"###\" // {string} Same as x-tlx-request-id  } ```   ## Status codes / Error codes  - **200 OK** - **201 Created** - From POSTs that create something new. - **204 No Content** - When there is no answer, ex: \"/:anAction\" or DELETE. - **400 Bad request** -   -  **4000** Bad Request Exception   - **11000** Illegal Filter Exception   - **12000** Path Param Exception   - **24000** Cryptography Exception - **401 Unauthorized** - When authentication is required and has failed or has not yet been provided   -  **3000** Authentication Exception - **403 Forbidden** - When AuthorisationManager says no.   -  **9000** Security Exception - **404 Not Found** - For resources that does not exist.   -  **6000** Not Found Exception - **409 Conflict** - Such as an edit conflict between multiple simultaneous updates   -  **7000** Object Exists Exception   -  **8000** Revision Exception   - **10000** Locked Exception   - **14000** Duplicate entry - **422 Bad Request** - For Required fields or things like malformed payload.   - **15000** Value Validation Exception   - **16000** Mapping Exception   - **17000** Sorting Exception   - **18000** Validation Exception   - **21000** Param Exception   - **22000** Invalid JSON Exception   - **23000** Result Set Too Large Exception - **429 Too Many Requests** - Request rate limit hit - **500 Internal Error** - Unexpected condition was encountered and no more specific message is suitable   - **1000** Exception
  *
- * The version of the OpenAPI document: 2.70.19
- * Generated by: https://openapi-generator.tech
- * OpenAPI Generator version: 6.5.0-SNAPSHOT
+ * OpenAPI spec version: 2.70.19
+ * 
+ * Generated by: https://github.com/swagger-api/swagger-codegen.git
+ * Swagger Codegen version: 3.0.41
  */
-
 /**
- * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
- * https://openapi-generator.tech
+ * NOTE: This class is auto generated by the swagger code generator program.
+ * https://github.com/swagger-api/swagger-codegen
  * Do not edit the class manually.
  */
 
@@ -36,110 +36,74 @@ use \Learnist\Tripletex\ObjectSerializer;
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- * @implements \ArrayAccess<string, mixed>
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
-class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSerializable
+class BankBalanceEstimation implements ModelInterface, ArrayAccess
 {
-    public const DISCRIMINATOR = null;
+    const DISCRIMINATOR = null;
 
     /**
       * The original name of the model.
       *
       * @var string
       */
-    protected static $openAPIModelName = 'BankBalanceEstimation';
+    protected static $swaggerModelName = 'BankBalanceEstimation';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
       *
       * @var string[]
       */
-    protected static $openAPITypes = [
+    protected static $swaggerTypes = [
         'id' => 'int',
-        'version' => 'int',
-        'changes' => '\Learnist\Tripletex\Model\Change[]',
-        'url' => 'string',
-        'date' => 'string',
-        'description' => 'string',
-        'voucher_id' => 'int',
-        'invoice_id' => 'int',
-        'invoice_number' => 'string',
-        'invoice_amount' => 'float',
-        'is_incoming_invoice' => 'bool',
-        'recurrence' => 'string',
-        'category' => 'string',
-        'vendor_or_customer_name' => 'string',
-        'is_manually_added' => 'bool',
-        'batch_id' => 'string'
-    ];
+'version' => 'int',
+'changes' => '\Learnist\Tripletex\Model\Change[]',
+'url' => 'string',
+'date' => 'string',
+'description' => 'string',
+'voucher_id' => 'int',
+'invoice_id' => 'int',
+'invoice_number' => 'string',
+'invoice_amount' => 'float',
+'is_incoming_invoice' => 'bool',
+'recurrence' => 'string',
+'category' => 'string',
+'vendor_or_customer_name' => 'string',
+'is_manually_added' => 'bool',
+'batch_id' => 'string'    ];
 
     /**
       * Array of property to format mappings. Used for (de)serialization
       *
       * @var string[]
-      * @phpstan-var array<string, string|null>
-      * @psalm-var array<string, string|null>
       */
-    protected static $openAPIFormats = [
+    protected static $swaggerFormats = [
         'id' => 'int32',
-        'version' => 'int32',
-        'changes' => null,
-        'url' => null,
-        'date' => null,
-        'description' => null,
-        'voucher_id' => 'int32',
-        'invoice_id' => 'int32',
-        'invoice_number' => null,
-        'invoice_amount' => null,
-        'is_incoming_invoice' => null,
-        'recurrence' => null,
-        'category' => null,
-        'vendor_or_customer_name' => null,
-        'is_manually_added' => null,
-        'batch_id' => null
-    ];
-
-    /**
-      * Array of nullable properties. Used for (de)serialization
-      *
-      * @var boolean[]
-      */
-    protected static array $openAPINullables = [
-        'id' => false,
-		'version' => false,
-		'changes' => false,
-		'url' => false,
-		'date' => false,
-		'description' => false,
-		'voucher_id' => false,
-		'invoice_id' => false,
-		'invoice_number' => false,
-		'invoice_amount' => false,
-		'is_incoming_invoice' => false,
-		'recurrence' => false,
-		'category' => false,
-		'vendor_or_customer_name' => false,
-		'is_manually_added' => false,
-		'batch_id' => false
-    ];
-
-    /**
-      * If a nullable field gets set to null, insert it here
-      *
-      * @var boolean[]
-      */
-    protected array $openAPINullablesSetToNull = [];
+'version' => 'int32',
+'changes' => null,
+'url' => null,
+'date' => null,
+'description' => null,
+'voucher_id' => 'int32',
+'invoice_id' => 'int32',
+'invoice_number' => null,
+'invoice_amount' => null,
+'is_incoming_invoice' => null,
+'recurrence' => null,
+'category' => null,
+'vendor_or_customer_name' => null,
+'is_manually_added' => null,
+'batch_id' => null    ];
 
     /**
      * Array of property to type mappings. Used for (de)serialization
      *
      * @return array
      */
-    public static function openAPITypes()
+    public static function swaggerTypes()
     {
-        return self::$openAPITypes;
+        return self::$swaggerTypes;
     }
 
     /**
@@ -147,61 +111,9 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
      *
      * @return array
      */
-    public static function openAPIFormats()
+    public static function swaggerFormats()
     {
-        return self::$openAPIFormats;
-    }
-
-    /**
-     * Array of nullable properties
-     *
-     * @return array
-     */
-    protected static function openAPINullables(): array
-    {
-        return self::$openAPINullables;
-    }
-
-    /**
-     * Array of nullable field names deliberately set to null
-     *
-     * @return boolean[]
-     */
-    private function getOpenAPINullablesSetToNull(): array
-    {
-        return $this->openAPINullablesSetToNull;
-    }
-
-    /**
-     * Setter - Array of nullable field names deliberately set to null
-     *
-     * @param boolean[] $openAPINullablesSetToNull
-     */
-    private function setOpenAPINullablesSetToNull(array $openAPINullablesSetToNull): void
-    {
-        $this->openAPINullablesSetToNull = $openAPINullablesSetToNull;
-    }
-
-    /**
-     * Checks if a property is nullable
-     *
-     * @param string $property
-     * @return bool
-     */
-    public static function isNullable(string $property): bool
-    {
-        return self::openAPINullables()[$property] ?? false;
-    }
-
-    /**
-     * Checks if a nullable property is set to null.
-     *
-     * @param string $property
-     * @return bool
-     */
-    public function isNullableSetToNull(string $property): bool
-    {
-        return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+        return self::$swaggerFormats;
     }
 
     /**
@@ -212,22 +124,21 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
      */
     protected static $attributeMap = [
         'id' => 'id',
-        'version' => 'version',
-        'changes' => 'changes',
-        'url' => 'url',
-        'date' => 'date',
-        'description' => 'description',
-        'voucher_id' => 'voucherId',
-        'invoice_id' => 'invoiceId',
-        'invoice_number' => 'invoiceNumber',
-        'invoice_amount' => 'invoiceAmount',
-        'is_incoming_invoice' => 'isIncomingInvoice',
-        'recurrence' => 'recurrence',
-        'category' => 'category',
-        'vendor_or_customer_name' => 'vendorOrCustomerName',
-        'is_manually_added' => 'isManuallyAdded',
-        'batch_id' => 'batchId'
-    ];
+'version' => 'version',
+'changes' => 'changes',
+'url' => 'url',
+'date' => 'date',
+'description' => 'description',
+'voucher_id' => 'voucherId',
+'invoice_id' => 'invoiceId',
+'invoice_number' => 'invoiceNumber',
+'invoice_amount' => 'invoiceAmount',
+'is_incoming_invoice' => 'isIncomingInvoice',
+'recurrence' => 'recurrence',
+'category' => 'category',
+'vendor_or_customer_name' => 'vendorOrCustomerName',
+'is_manually_added' => 'isManuallyAdded',
+'batch_id' => 'batchId'    ];
 
     /**
      * Array of attributes to setter functions (for deserialization of responses)
@@ -236,22 +147,21 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
      */
     protected static $setters = [
         'id' => 'setId',
-        'version' => 'setVersion',
-        'changes' => 'setChanges',
-        'url' => 'setUrl',
-        'date' => 'setDate',
-        'description' => 'setDescription',
-        'voucher_id' => 'setVoucherId',
-        'invoice_id' => 'setInvoiceId',
-        'invoice_number' => 'setInvoiceNumber',
-        'invoice_amount' => 'setInvoiceAmount',
-        'is_incoming_invoice' => 'setIsIncomingInvoice',
-        'recurrence' => 'setRecurrence',
-        'category' => 'setCategory',
-        'vendor_or_customer_name' => 'setVendorOrCustomerName',
-        'is_manually_added' => 'setIsManuallyAdded',
-        'batch_id' => 'setBatchId'
-    ];
+'version' => 'setVersion',
+'changes' => 'setChanges',
+'url' => 'setUrl',
+'date' => 'setDate',
+'description' => 'setDescription',
+'voucher_id' => 'setVoucherId',
+'invoice_id' => 'setInvoiceId',
+'invoice_number' => 'setInvoiceNumber',
+'invoice_amount' => 'setInvoiceAmount',
+'is_incoming_invoice' => 'setIsIncomingInvoice',
+'recurrence' => 'setRecurrence',
+'category' => 'setCategory',
+'vendor_or_customer_name' => 'setVendorOrCustomerName',
+'is_manually_added' => 'setIsManuallyAdded',
+'batch_id' => 'setBatchId'    ];
 
     /**
      * Array of attributes to getter functions (for serialization of requests)
@@ -260,22 +170,21 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
      */
     protected static $getters = [
         'id' => 'getId',
-        'version' => 'getVersion',
-        'changes' => 'getChanges',
-        'url' => 'getUrl',
-        'date' => 'getDate',
-        'description' => 'getDescription',
-        'voucher_id' => 'getVoucherId',
-        'invoice_id' => 'getInvoiceId',
-        'invoice_number' => 'getInvoiceNumber',
-        'invoice_amount' => 'getInvoiceAmount',
-        'is_incoming_invoice' => 'getIsIncomingInvoice',
-        'recurrence' => 'getRecurrence',
-        'category' => 'getCategory',
-        'vendor_or_customer_name' => 'getVendorOrCustomerName',
-        'is_manually_added' => 'getIsManuallyAdded',
-        'batch_id' => 'getBatchId'
-    ];
+'version' => 'getVersion',
+'changes' => 'getChanges',
+'url' => 'getUrl',
+'date' => 'getDate',
+'description' => 'getDescription',
+'voucher_id' => 'getVoucherId',
+'invoice_id' => 'getInvoiceId',
+'invoice_number' => 'getInvoiceNumber',
+'invoice_amount' => 'getInvoiceAmount',
+'is_incoming_invoice' => 'getIsIncomingInvoice',
+'recurrence' => 'getRecurrence',
+'category' => 'getCategory',
+'vendor_or_customer_name' => 'getVendorOrCustomerName',
+'is_manually_added' => 'getIsManuallyAdded',
+'batch_id' => 'getBatchId'    ];
 
     /**
      * Array of attributes where the key is the local name,
@@ -315,22 +224,22 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
      */
     public function getModelName()
     {
-        return self::$openAPIModelName;
+        return self::$swaggerModelName;
     }
 
-    public const RECURRENCE_NONE = 'NONE';
-    public const RECURRENCE_DAILY = 'DAILY';
-    public const RECURRENCE_WEEKLY = 'WEEKLY';
-    public const RECURRENCE_MONTHLY = 'MONTHLY';
-    public const CATEGORY_DUPLICATE = 'DUPLICATE';
-    public const CATEGORY_STARTING_BALANCE = 'STARTING_BALANCE';
-    public const CATEGORY_NONE = 'NONE';
-    public const CATEGORY_SALARY = 'SALARY';
-    public const CATEGORY_ENI = 'ENI';
-    public const CATEGORY_TAX = 'TAX';
-    public const CATEGORY_VAT_RETURNS = 'VAT_RETURNS';
-    public const CATEGORY_VACATION_ALLOWANCE = 'VACATION_ALLOWANCE';
-    public const CATEGORY_TRAVEL_AND_EXPENSES = 'TRAVEL_AND_EXPENSES';
+    const RECURRENCE_NONE = 'NONE';
+const RECURRENCE_DAILY = 'DAILY';
+const RECURRENCE_WEEKLY = 'WEEKLY';
+const RECURRENCE_MONTHLY = 'MONTHLY';
+const CATEGORY_DUPLICATE = 'DUPLICATE';
+const CATEGORY_STARTING_BALANCE = 'STARTING_BALANCE';
+const CATEGORY_NONE = 'NONE';
+const CATEGORY_SALARY = 'SALARY';
+const CATEGORY_ENI = 'ENI';
+const CATEGORY_TAX = 'TAX';
+const CATEGORY_VAT_RETURNS = 'VAT_RETURNS';
+const CATEGORY_VACATION_ALLOWANCE = 'VACATION_ALLOWANCE';
+const CATEGORY_TRAVEL_AND_EXPENSES = 'TRAVEL_AND_EXPENSES';
 
     /**
      * Gets allowable values of the enum
@@ -341,12 +250,10 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     {
         return [
             self::RECURRENCE_NONE,
-            self::RECURRENCE_DAILY,
-            self::RECURRENCE_WEEKLY,
-            self::RECURRENCE_MONTHLY,
-        ];
+self::RECURRENCE_DAILY,
+self::RECURRENCE_WEEKLY,
+self::RECURRENCE_MONTHLY,        ];
     }
-
     /**
      * Gets allowable values of the enum
      *
@@ -356,15 +263,14 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     {
         return [
             self::CATEGORY_DUPLICATE,
-            self::CATEGORY_STARTING_BALANCE,
-            self::CATEGORY_NONE,
-            self::CATEGORY_SALARY,
-            self::CATEGORY_ENI,
-            self::CATEGORY_TAX,
-            self::CATEGORY_VAT_RETURNS,
-            self::CATEGORY_VACATION_ALLOWANCE,
-            self::CATEGORY_TRAVEL_AND_EXPENSES,
-        ];
+self::CATEGORY_STARTING_BALANCE,
+self::CATEGORY_NONE,
+self::CATEGORY_SALARY,
+self::CATEGORY_ENI,
+self::CATEGORY_TAX,
+self::CATEGORY_VAT_RETURNS,
+self::CATEGORY_VACATION_ALLOWANCE,
+self::CATEGORY_TRAVEL_AND_EXPENSES,        ];
     }
 
     /**
@@ -382,40 +288,22 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
      */
     public function __construct(array $data = null)
     {
-        $this->setIfExists('id', $data ?? [], null);
-        $this->setIfExists('version', $data ?? [], null);
-        $this->setIfExists('changes', $data ?? [], null);
-        $this->setIfExists('url', $data ?? [], null);
-        $this->setIfExists('date', $data ?? [], null);
-        $this->setIfExists('description', $data ?? [], null);
-        $this->setIfExists('voucher_id', $data ?? [], null);
-        $this->setIfExists('invoice_id', $data ?? [], null);
-        $this->setIfExists('invoice_number', $data ?? [], null);
-        $this->setIfExists('invoice_amount', $data ?? [], null);
-        $this->setIfExists('is_incoming_invoice', $data ?? [], null);
-        $this->setIfExists('recurrence', $data ?? [], null);
-        $this->setIfExists('category', $data ?? [], null);
-        $this->setIfExists('vendor_or_customer_name', $data ?? [], null);
-        $this->setIfExists('is_manually_added', $data ?? [], null);
-        $this->setIfExists('batch_id', $data ?? [], null);
-    }
-
-    /**
-    * Sets $this->container[$variableName] to the given data or to the given default Value; if $variableName
-    * is nullable and its value is set to null in the $fields array, then mark it as "set to null" in the
-    * $this->openAPINullablesSetToNull array
-    *
-    * @param string $variableName
-    * @param array  $fields
-    * @param mixed  $defaultValue
-    */
-    private function setIfExists(string $variableName, array $fields, $defaultValue): void
-    {
-        if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
-            $this->openAPINullablesSetToNull[] = $variableName;
-        }
-
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $this->container['id'] = isset($data['id']) ? $data['id'] : null;
+        $this->container['version'] = isset($data['version']) ? $data['version'] : null;
+        $this->container['changes'] = isset($data['changes']) ? $data['changes'] : null;
+        $this->container['url'] = isset($data['url']) ? $data['url'] : null;
+        $this->container['date'] = isset($data['date']) ? $data['date'] : null;
+        $this->container['description'] = isset($data['description']) ? $data['description'] : null;
+        $this->container['voucher_id'] = isset($data['voucher_id']) ? $data['voucher_id'] : null;
+        $this->container['invoice_id'] = isset($data['invoice_id']) ? $data['invoice_id'] : null;
+        $this->container['invoice_number'] = isset($data['invoice_number']) ? $data['invoice_number'] : null;
+        $this->container['invoice_amount'] = isset($data['invoice_amount']) ? $data['invoice_amount'] : null;
+        $this->container['is_incoming_invoice'] = isset($data['is_incoming_invoice']) ? $data['is_incoming_invoice'] : null;
+        $this->container['recurrence'] = isset($data['recurrence']) ? $data['recurrence'] : null;
+        $this->container['category'] = isset($data['category']) ? $data['category'] : null;
+        $this->container['vendor_or_customer_name'] = isset($data['vendor_or_customer_name']) ? $data['vendor_or_customer_name'] : null;
+        $this->container['is_manually_added'] = isset($data['is_manually_added']) ? $data['is_manually_added'] : null;
+        $this->container['batch_id'] = isset($data['batch_id']) ? $data['batch_id'] : null;
     }
 
     /**
@@ -430,18 +318,13 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
         if ($this->container['description'] === null) {
             $invalidProperties[] = "'description' can't be null";
         }
-        if ((mb_strlen($this->container['description']) > 255)) {
-            $invalidProperties[] = "invalid value for 'description', the character length must be smaller than or equal to 255.";
-        }
-
         if ($this->container['recurrence'] === null) {
             $invalidProperties[] = "'recurrence' can't be null";
         }
         $allowedValues = $this->getRecurrenceAllowableValues();
         if (!is_null($this->container['recurrence']) && !in_array($this->container['recurrence'], $allowedValues, true)) {
             $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'recurrence', must be one of '%s'",
-                $this->container['recurrence'],
+                "invalid value for 'recurrence', must be one of '%s'",
                 implode("', '", $allowedValues)
             );
         }
@@ -452,14 +335,9 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
         $allowedValues = $this->getCategoryAllowableValues();
         if (!is_null($this->container['category']) && !in_array($this->container['category'], $allowedValues, true)) {
             $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'category', must be one of '%s'",
-                $this->container['category'],
+                "invalid value for 'category', must be one of '%s'",
                 implode("', '", $allowedValues)
             );
-        }
-
-        if (!is_null($this->container['batch_id']) && (mb_strlen($this->container['batch_id']) > 255)) {
-            $invalidProperties[] = "invalid value for 'batch_id', the character length must be smaller than or equal to 255.";
         }
 
         return $invalidProperties;
@@ -480,7 +358,7 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Gets id
      *
-     * @return int|null
+     * @return int
      */
     public function getId()
     {
@@ -490,15 +368,12 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Sets id
      *
-     * @param int|null $id id
+     * @param int $id id
      *
-     * @return self
+     * @return $this
      */
     public function setId($id)
     {
-        if (is_null($id)) {
-            throw new \InvalidArgumentException('non-nullable id cannot be null');
-        }
         $this->container['id'] = $id;
 
         return $this;
@@ -507,7 +382,7 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Gets version
      *
-     * @return int|null
+     * @return int
      */
     public function getVersion()
     {
@@ -517,15 +392,12 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Sets version
      *
-     * @param int|null $version version
+     * @param int $version version
      *
-     * @return self
+     * @return $this
      */
     public function setVersion($version)
     {
-        if (is_null($version)) {
-            throw new \InvalidArgumentException('non-nullable version cannot be null');
-        }
         $this->container['version'] = $version;
 
         return $this;
@@ -534,7 +406,7 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Gets changes
      *
-     * @return \Learnist\Tripletex\Model\Change[]|null
+     * @return \Learnist\Tripletex\Model\Change[]
      */
     public function getChanges()
     {
@@ -544,15 +416,12 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Sets changes
      *
-     * @param \Learnist\Tripletex\Model\Change[]|null $changes changes
+     * @param \Learnist\Tripletex\Model\Change[] $changes changes
      *
-     * @return self
+     * @return $this
      */
     public function setChanges($changes)
     {
-        if (is_null($changes)) {
-            throw new \InvalidArgumentException('non-nullable changes cannot be null');
-        }
         $this->container['changes'] = $changes;
 
         return $this;
@@ -561,7 +430,7 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Gets url
      *
-     * @return string|null
+     * @return string
      */
     public function getUrl()
     {
@@ -571,15 +440,12 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Sets url
      *
-     * @param string|null $url url
+     * @param string $url url
      *
-     * @return self
+     * @return $this
      */
     public function setUrl($url)
     {
-        if (is_null($url)) {
-            throw new \InvalidArgumentException('non-nullable url cannot be null');
-        }
         $this->container['url'] = $url;
 
         return $this;
@@ -588,7 +454,7 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Gets date
      *
-     * @return string|null
+     * @return string
      */
     public function getDate()
     {
@@ -598,15 +464,12 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Sets date
      *
-     * @param string|null $date date
+     * @param string $date date
      *
-     * @return self
+     * @return $this
      */
     public function setDate($date)
     {
-        if (is_null($date)) {
-            throw new \InvalidArgumentException('non-nullable date cannot be null');
-        }
         $this->container['date'] = $date;
 
         return $this;
@@ -627,17 +490,10 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
      *
      * @param string $description java.lang.String
      *
-     * @return self
+     * @return $this
      */
     public function setDescription($description)
     {
-        if (is_null($description)) {
-            throw new \InvalidArgumentException('non-nullable description cannot be null');
-        }
-        if ((mb_strlen($description) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $description when calling BankBalanceEstimation., must be smaller than or equal to 255.');
-        }
-
         $this->container['description'] = $description;
 
         return $this;
@@ -646,7 +502,7 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Gets voucher_id
      *
-     * @return int|null
+     * @return int
      */
     public function getVoucherId()
     {
@@ -656,15 +512,12 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Sets voucher_id
      *
-     * @param int|null $voucher_id voucher_id
+     * @param int $voucher_id voucher_id
      *
-     * @return self
+     * @return $this
      */
     public function setVoucherId($voucher_id)
     {
-        if (is_null($voucher_id)) {
-            throw new \InvalidArgumentException('non-nullable voucher_id cannot be null');
-        }
         $this->container['voucher_id'] = $voucher_id;
 
         return $this;
@@ -673,7 +526,7 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Gets invoice_id
      *
-     * @return int|null
+     * @return int
      */
     public function getInvoiceId()
     {
@@ -683,15 +536,12 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Sets invoice_id
      *
-     * @param int|null $invoice_id invoice_id
+     * @param int $invoice_id invoice_id
      *
-     * @return self
+     * @return $this
      */
     public function setInvoiceId($invoice_id)
     {
-        if (is_null($invoice_id)) {
-            throw new \InvalidArgumentException('non-nullable invoice_id cannot be null');
-        }
         $this->container['invoice_id'] = $invoice_id;
 
         return $this;
@@ -700,7 +550,7 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Gets invoice_number
      *
-     * @return string|null
+     * @return string
      */
     public function getInvoiceNumber()
     {
@@ -710,15 +560,12 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Sets invoice_number
      *
-     * @param string|null $invoice_number invoice_number
+     * @param string $invoice_number invoice_number
      *
-     * @return self
+     * @return $this
      */
     public function setInvoiceNumber($invoice_number)
     {
-        if (is_null($invoice_number)) {
-            throw new \InvalidArgumentException('non-nullable invoice_number cannot be null');
-        }
         $this->container['invoice_number'] = $invoice_number;
 
         return $this;
@@ -727,7 +574,7 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Gets invoice_amount
      *
-     * @return float|null
+     * @return float
      */
     public function getInvoiceAmount()
     {
@@ -737,15 +584,12 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Sets invoice_amount
      *
-     * @param float|null $invoice_amount java.math.BigDecimal
+     * @param float $invoice_amount java.math.BigDecimal
      *
-     * @return self
+     * @return $this
      */
     public function setInvoiceAmount($invoice_amount)
     {
-        if (is_null($invoice_amount)) {
-            throw new \InvalidArgumentException('non-nullable invoice_amount cannot be null');
-        }
         $this->container['invoice_amount'] = $invoice_amount;
 
         return $this;
@@ -754,7 +598,7 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Gets is_incoming_invoice
      *
-     * @return bool|null
+     * @return bool
      */
     public function getIsIncomingInvoice()
     {
@@ -764,15 +608,12 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Sets is_incoming_invoice
      *
-     * @param bool|null $is_incoming_invoice boolean
+     * @param bool $is_incoming_invoice boolean
      *
-     * @return self
+     * @return $this
      */
     public function setIsIncomingInvoice($is_incoming_invoice)
     {
-        if (is_null($is_incoming_invoice)) {
-            throw new \InvalidArgumentException('non-nullable is_incoming_invoice cannot be null');
-        }
         $this->container['is_incoming_invoice'] = $is_incoming_invoice;
 
         return $this;
@@ -793,19 +634,15 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
      *
      * @param string $recurrence Recurrence type
      *
-     * @return self
+     * @return $this
      */
     public function setRecurrence($recurrence)
     {
-        if (is_null($recurrence)) {
-            throw new \InvalidArgumentException('non-nullable recurrence cannot be null');
-        }
         $allowedValues = $this->getRecurrenceAllowableValues();
         if (!in_array($recurrence, $allowedValues, true)) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    "Invalid value '%s' for 'recurrence', must be one of '%s'",
-                    $recurrence,
+                    "Invalid value for 'recurrence', must be one of '%s'",
                     implode("', '", $allowedValues)
                 )
             );
@@ -830,19 +667,15 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
      *
      * @param string $category Category
      *
-     * @return self
+     * @return $this
      */
     public function setCategory($category)
     {
-        if (is_null($category)) {
-            throw new \InvalidArgumentException('non-nullable category cannot be null');
-        }
         $allowedValues = $this->getCategoryAllowableValues();
         if (!in_array($category, $allowedValues, true)) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    "Invalid value '%s' for 'category', must be one of '%s'",
-                    $category,
+                    "Invalid value for 'category', must be one of '%s'",
                     implode("', '", $allowedValues)
                 )
             );
@@ -855,7 +688,7 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Gets vendor_or_customer_name
      *
-     * @return string|null
+     * @return string
      */
     public function getVendorOrCustomerName()
     {
@@ -865,15 +698,12 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Sets vendor_or_customer_name
      *
-     * @param string|null $vendor_or_customer_name vendor_or_customer_name
+     * @param string $vendor_or_customer_name vendor_or_customer_name
      *
-     * @return self
+     * @return $this
      */
     public function setVendorOrCustomerName($vendor_or_customer_name)
     {
-        if (is_null($vendor_or_customer_name)) {
-            throw new \InvalidArgumentException('non-nullable vendor_or_customer_name cannot be null');
-        }
         $this->container['vendor_or_customer_name'] = $vendor_or_customer_name;
 
         return $this;
@@ -882,7 +712,7 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Gets is_manually_added
      *
-     * @return bool|null
+     * @return bool
      */
     public function getIsManuallyAdded()
     {
@@ -892,15 +722,12 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Sets is_manually_added
      *
-     * @param bool|null $is_manually_added boolean
+     * @param bool $is_manually_added boolean
      *
-     * @return self
+     * @return $this
      */
     public function setIsManuallyAdded($is_manually_added)
     {
-        if (is_null($is_manually_added)) {
-            throw new \InvalidArgumentException('non-nullable is_manually_added cannot be null');
-        }
         $this->container['is_manually_added'] = $is_manually_added;
 
         return $this;
@@ -909,7 +736,7 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Gets batch_id
      *
-     * @return string|null
+     * @return string
      */
     public function getBatchId()
     {
@@ -919,19 +746,12 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Sets batch_id
      *
-     * @param string|null $batch_id batch_id
+     * @param string $batch_id batch_id
      *
-     * @return self
+     * @return $this
      */
     public function setBatchId($batch_id)
     {
-        if (is_null($batch_id)) {
-            throw new \InvalidArgumentException('non-nullable batch_id cannot be null');
-        }
-        if ((mb_strlen($batch_id) > 255)) {
-            throw new \InvalidArgumentException('invalid length for $batch_id when calling BankBalanceEstimation., must be smaller than or equal to 255.');
-        }
-
         $this->container['batch_id'] = $batch_id;
 
         return $this;
@@ -943,7 +763,8 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
      *
      * @return boolean
      */
-    public function offsetExists($offset): bool
+    #[\ReturnTypeWillChange] 
+    public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
     }
@@ -953,23 +774,24 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
      *
      * @param integer $offset Offset
      *
-     * @return mixed|null
+     * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[\ReturnTypeWillChange] 
     public function offsetGet($offset)
     {
-        return $this->container[$offset] ?? null;
+        return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
 
     /**
      * Sets value based on offset.
      *
-     * @param int|null $offset Offset
-     * @param mixed    $value  Value to be set
+     * @param integer $offset Offset
+     * @param mixed   $value  Value to be set
      *
      * @return void
      */
-    public function offsetSet($offset, $value): void
+    #[\ReturnTypeWillChange] 
+    public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -985,22 +807,10 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
      *
      * @return void
      */
-    public function offsetUnset($offset): void
+    #[\ReturnTypeWillChange] 
+    public function offsetUnset($offset)
     {
         unset($this->container[$offset]);
-    }
-
-    /**
-     * Serializes the object to a value that can be serialized natively by json_encode().
-     * @link https://www.php.net/manual/en/jsonserializable.jsonserialize.php
-     *
-     * @return mixed Returns data which can be serialized by json_encode(), which is a value
-     * of any type other than a resource.
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
-    {
-       return ObjectSerializer::sanitizeForSerialization($this);
     }
 
     /**
@@ -1010,21 +820,13 @@ class BankBalanceEstimation implements ModelInterface, ArrayAccess, \JsonSeriali
      */
     public function __toString()
     {
-        return json_encode(
-            ObjectSerializer::sanitizeForSerialization($this),
-            JSON_PRETTY_PRINT
-        );
-    }
+        if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
+            return json_encode(
+                ObjectSerializer::sanitizeForSerialization($this),
+                JSON_PRETTY_PRINT
+            );
+        }
 
-    /**
-     * Gets a header-safe presentation of the object
-     *
-     * @return string
-     */
-    public function toHeaderValue()
-    {
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
 }
-
-

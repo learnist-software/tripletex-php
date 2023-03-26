@@ -1,13 +1,13 @@
-# # Stock
+# Stock
 
 ## Properties
-
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**inventory** | **string** |  | [optional] [readonly]
-**inventory_id** | **int** |  | [optional] [readonly]
-**opening_stock** | **float** |  | [optional] [readonly]
-**changes_in_period** | **float** |  | [optional] [readonly]
-**closing_stock** | **float** |  | [optional] [readonly]
+**inventory** | **string** |  | [optional] 
+**inventory_id** | **int** |  | [optional] 
+**opening_stock** | **float** |  | [optional] 
+**changes_in_period** | **float** |  | [optional] 
+**closing_stock** | **float** |  | [optional] 
 
-[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)
+[[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
+

@@ -2,12 +2,12 @@
 /**
  * SalaryCompilation
  *
- * PHP version 7.4
+ * PHP version 5
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
 
 /**
@@ -15,14 +15,14 @@
  *
  * ## Usage  - **Download the spec** [swagger.json](/v2/swagger.json) file, it is a [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification).  - **Generating a client** can easily be done using tools like [swagger-codegen](https://github.com/swagger-api/swagger-codegen) or other that accepts [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) specs.     - For swagger codegen it is recommended to use the flag: **--removeOperationIdPrefix**.        Unique operation ids are about to be introduced to the spec, and this ensures forward compatibility - and results in less verbose generated code.   ## Overview  - Partial resource updating is done using the `PUT` method with optional fields instead of the `PATCH` method.  - **Actions** or **commands** are represented in our RESTful path with a prefixed `:`. Example: `/v2/hours/123/:approve`.  - **Summaries** or **aggregated** results are represented in our RESTful path with a prefixed `>`. Example: `/v2/hours/>thisWeeksBillables`.  - **Request ID** is a key found in all responses in the header with the name `x-tlx-request-id`. For validation and error responses it is also in the response body. If additional log information is absolutely necessary, our support division can locate the key value.  - **version** This is a revision number found on all persisted resources. If included, it will prevent your PUT/POST from overriding any updates to the resource since your GET.  - **Date** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DD`.  - **DateTime** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DDThh:mm:ss`.  - **Searching** is done by entering values in the optional fields for each API call. The values fall into the following categories: range, in, exact and like.  - **Missing fields** or even **no response data** can occur because result objects and fields are filtered on authorization.  - **See [GitHub](https://github.com/Tripletex/tripletex-api2) for more documentation, examples, changelog and more.**  - **See [FAQ](https://tripletex.no/execute/docViewer?articleId=906&language=0) for additional information.**   ## Authentication  - **Tokens:** The Tripletex API uses 3 different tokens    - **consumerToken** is a token provided to the consumer by Tripletex after the API 2.0 registration is completed.    - **employeeToken** is a token created by an administrator in your Tripletex account via the user settings and the tab \"API access\". Each employee token must be given a set of entitlements. [Read more here.](https://tripletex.no/execute/docViewer?articleId=1505&languageId=0)    - **sessionToken** is the token from `/token/session/:create` which requires a consumerToken and an employeeToken created with the same consumer token, but not an authentication header.  - **Authentication** is done via [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)    - **username** is used to specify what company to access.      - `0` or blank means the company of the employee.      - Any other value means accountant clients. Use `/company/>withLoginAccess` to get a list of those.    - **password** is the **sessionToken**.    - If you need to create the header yourself use `Authorization: Basic <encoded token>` where `encoded token` is the string `<target company id or 0>:<your session token>` Base64 encoded.   ## Tags  - `[BETA]` This is a beta endpoint and can be subject to change. - `[DEPRECATED]` Deprecated means that we intend to remove/change this feature or capability in a future \"major\" API release. We therefore discourage all use of this feature/capability.   ## Fields  Use the `fields` parameter to specify which fields should be returned. This also supports fields from sub elements, done via `<field>(<subResourceFields>)`. `*` means all fields for that resource. Example values: - `project,activity,hours`  returns `{project:..., activity:...., hours:...}`. - just `project` returns `\"project\" : { \"id\": 12345, \"url\": \"tripletex.no/v2/projects/12345\"  }`. - `project(*)` returns `\"project\" : { \"id\": 12345 \"name\":\"ProjectName\" \"number.....startDate\": \"2013-01-07\" }`. - `project(name)` returns `\"project\" : { \"name\":\"ProjectName\" }`. - All resources and some subResources :  `*,activity(name),employee(*)`.   ## Sorting  Use the `sorting` parameter to specify sorting. It takes a comma separated list, where a `-` prefix denotes descending. You can sort by sub object with the following format: `<field>.<subObjectField>`. Example values: - `date` - `project.name` - `project.name, -date`   ## Changes  To get the changes for a resource, `changes` have to be explicitly specified as part of the `fields` parameter, e.g. `*,changes`. There are currently two types of change available:  - `CREATE` for when the resource was created - `UPDATE` for when the resource was updated  **NOTE** > For objects created prior to October 24th 2018 the list may be incomplete, but will always contain the CREATE and the last change (if the object has been changed after creation).   ## Rate limiting  Rate limiting is performed on the API calls for an employee for each API consumer. Status regarding the rate limit is returned as headers: - `X-Rate-Limit-Limit` - The number of allowed requests in the current period. - `X-Rate-Limit-Remaining` - The number of remaining requests. - `X-Rate-Limit-Reset` - The number of seconds left in the current period.  Once the rate limit is hit, all requests will return HTTP status code `429` for the remainder of the current period.   ## Response envelope  #### Multiple values  ```json {   \"fullResultSize\": ###, // {number} [DEPRECATED]   \"from\": ###, // {number} Paging starting from   \"count\": ###, // {number} Paging count   \"versionDigest\": \"###\", // {string} Hash of full result, null if no result   \"values\": [...{...object...},{...object...},{...object...}...] } ```  #### Single value  ```json {   \"value\": {...single object...} } ```   ## WebHook envelope  ```json {   \"subscriptionId\": ###, // Subscription id   \"event\": \"object.verb\", // As listed from /v2/event/   \"id\": ###, // Id of object this event is for   \"value\": {... single object, null if object.deleted ...} } ```   ## Error/warning envelope  ```json {   \"status\": ###, // {number} HTTP status code   \"code\": #####, // {number} internal status code of event   \"message\": \"###\", // {string} Basic feedback message in your language   \"link\": \"###\", // {string} Link to doc   \"developerMessage\": \"###\", // {string} More technical message   \"validationMessages\": [ // {array} List of validation messages, can be null     {       \"field\": \"###\", // {string} Name of field       \"message\": \"###\" // {string} Validation message for field     }   ],   \"requestId\": \"###\" // {string} Same as x-tlx-request-id  } ```   ## Status codes / Error codes  - **200 OK** - **201 Created** - From POSTs that create something new. - **204 No Content** - When there is no answer, ex: \"/:anAction\" or DELETE. - **400 Bad request** -   -  **4000** Bad Request Exception   - **11000** Illegal Filter Exception   - **12000** Path Param Exception   - **24000** Cryptography Exception - **401 Unauthorized** - When authentication is required and has failed or has not yet been provided   -  **3000** Authentication Exception - **403 Forbidden** - When AuthorisationManager says no.   -  **9000** Security Exception - **404 Not Found** - For resources that does not exist.   -  **6000** Not Found Exception - **409 Conflict** - Such as an edit conflict between multiple simultaneous updates   -  **7000** Object Exists Exception   -  **8000** Revision Exception   - **10000** Locked Exception   - **14000** Duplicate entry - **422 Bad Request** - For Required fields or things like malformed payload.   - **15000** Value Validation Exception   - **16000** Mapping Exception   - **17000** Sorting Exception   - **18000** Validation Exception   - **21000** Param Exception   - **22000** Invalid JSON Exception   - **23000** Result Set Too Large Exception - **429 Too Many Requests** - Request rate limit hit - **500 Internal Error** - Unexpected condition was encountered and no more specific message is suitable   - **1000** Exception
  *
- * The version of the OpenAPI document: 2.70.19
- * Generated by: https://openapi-generator.tech
- * OpenAPI Generator version: 6.5.0-SNAPSHOT
+ * OpenAPI spec version: 2.70.19
+ * 
+ * Generated by: https://github.com/swagger-api/swagger-codegen.git
+ * Swagger Codegen version: 3.0.41
  */
-
 /**
- * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
- * https://openapi-generator.tech
+ * NOTE: This class is auto generated by the swagger code generator program.
+ * https://github.com/swagger-api/swagger-codegen
  * Do not edit the class manually.
  */
 
@@ -36,83 +36,56 @@ use \Learnist\Tripletex\ObjectSerializer;
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- * @implements \ArrayAccess<string, mixed>
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
-class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializable
+class SalaryCompilation implements ModelInterface, ArrayAccess
 {
-    public const DISCRIMINATOR = null;
+    const DISCRIMINATOR = null;
 
     /**
       * The original name of the model.
       *
       * @var string
       */
-    protected static $openAPIModelName = 'SalaryCompilation';
+    protected static $swaggerModelName = 'SalaryCompilation';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
       *
       * @var string[]
       */
-    protected static $openAPITypes = [
+    protected static $swaggerTypes = [
         'employee' => 'int',
-        'year' => 'int',
-        'vacation_pay_basis' => 'float',
-        'wages' => '\Learnist\Tripletex\Model\SalaryCompilationLine[]',
-        'expenses' => '\Learnist\Tripletex\Model\SalaryCompilationLine[]',
-        'tax_deductions' => '\Learnist\Tripletex\Model\SalaryCompilationLine[]',
-        'mandatory_tax_deductions' => '\Learnist\Tripletex\Model\SalaryCompilationLine[]'
-    ];
+'year' => 'int',
+'vacation_pay_basis' => 'float',
+'wages' => '\Learnist\Tripletex\Model\SalaryCompilationLine[]',
+'expenses' => '\Learnist\Tripletex\Model\SalaryCompilationLine[]',
+'tax_deductions' => '\Learnist\Tripletex\Model\SalaryCompilationLine[]',
+'mandatory_tax_deductions' => '\Learnist\Tripletex\Model\SalaryCompilationLine[]'    ];
 
     /**
       * Array of property to format mappings. Used for (de)serialization
       *
       * @var string[]
-      * @phpstan-var array<string, string|null>
-      * @psalm-var array<string, string|null>
       */
-    protected static $openAPIFormats = [
+    protected static $swaggerFormats = [
         'employee' => 'int32',
-        'year' => 'int32',
-        'vacation_pay_basis' => null,
-        'wages' => null,
-        'expenses' => null,
-        'tax_deductions' => null,
-        'mandatory_tax_deductions' => null
-    ];
-
-    /**
-      * Array of nullable properties. Used for (de)serialization
-      *
-      * @var boolean[]
-      */
-    protected static array $openAPINullables = [
-        'employee' => false,
-		'year' => false,
-		'vacation_pay_basis' => false,
-		'wages' => false,
-		'expenses' => false,
-		'tax_deductions' => false,
-		'mandatory_tax_deductions' => false
-    ];
-
-    /**
-      * If a nullable field gets set to null, insert it here
-      *
-      * @var boolean[]
-      */
-    protected array $openAPINullablesSetToNull = [];
+'year' => 'int32',
+'vacation_pay_basis' => null,
+'wages' => null,
+'expenses' => null,
+'tax_deductions' => null,
+'mandatory_tax_deductions' => null    ];
 
     /**
      * Array of property to type mappings. Used for (de)serialization
      *
      * @return array
      */
-    public static function openAPITypes()
+    public static function swaggerTypes()
     {
-        return self::$openAPITypes;
+        return self::$swaggerTypes;
     }
 
     /**
@@ -120,61 +93,9 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @return array
      */
-    public static function openAPIFormats()
+    public static function swaggerFormats()
     {
-        return self::$openAPIFormats;
-    }
-
-    /**
-     * Array of nullable properties
-     *
-     * @return array
-     */
-    protected static function openAPINullables(): array
-    {
-        return self::$openAPINullables;
-    }
-
-    /**
-     * Array of nullable field names deliberately set to null
-     *
-     * @return boolean[]
-     */
-    private function getOpenAPINullablesSetToNull(): array
-    {
-        return $this->openAPINullablesSetToNull;
-    }
-
-    /**
-     * Setter - Array of nullable field names deliberately set to null
-     *
-     * @param boolean[] $openAPINullablesSetToNull
-     */
-    private function setOpenAPINullablesSetToNull(array $openAPINullablesSetToNull): void
-    {
-        $this->openAPINullablesSetToNull = $openAPINullablesSetToNull;
-    }
-
-    /**
-     * Checks if a property is nullable
-     *
-     * @param string $property
-     * @return bool
-     */
-    public static function isNullable(string $property): bool
-    {
-        return self::openAPINullables()[$property] ?? false;
-    }
-
-    /**
-     * Checks if a nullable property is set to null.
-     *
-     * @param string $property
-     * @return bool
-     */
-    public function isNullableSetToNull(string $property): bool
-    {
-        return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+        return self::$swaggerFormats;
     }
 
     /**
@@ -185,13 +106,12 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
      */
     protected static $attributeMap = [
         'employee' => 'employee',
-        'year' => 'year',
-        'vacation_pay_basis' => 'vacationPayBasis',
-        'wages' => 'wages',
-        'expenses' => 'expenses',
-        'tax_deductions' => 'taxDeductions',
-        'mandatory_tax_deductions' => 'mandatoryTaxDeductions'
-    ];
+'year' => 'year',
+'vacation_pay_basis' => 'vacationPayBasis',
+'wages' => 'wages',
+'expenses' => 'expenses',
+'tax_deductions' => 'taxDeductions',
+'mandatory_tax_deductions' => 'mandatoryTaxDeductions'    ];
 
     /**
      * Array of attributes to setter functions (for deserialization of responses)
@@ -200,13 +120,12 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
      */
     protected static $setters = [
         'employee' => 'setEmployee',
-        'year' => 'setYear',
-        'vacation_pay_basis' => 'setVacationPayBasis',
-        'wages' => 'setWages',
-        'expenses' => 'setExpenses',
-        'tax_deductions' => 'setTaxDeductions',
-        'mandatory_tax_deductions' => 'setMandatoryTaxDeductions'
-    ];
+'year' => 'setYear',
+'vacation_pay_basis' => 'setVacationPayBasis',
+'wages' => 'setWages',
+'expenses' => 'setExpenses',
+'tax_deductions' => 'setTaxDeductions',
+'mandatory_tax_deductions' => 'setMandatoryTaxDeductions'    ];
 
     /**
      * Array of attributes to getter functions (for serialization of requests)
@@ -215,13 +134,12 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
      */
     protected static $getters = [
         'employee' => 'getEmployee',
-        'year' => 'getYear',
-        'vacation_pay_basis' => 'getVacationPayBasis',
-        'wages' => 'getWages',
-        'expenses' => 'getExpenses',
-        'tax_deductions' => 'getTaxDeductions',
-        'mandatory_tax_deductions' => 'getMandatoryTaxDeductions'
-    ];
+'year' => 'getYear',
+'vacation_pay_basis' => 'getVacationPayBasis',
+'wages' => 'getWages',
+'expenses' => 'getExpenses',
+'tax_deductions' => 'getTaxDeductions',
+'mandatory_tax_deductions' => 'getMandatoryTaxDeductions'    ];
 
     /**
      * Array of attributes where the key is the local name,
@@ -261,9 +179,10 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
      */
     public function getModelName()
     {
-        return self::$openAPIModelName;
+        return self::$swaggerModelName;
     }
 
+    
 
     /**
      * Associative array for storing property values
@@ -280,31 +199,13 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
      */
     public function __construct(array $data = null)
     {
-        $this->setIfExists('employee', $data ?? [], null);
-        $this->setIfExists('year', $data ?? [], null);
-        $this->setIfExists('vacation_pay_basis', $data ?? [], null);
-        $this->setIfExists('wages', $data ?? [], null);
-        $this->setIfExists('expenses', $data ?? [], null);
-        $this->setIfExists('tax_deductions', $data ?? [], null);
-        $this->setIfExists('mandatory_tax_deductions', $data ?? [], null);
-    }
-
-    /**
-    * Sets $this->container[$variableName] to the given data or to the given default Value; if $variableName
-    * is nullable and its value is set to null in the $fields array, then mark it as "set to null" in the
-    * $this->openAPINullablesSetToNull array
-    *
-    * @param string $variableName
-    * @param array  $fields
-    * @param mixed  $defaultValue
-    */
-    private function setIfExists(string $variableName, array $fields, $defaultValue): void
-    {
-        if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
-            $this->openAPINullablesSetToNull[] = $variableName;
-        }
-
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $this->container['employee'] = isset($data['employee']) ? $data['employee'] : null;
+        $this->container['year'] = isset($data['year']) ? $data['year'] : null;
+        $this->container['vacation_pay_basis'] = isset($data['vacation_pay_basis']) ? $data['vacation_pay_basis'] : null;
+        $this->container['wages'] = isset($data['wages']) ? $data['wages'] : null;
+        $this->container['expenses'] = isset($data['expenses']) ? $data['expenses'] : null;
+        $this->container['tax_deductions'] = isset($data['tax_deductions']) ? $data['tax_deductions'] : null;
+        $this->container['mandatory_tax_deductions'] = isset($data['mandatory_tax_deductions']) ? $data['mandatory_tax_deductions'] : null;
     }
 
     /**
@@ -334,7 +235,7 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets employee
      *
-     * @return int|null
+     * @return int
      */
     public function getEmployee()
     {
@@ -344,15 +245,12 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets employee
      *
-     * @param int|null $employee employee
+     * @param int $employee employee
      *
-     * @return self
+     * @return $this
      */
     public function setEmployee($employee)
     {
-        if (is_null($employee)) {
-            throw new \InvalidArgumentException('non-nullable employee cannot be null');
-        }
         $this->container['employee'] = $employee;
 
         return $this;
@@ -361,7 +259,7 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets year
      *
-     * @return int|null
+     * @return int
      */
     public function getYear()
     {
@@ -371,15 +269,12 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets year
      *
-     * @param int|null $year year
+     * @param int $year year
      *
-     * @return self
+     * @return $this
      */
     public function setYear($year)
     {
-        if (is_null($year)) {
-            throw new \InvalidArgumentException('non-nullable year cannot be null');
-        }
         $this->container['year'] = $year;
 
         return $this;
@@ -388,7 +283,7 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets vacation_pay_basis
      *
-     * @return float|null
+     * @return float
      */
     public function getVacationPayBasis()
     {
@@ -398,15 +293,12 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets vacation_pay_basis
      *
-     * @param float|null $vacation_pay_basis vacation_pay_basis
+     * @param float $vacation_pay_basis vacation_pay_basis
      *
-     * @return self
+     * @return $this
      */
     public function setVacationPayBasis($vacation_pay_basis)
     {
-        if (is_null($vacation_pay_basis)) {
-            throw new \InvalidArgumentException('non-nullable vacation_pay_basis cannot be null');
-        }
         $this->container['vacation_pay_basis'] = $vacation_pay_basis;
 
         return $this;
@@ -415,7 +307,7 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets wages
      *
-     * @return \Learnist\Tripletex\Model\SalaryCompilationLine[]|null
+     * @return \Learnist\Tripletex\Model\SalaryCompilationLine[]
      */
     public function getWages()
     {
@@ -425,15 +317,12 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets wages
      *
-     * @param \Learnist\Tripletex\Model\SalaryCompilationLine[]|null $wages wages
+     * @param \Learnist\Tripletex\Model\SalaryCompilationLine[] $wages wages
      *
-     * @return self
+     * @return $this
      */
     public function setWages($wages)
     {
-        if (is_null($wages)) {
-            throw new \InvalidArgumentException('non-nullable wages cannot be null');
-        }
         $this->container['wages'] = $wages;
 
         return $this;
@@ -442,7 +331,7 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets expenses
      *
-     * @return \Learnist\Tripletex\Model\SalaryCompilationLine[]|null
+     * @return \Learnist\Tripletex\Model\SalaryCompilationLine[]
      */
     public function getExpenses()
     {
@@ -452,15 +341,12 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets expenses
      *
-     * @param \Learnist\Tripletex\Model\SalaryCompilationLine[]|null $expenses expenses
+     * @param \Learnist\Tripletex\Model\SalaryCompilationLine[] $expenses expenses
      *
-     * @return self
+     * @return $this
      */
     public function setExpenses($expenses)
     {
-        if (is_null($expenses)) {
-            throw new \InvalidArgumentException('non-nullable expenses cannot be null');
-        }
         $this->container['expenses'] = $expenses;
 
         return $this;
@@ -469,7 +355,7 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets tax_deductions
      *
-     * @return \Learnist\Tripletex\Model\SalaryCompilationLine[]|null
+     * @return \Learnist\Tripletex\Model\SalaryCompilationLine[]
      */
     public function getTaxDeductions()
     {
@@ -479,15 +365,12 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets tax_deductions
      *
-     * @param \Learnist\Tripletex\Model\SalaryCompilationLine[]|null $tax_deductions tax_deductions
+     * @param \Learnist\Tripletex\Model\SalaryCompilationLine[] $tax_deductions tax_deductions
      *
-     * @return self
+     * @return $this
      */
     public function setTaxDeductions($tax_deductions)
     {
-        if (is_null($tax_deductions)) {
-            throw new \InvalidArgumentException('non-nullable tax_deductions cannot be null');
-        }
         $this->container['tax_deductions'] = $tax_deductions;
 
         return $this;
@@ -496,7 +379,7 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets mandatory_tax_deductions
      *
-     * @return \Learnist\Tripletex\Model\SalaryCompilationLine[]|null
+     * @return \Learnist\Tripletex\Model\SalaryCompilationLine[]
      */
     public function getMandatoryTaxDeductions()
     {
@@ -506,15 +389,12 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets mandatory_tax_deductions
      *
-     * @param \Learnist\Tripletex\Model\SalaryCompilationLine[]|null $mandatory_tax_deductions mandatory_tax_deductions
+     * @param \Learnist\Tripletex\Model\SalaryCompilationLine[] $mandatory_tax_deductions mandatory_tax_deductions
      *
-     * @return self
+     * @return $this
      */
     public function setMandatoryTaxDeductions($mandatory_tax_deductions)
     {
-        if (is_null($mandatory_tax_deductions)) {
-            throw new \InvalidArgumentException('non-nullable mandatory_tax_deductions cannot be null');
-        }
         $this->container['mandatory_tax_deductions'] = $mandatory_tax_deductions;
 
         return $this;
@@ -526,7 +406,8 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @return boolean
      */
-    public function offsetExists($offset): bool
+    #[\ReturnTypeWillChange] 
+    public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
     }
@@ -536,23 +417,24 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @param integer $offset Offset
      *
-     * @return mixed|null
+     * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[\ReturnTypeWillChange] 
     public function offsetGet($offset)
     {
-        return $this->container[$offset] ?? null;
+        return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
 
     /**
      * Sets value based on offset.
      *
-     * @param int|null $offset Offset
-     * @param mixed    $value  Value to be set
+     * @param integer $offset Offset
+     * @param mixed   $value  Value to be set
      *
      * @return void
      */
-    public function offsetSet($offset, $value): void
+    #[\ReturnTypeWillChange] 
+    public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -568,22 +450,10 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @return void
      */
-    public function offsetUnset($offset): void
+    #[\ReturnTypeWillChange] 
+    public function offsetUnset($offset)
     {
         unset($this->container[$offset]);
-    }
-
-    /**
-     * Serializes the object to a value that can be serialized natively by json_encode().
-     * @link https://www.php.net/manual/en/jsonserializable.jsonserialize.php
-     *
-     * @return mixed Returns data which can be serialized by json_encode(), which is a value
-     * of any type other than a resource.
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
-    {
-       return ObjectSerializer::sanitizeForSerialization($this);
     }
 
     /**
@@ -593,21 +463,13 @@ class SalaryCompilation implements ModelInterface, ArrayAccess, \JsonSerializabl
      */
     public function __toString()
     {
-        return json_encode(
-            ObjectSerializer::sanitizeForSerialization($this),
-            JSON_PRETTY_PRINT
-        );
-    }
+        if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
+            return json_encode(
+                ObjectSerializer::sanitizeForSerialization($this),
+                JSON_PRETTY_PRINT
+            );
+        }
 
-    /**
-     * Gets a header-safe presentation of the object
-     *
-     * @return string
-     */
-    public function toHeaderValue()
-    {
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
 }
-
-

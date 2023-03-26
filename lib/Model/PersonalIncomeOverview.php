@@ -2,12 +2,12 @@
 /**
  * PersonalIncomeOverview
  *
- * PHP version 7.4
+ * PHP version 5
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
 
 /**
@@ -15,14 +15,14 @@
  *
  * ## Usage  - **Download the spec** [swagger.json](/v2/swagger.json) file, it is a [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification).  - **Generating a client** can easily be done using tools like [swagger-codegen](https://github.com/swagger-api/swagger-codegen) or other that accepts [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) specs.     - For swagger codegen it is recommended to use the flag: **--removeOperationIdPrefix**.        Unique operation ids are about to be introduced to the spec, and this ensures forward compatibility - and results in less verbose generated code.   ## Overview  - Partial resource updating is done using the `PUT` method with optional fields instead of the `PATCH` method.  - **Actions** or **commands** are represented in our RESTful path with a prefixed `:`. Example: `/v2/hours/123/:approve`.  - **Summaries** or **aggregated** results are represented in our RESTful path with a prefixed `>`. Example: `/v2/hours/>thisWeeksBillables`.  - **Request ID** is a key found in all responses in the header with the name `x-tlx-request-id`. For validation and error responses it is also in the response body. If additional log information is absolutely necessary, our support division can locate the key value.  - **version** This is a revision number found on all persisted resources. If included, it will prevent your PUT/POST from overriding any updates to the resource since your GET.  - **Date** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DD`.  - **DateTime** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DDThh:mm:ss`.  - **Searching** is done by entering values in the optional fields for each API call. The values fall into the following categories: range, in, exact and like.  - **Missing fields** or even **no response data** can occur because result objects and fields are filtered on authorization.  - **See [GitHub](https://github.com/Tripletex/tripletex-api2) for more documentation, examples, changelog and more.**  - **See [FAQ](https://tripletex.no/execute/docViewer?articleId=906&language=0) for additional information.**   ## Authentication  - **Tokens:** The Tripletex API uses 3 different tokens    - **consumerToken** is a token provided to the consumer by Tripletex after the API 2.0 registration is completed.    - **employeeToken** is a token created by an administrator in your Tripletex account via the user settings and the tab \"API access\". Each employee token must be given a set of entitlements. [Read more here.](https://tripletex.no/execute/docViewer?articleId=1505&languageId=0)    - **sessionToken** is the token from `/token/session/:create` which requires a consumerToken and an employeeToken created with the same consumer token, but not an authentication header.  - **Authentication** is done via [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)    - **username** is used to specify what company to access.      - `0` or blank means the company of the employee.      - Any other value means accountant clients. Use `/company/>withLoginAccess` to get a list of those.    - **password** is the **sessionToken**.    - If you need to create the header yourself use `Authorization: Basic <encoded token>` where `encoded token` is the string `<target company id or 0>:<your session token>` Base64 encoded.   ## Tags  - `[BETA]` This is a beta endpoint and can be subject to change. - `[DEPRECATED]` Deprecated means that we intend to remove/change this feature or capability in a future \"major\" API release. We therefore discourage all use of this feature/capability.   ## Fields  Use the `fields` parameter to specify which fields should be returned. This also supports fields from sub elements, done via `<field>(<subResourceFields>)`. `*` means all fields for that resource. Example values: - `project,activity,hours`  returns `{project:..., activity:...., hours:...}`. - just `project` returns `\"project\" : { \"id\": 12345, \"url\": \"tripletex.no/v2/projects/12345\"  }`. - `project(*)` returns `\"project\" : { \"id\": 12345 \"name\":\"ProjectName\" \"number.....startDate\": \"2013-01-07\" }`. - `project(name)` returns `\"project\" : { \"name\":\"ProjectName\" }`. - All resources and some subResources :  `*,activity(name),employee(*)`.   ## Sorting  Use the `sorting` parameter to specify sorting. It takes a comma separated list, where a `-` prefix denotes descending. You can sort by sub object with the following format: `<field>.<subObjectField>`. Example values: - `date` - `project.name` - `project.name, -date`   ## Changes  To get the changes for a resource, `changes` have to be explicitly specified as part of the `fields` parameter, e.g. `*,changes`. There are currently two types of change available:  - `CREATE` for when the resource was created - `UPDATE` for when the resource was updated  **NOTE** > For objects created prior to October 24th 2018 the list may be incomplete, but will always contain the CREATE and the last change (if the object has been changed after creation).   ## Rate limiting  Rate limiting is performed on the API calls for an employee for each API consumer. Status regarding the rate limit is returned as headers: - `X-Rate-Limit-Limit` - The number of allowed requests in the current period. - `X-Rate-Limit-Remaining` - The number of remaining requests. - `X-Rate-Limit-Reset` - The number of seconds left in the current period.  Once the rate limit is hit, all requests will return HTTP status code `429` for the remainder of the current period.   ## Response envelope  #### Multiple values  ```json {   \"fullResultSize\": ###, // {number} [DEPRECATED]   \"from\": ###, // {number} Paging starting from   \"count\": ###, // {number} Paging count   \"versionDigest\": \"###\", // {string} Hash of full result, null if no result   \"values\": [...{...object...},{...object...},{...object...}...] } ```  #### Single value  ```json {   \"value\": {...single object...} } ```   ## WebHook envelope  ```json {   \"subscriptionId\": ###, // Subscription id   \"event\": \"object.verb\", // As listed from /v2/event/   \"id\": ###, // Id of object this event is for   \"value\": {... single object, null if object.deleted ...} } ```   ## Error/warning envelope  ```json {   \"status\": ###, // {number} HTTP status code   \"code\": #####, // {number} internal status code of event   \"message\": \"###\", // {string} Basic feedback message in your language   \"link\": \"###\", // {string} Link to doc   \"developerMessage\": \"###\", // {string} More technical message   \"validationMessages\": [ // {array} List of validation messages, can be null     {       \"field\": \"###\", // {string} Name of field       \"message\": \"###\" // {string} Validation message for field     }   ],   \"requestId\": \"###\" // {string} Same as x-tlx-request-id  } ```   ## Status codes / Error codes  - **200 OK** - **201 Created** - From POSTs that create something new. - **204 No Content** - When there is no answer, ex: \"/:anAction\" or DELETE. - **400 Bad request** -   -  **4000** Bad Request Exception   - **11000** Illegal Filter Exception   - **12000** Path Param Exception   - **24000** Cryptography Exception - **401 Unauthorized** - When authentication is required and has failed or has not yet been provided   -  **3000** Authentication Exception - **403 Forbidden** - When AuthorisationManager says no.   -  **9000** Security Exception - **404 Not Found** - For resources that does not exist.   -  **6000** Not Found Exception - **409 Conflict** - Such as an edit conflict between multiple simultaneous updates   -  **7000** Object Exists Exception   -  **8000** Revision Exception   - **10000** Locked Exception   - **14000** Duplicate entry - **422 Bad Request** - For Required fields or things like malformed payload.   - **15000** Value Validation Exception   - **16000** Mapping Exception   - **17000** Sorting Exception   - **18000** Validation Exception   - **21000** Param Exception   - **22000** Invalid JSON Exception   - **23000** Result Set Too Large Exception - **429 Too Many Requests** - Request rate limit hit - **500 Internal Error** - Unexpected condition was encountered and no more specific message is suitable   - **1000** Exception
  *
- * The version of the OpenAPI document: 2.70.19
- * Generated by: https://openapi-generator.tech
- * OpenAPI Generator version: 6.5.0-SNAPSHOT
+ * OpenAPI spec version: 2.70.19
+ * 
+ * Generated by: https://github.com/swagger-api/swagger-codegen.git
+ * Swagger Codegen version: 3.0.41
  */
-
 /**
- * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
- * https://openapi-generator.tech
+ * NOTE: This class is auto generated by the swagger code generator program.
+ * https://github.com/swagger-api/swagger-codegen
  * Do not edit the class manually.
  */
 
@@ -36,134 +36,90 @@ use \Learnist\Tripletex\ObjectSerializer;
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- * @implements \ArrayAccess<string, mixed>
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
-class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerializable
+class PersonalIncomeOverview implements ModelInterface, ArrayAccess
 {
-    public const DISCRIMINATOR = null;
+    const DISCRIMINATOR = null;
 
     /**
       * The original name of the model.
       *
       * @var string
       */
-    protected static $openAPIModelName = 'PersonalIncomeOverview';
+    protected static $swaggerModelName = 'PersonalIncomeOverview';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
       *
       * @var string[]
       */
-    protected static $openAPITypes = [
+    protected static $swaggerTypes = [
         'year_end_report' => '\Learnist\Tripletex\Model\YearEndReport',
-        'income_group_id' => 'int',
-        'business_activity_type' => 'string',
-        'business_activity_description' => 'string',
-        'business_income' => 'float',
-        'business_income_after_shared_with_spouse' => 'float',
-        'corrected_business_income' => 'float',
-        'deductions_for_risk_free_return' => 'float',
-        'risk_free_return' => 'float',
-        'valid_basis_for_risk_free_return' => 'bool',
-        'personal_income_for_the_year' => 'float',
-        'after_shared_with_spouse' => 'float',
-        'calculated_personal_income_spouse' => 'float',
-        'calculated_business_income_spouse' => 'float',
-        'after_coordination' => 'float',
-        'sum_opening_balance_before_enterprise_debt' => 'float',
-        'sum_closing_balance_before_enterprise_debt' => 'float',
-        'sum_opening_balance_after_enterprise_debt' => 'float',
-        'sum_closing_balance_after_enterprise_debt' => 'float',
-        'basis_for_risk_free_return_ex_enterprise_debt' => 'float',
-        'basis_enterprise_debt' => 'float',
-        'basis_for_risk_free_return_inc_enterprise_debt' => 'float',
-        'balance_groups' => '\Learnist\Tripletex\Model\BalanceGroup[]',
-        'posts' => '\Learnist\Tripletex\Model\PersonalIncome[]'
-    ];
+'income_group_id' => 'int',
+'business_activity_type' => 'string',
+'business_activity_description' => 'string',
+'business_income' => 'float',
+'business_income_after_shared_with_spouse' => 'float',
+'corrected_business_income' => 'float',
+'deductions_for_risk_free_return' => 'float',
+'risk_free_return' => 'float',
+'valid_basis_for_risk_free_return' => 'bool',
+'personal_income_for_the_year' => 'float',
+'after_shared_with_spouse' => 'float',
+'calculated_personal_income_spouse' => 'float',
+'calculated_business_income_spouse' => 'float',
+'after_coordination' => 'float',
+'sum_opening_balance_before_enterprise_debt' => 'float',
+'sum_closing_balance_before_enterprise_debt' => 'float',
+'sum_opening_balance_after_enterprise_debt' => 'float',
+'sum_closing_balance_after_enterprise_debt' => 'float',
+'basis_for_risk_free_return_ex_enterprise_debt' => 'float',
+'basis_enterprise_debt' => 'float',
+'basis_for_risk_free_return_inc_enterprise_debt' => 'float',
+'balance_groups' => '\Learnist\Tripletex\Model\BalanceGroup[]',
+'posts' => '\Learnist\Tripletex\Model\PersonalIncome[]'    ];
 
     /**
       * Array of property to format mappings. Used for (de)serialization
       *
       * @var string[]
-      * @phpstan-var array<string, string|null>
-      * @psalm-var array<string, string|null>
       */
-    protected static $openAPIFormats = [
+    protected static $swaggerFormats = [
         'year_end_report' => null,
-        'income_group_id' => 'int32',
-        'business_activity_type' => null,
-        'business_activity_description' => null,
-        'business_income' => null,
-        'business_income_after_shared_with_spouse' => null,
-        'corrected_business_income' => null,
-        'deductions_for_risk_free_return' => null,
-        'risk_free_return' => null,
-        'valid_basis_for_risk_free_return' => null,
-        'personal_income_for_the_year' => null,
-        'after_shared_with_spouse' => null,
-        'calculated_personal_income_spouse' => null,
-        'calculated_business_income_spouse' => null,
-        'after_coordination' => null,
-        'sum_opening_balance_before_enterprise_debt' => null,
-        'sum_closing_balance_before_enterprise_debt' => null,
-        'sum_opening_balance_after_enterprise_debt' => null,
-        'sum_closing_balance_after_enterprise_debt' => null,
-        'basis_for_risk_free_return_ex_enterprise_debt' => null,
-        'basis_enterprise_debt' => null,
-        'basis_for_risk_free_return_inc_enterprise_debt' => null,
-        'balance_groups' => null,
-        'posts' => null
-    ];
-
-    /**
-      * Array of nullable properties. Used for (de)serialization
-      *
-      * @var boolean[]
-      */
-    protected static array $openAPINullables = [
-        'year_end_report' => false,
-		'income_group_id' => false,
-		'business_activity_type' => false,
-		'business_activity_description' => false,
-		'business_income' => false,
-		'business_income_after_shared_with_spouse' => false,
-		'corrected_business_income' => false,
-		'deductions_for_risk_free_return' => false,
-		'risk_free_return' => false,
-		'valid_basis_for_risk_free_return' => false,
-		'personal_income_for_the_year' => false,
-		'after_shared_with_spouse' => false,
-		'calculated_personal_income_spouse' => false,
-		'calculated_business_income_spouse' => false,
-		'after_coordination' => false,
-		'sum_opening_balance_before_enterprise_debt' => false,
-		'sum_closing_balance_before_enterprise_debt' => false,
-		'sum_opening_balance_after_enterprise_debt' => false,
-		'sum_closing_balance_after_enterprise_debt' => false,
-		'basis_for_risk_free_return_ex_enterprise_debt' => false,
-		'basis_enterprise_debt' => false,
-		'basis_for_risk_free_return_inc_enterprise_debt' => false,
-		'balance_groups' => false,
-		'posts' => false
-    ];
-
-    /**
-      * If a nullable field gets set to null, insert it here
-      *
-      * @var boolean[]
-      */
-    protected array $openAPINullablesSetToNull = [];
+'income_group_id' => 'int32',
+'business_activity_type' => null,
+'business_activity_description' => null,
+'business_income' => null,
+'business_income_after_shared_with_spouse' => null,
+'corrected_business_income' => null,
+'deductions_for_risk_free_return' => null,
+'risk_free_return' => null,
+'valid_basis_for_risk_free_return' => null,
+'personal_income_for_the_year' => null,
+'after_shared_with_spouse' => null,
+'calculated_personal_income_spouse' => null,
+'calculated_business_income_spouse' => null,
+'after_coordination' => null,
+'sum_opening_balance_before_enterprise_debt' => null,
+'sum_closing_balance_before_enterprise_debt' => null,
+'sum_opening_balance_after_enterprise_debt' => null,
+'sum_closing_balance_after_enterprise_debt' => null,
+'basis_for_risk_free_return_ex_enterprise_debt' => null,
+'basis_enterprise_debt' => null,
+'basis_for_risk_free_return_inc_enterprise_debt' => null,
+'balance_groups' => null,
+'posts' => null    ];
 
     /**
      * Array of property to type mappings. Used for (de)serialization
      *
      * @return array
      */
-    public static function openAPITypes()
+    public static function swaggerTypes()
     {
-        return self::$openAPITypes;
+        return self::$swaggerTypes;
     }
 
     /**
@@ -171,61 +127,9 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
      *
      * @return array
      */
-    public static function openAPIFormats()
+    public static function swaggerFormats()
     {
-        return self::$openAPIFormats;
-    }
-
-    /**
-     * Array of nullable properties
-     *
-     * @return array
-     */
-    protected static function openAPINullables(): array
-    {
-        return self::$openAPINullables;
-    }
-
-    /**
-     * Array of nullable field names deliberately set to null
-     *
-     * @return boolean[]
-     */
-    private function getOpenAPINullablesSetToNull(): array
-    {
-        return $this->openAPINullablesSetToNull;
-    }
-
-    /**
-     * Setter - Array of nullable field names deliberately set to null
-     *
-     * @param boolean[] $openAPINullablesSetToNull
-     */
-    private function setOpenAPINullablesSetToNull(array $openAPINullablesSetToNull): void
-    {
-        $this->openAPINullablesSetToNull = $openAPINullablesSetToNull;
-    }
-
-    /**
-     * Checks if a property is nullable
-     *
-     * @param string $property
-     * @return bool
-     */
-    public static function isNullable(string $property): bool
-    {
-        return self::openAPINullables()[$property] ?? false;
-    }
-
-    /**
-     * Checks if a nullable property is set to null.
-     *
-     * @param string $property
-     * @return bool
-     */
-    public function isNullableSetToNull(string $property): bool
-    {
-        return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+        return self::$swaggerFormats;
     }
 
     /**
@@ -236,30 +140,29 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
      */
     protected static $attributeMap = [
         'year_end_report' => 'yearEndReport',
-        'income_group_id' => 'incomeGroupId',
-        'business_activity_type' => 'businessActivityType',
-        'business_activity_description' => 'businessActivityDescription',
-        'business_income' => 'businessIncome',
-        'business_income_after_shared_with_spouse' => 'businessIncomeAfterSharedWithSpouse',
-        'corrected_business_income' => 'correctedBusinessIncome',
-        'deductions_for_risk_free_return' => 'deductionsForRiskFreeReturn',
-        'risk_free_return' => 'riskFreeReturn',
-        'valid_basis_for_risk_free_return' => 'validBasisForRiskFreeReturn',
-        'personal_income_for_the_year' => 'personalIncomeForTheYear',
-        'after_shared_with_spouse' => 'afterSharedWithSpouse',
-        'calculated_personal_income_spouse' => 'calculatedPersonalIncomeSpouse',
-        'calculated_business_income_spouse' => 'calculatedBusinessIncomeSpouse',
-        'after_coordination' => 'afterCoordination',
-        'sum_opening_balance_before_enterprise_debt' => 'sumOpeningBalanceBeforeEnterpriseDebt',
-        'sum_closing_balance_before_enterprise_debt' => 'sumClosingBalanceBeforeEnterpriseDebt',
-        'sum_opening_balance_after_enterprise_debt' => 'sumOpeningBalanceAfterEnterpriseDebt',
-        'sum_closing_balance_after_enterprise_debt' => 'sumClosingBalanceAfterEnterpriseDebt',
-        'basis_for_risk_free_return_ex_enterprise_debt' => 'basisForRiskFreeReturnExEnterpriseDebt',
-        'basis_enterprise_debt' => 'basisEnterpriseDebt',
-        'basis_for_risk_free_return_inc_enterprise_debt' => 'basisForRiskFreeReturnIncEnterpriseDebt',
-        'balance_groups' => 'balanceGroups',
-        'posts' => 'posts'
-    ];
+'income_group_id' => 'incomeGroupId',
+'business_activity_type' => 'businessActivityType',
+'business_activity_description' => 'businessActivityDescription',
+'business_income' => 'businessIncome',
+'business_income_after_shared_with_spouse' => 'businessIncomeAfterSharedWithSpouse',
+'corrected_business_income' => 'correctedBusinessIncome',
+'deductions_for_risk_free_return' => 'deductionsForRiskFreeReturn',
+'risk_free_return' => 'riskFreeReturn',
+'valid_basis_for_risk_free_return' => 'validBasisForRiskFreeReturn',
+'personal_income_for_the_year' => 'personalIncomeForTheYear',
+'after_shared_with_spouse' => 'afterSharedWithSpouse',
+'calculated_personal_income_spouse' => 'calculatedPersonalIncomeSpouse',
+'calculated_business_income_spouse' => 'calculatedBusinessIncomeSpouse',
+'after_coordination' => 'afterCoordination',
+'sum_opening_balance_before_enterprise_debt' => 'sumOpeningBalanceBeforeEnterpriseDebt',
+'sum_closing_balance_before_enterprise_debt' => 'sumClosingBalanceBeforeEnterpriseDebt',
+'sum_opening_balance_after_enterprise_debt' => 'sumOpeningBalanceAfterEnterpriseDebt',
+'sum_closing_balance_after_enterprise_debt' => 'sumClosingBalanceAfterEnterpriseDebt',
+'basis_for_risk_free_return_ex_enterprise_debt' => 'basisForRiskFreeReturnExEnterpriseDebt',
+'basis_enterprise_debt' => 'basisEnterpriseDebt',
+'basis_for_risk_free_return_inc_enterprise_debt' => 'basisForRiskFreeReturnIncEnterpriseDebt',
+'balance_groups' => 'balanceGroups',
+'posts' => 'posts'    ];
 
     /**
      * Array of attributes to setter functions (for deserialization of responses)
@@ -268,30 +171,29 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
      */
     protected static $setters = [
         'year_end_report' => 'setYearEndReport',
-        'income_group_id' => 'setIncomeGroupId',
-        'business_activity_type' => 'setBusinessActivityType',
-        'business_activity_description' => 'setBusinessActivityDescription',
-        'business_income' => 'setBusinessIncome',
-        'business_income_after_shared_with_spouse' => 'setBusinessIncomeAfterSharedWithSpouse',
-        'corrected_business_income' => 'setCorrectedBusinessIncome',
-        'deductions_for_risk_free_return' => 'setDeductionsForRiskFreeReturn',
-        'risk_free_return' => 'setRiskFreeReturn',
-        'valid_basis_for_risk_free_return' => 'setValidBasisForRiskFreeReturn',
-        'personal_income_for_the_year' => 'setPersonalIncomeForTheYear',
-        'after_shared_with_spouse' => 'setAfterSharedWithSpouse',
-        'calculated_personal_income_spouse' => 'setCalculatedPersonalIncomeSpouse',
-        'calculated_business_income_spouse' => 'setCalculatedBusinessIncomeSpouse',
-        'after_coordination' => 'setAfterCoordination',
-        'sum_opening_balance_before_enterprise_debt' => 'setSumOpeningBalanceBeforeEnterpriseDebt',
-        'sum_closing_balance_before_enterprise_debt' => 'setSumClosingBalanceBeforeEnterpriseDebt',
-        'sum_opening_balance_after_enterprise_debt' => 'setSumOpeningBalanceAfterEnterpriseDebt',
-        'sum_closing_balance_after_enterprise_debt' => 'setSumClosingBalanceAfterEnterpriseDebt',
-        'basis_for_risk_free_return_ex_enterprise_debt' => 'setBasisForRiskFreeReturnExEnterpriseDebt',
-        'basis_enterprise_debt' => 'setBasisEnterpriseDebt',
-        'basis_for_risk_free_return_inc_enterprise_debt' => 'setBasisForRiskFreeReturnIncEnterpriseDebt',
-        'balance_groups' => 'setBalanceGroups',
-        'posts' => 'setPosts'
-    ];
+'income_group_id' => 'setIncomeGroupId',
+'business_activity_type' => 'setBusinessActivityType',
+'business_activity_description' => 'setBusinessActivityDescription',
+'business_income' => 'setBusinessIncome',
+'business_income_after_shared_with_spouse' => 'setBusinessIncomeAfterSharedWithSpouse',
+'corrected_business_income' => 'setCorrectedBusinessIncome',
+'deductions_for_risk_free_return' => 'setDeductionsForRiskFreeReturn',
+'risk_free_return' => 'setRiskFreeReturn',
+'valid_basis_for_risk_free_return' => 'setValidBasisForRiskFreeReturn',
+'personal_income_for_the_year' => 'setPersonalIncomeForTheYear',
+'after_shared_with_spouse' => 'setAfterSharedWithSpouse',
+'calculated_personal_income_spouse' => 'setCalculatedPersonalIncomeSpouse',
+'calculated_business_income_spouse' => 'setCalculatedBusinessIncomeSpouse',
+'after_coordination' => 'setAfterCoordination',
+'sum_opening_balance_before_enterprise_debt' => 'setSumOpeningBalanceBeforeEnterpriseDebt',
+'sum_closing_balance_before_enterprise_debt' => 'setSumClosingBalanceBeforeEnterpriseDebt',
+'sum_opening_balance_after_enterprise_debt' => 'setSumOpeningBalanceAfterEnterpriseDebt',
+'sum_closing_balance_after_enterprise_debt' => 'setSumClosingBalanceAfterEnterpriseDebt',
+'basis_for_risk_free_return_ex_enterprise_debt' => 'setBasisForRiskFreeReturnExEnterpriseDebt',
+'basis_enterprise_debt' => 'setBasisEnterpriseDebt',
+'basis_for_risk_free_return_inc_enterprise_debt' => 'setBasisForRiskFreeReturnIncEnterpriseDebt',
+'balance_groups' => 'setBalanceGroups',
+'posts' => 'setPosts'    ];
 
     /**
      * Array of attributes to getter functions (for serialization of requests)
@@ -300,30 +202,29 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
      */
     protected static $getters = [
         'year_end_report' => 'getYearEndReport',
-        'income_group_id' => 'getIncomeGroupId',
-        'business_activity_type' => 'getBusinessActivityType',
-        'business_activity_description' => 'getBusinessActivityDescription',
-        'business_income' => 'getBusinessIncome',
-        'business_income_after_shared_with_spouse' => 'getBusinessIncomeAfterSharedWithSpouse',
-        'corrected_business_income' => 'getCorrectedBusinessIncome',
-        'deductions_for_risk_free_return' => 'getDeductionsForRiskFreeReturn',
-        'risk_free_return' => 'getRiskFreeReturn',
-        'valid_basis_for_risk_free_return' => 'getValidBasisForRiskFreeReturn',
-        'personal_income_for_the_year' => 'getPersonalIncomeForTheYear',
-        'after_shared_with_spouse' => 'getAfterSharedWithSpouse',
-        'calculated_personal_income_spouse' => 'getCalculatedPersonalIncomeSpouse',
-        'calculated_business_income_spouse' => 'getCalculatedBusinessIncomeSpouse',
-        'after_coordination' => 'getAfterCoordination',
-        'sum_opening_balance_before_enterprise_debt' => 'getSumOpeningBalanceBeforeEnterpriseDebt',
-        'sum_closing_balance_before_enterprise_debt' => 'getSumClosingBalanceBeforeEnterpriseDebt',
-        'sum_opening_balance_after_enterprise_debt' => 'getSumOpeningBalanceAfterEnterpriseDebt',
-        'sum_closing_balance_after_enterprise_debt' => 'getSumClosingBalanceAfterEnterpriseDebt',
-        'basis_for_risk_free_return_ex_enterprise_debt' => 'getBasisForRiskFreeReturnExEnterpriseDebt',
-        'basis_enterprise_debt' => 'getBasisEnterpriseDebt',
-        'basis_for_risk_free_return_inc_enterprise_debt' => 'getBasisForRiskFreeReturnIncEnterpriseDebt',
-        'balance_groups' => 'getBalanceGroups',
-        'posts' => 'getPosts'
-    ];
+'income_group_id' => 'getIncomeGroupId',
+'business_activity_type' => 'getBusinessActivityType',
+'business_activity_description' => 'getBusinessActivityDescription',
+'business_income' => 'getBusinessIncome',
+'business_income_after_shared_with_spouse' => 'getBusinessIncomeAfterSharedWithSpouse',
+'corrected_business_income' => 'getCorrectedBusinessIncome',
+'deductions_for_risk_free_return' => 'getDeductionsForRiskFreeReturn',
+'risk_free_return' => 'getRiskFreeReturn',
+'valid_basis_for_risk_free_return' => 'getValidBasisForRiskFreeReturn',
+'personal_income_for_the_year' => 'getPersonalIncomeForTheYear',
+'after_shared_with_spouse' => 'getAfterSharedWithSpouse',
+'calculated_personal_income_spouse' => 'getCalculatedPersonalIncomeSpouse',
+'calculated_business_income_spouse' => 'getCalculatedBusinessIncomeSpouse',
+'after_coordination' => 'getAfterCoordination',
+'sum_opening_balance_before_enterprise_debt' => 'getSumOpeningBalanceBeforeEnterpriseDebt',
+'sum_closing_balance_before_enterprise_debt' => 'getSumClosingBalanceBeforeEnterpriseDebt',
+'sum_opening_balance_after_enterprise_debt' => 'getSumOpeningBalanceAfterEnterpriseDebt',
+'sum_closing_balance_after_enterprise_debt' => 'getSumClosingBalanceAfterEnterpriseDebt',
+'basis_for_risk_free_return_ex_enterprise_debt' => 'getBasisForRiskFreeReturnExEnterpriseDebt',
+'basis_enterprise_debt' => 'getBasisEnterpriseDebt',
+'basis_for_risk_free_return_inc_enterprise_debt' => 'getBasisForRiskFreeReturnIncEnterpriseDebt',
+'balance_groups' => 'getBalanceGroups',
+'posts' => 'getPosts'    ];
 
     /**
      * Array of attributes where the key is the local name,
@@ -363,16 +264,16 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
      */
     public function getModelName()
     {
-        return self::$openAPIModelName;
+        return self::$swaggerModelName;
     }
 
-    public const BUSINESS_ACTIVITY_TYPE_OTHER_COMMERCIAL_ACTIVITIES = 'OTHER_COMMERCIAL_ACTIVITIES';
-    public const BUSINESS_ACTIVITY_TYPE_AGRICULTURE_HORTICULTURE_FUR_FARMING = 'AGRICULTURE_HORTICULTURE_FUR_FARMING';
-    public const BUSINESS_ACTIVITY_TYPE_FISHING_AND_HUNTING_AT_SEA = 'FISHING_AND_HUNTING_AT_SEA';
-    public const BUSINESS_ACTIVITY_TYPE_REINDEER_HUSBANDRY = 'REINDEER_HUSBANDRY';
-    public const BUSINESS_ACTIVITY_TYPE_FAMILY_DAY_CARE_CENTRE_IN_OWN_HOME = 'FAMILY_DAY_CARE_CENTRE_IN_OWN_HOME';
-    public const BUSINESS_ACTIVITY_TYPE_SLATE_QUARRYING = 'SLATE_QUARRYING';
-    public const BUSINESS_ACTIVITY_TYPE_FORESTRY = 'FORESTRY';
+    const BUSINESS_ACTIVITY_TYPE_OTHER_COMMERCIAL_ACTIVITIES = 'OTHER_COMMERCIAL_ACTIVITIES';
+const BUSINESS_ACTIVITY_TYPE_AGRICULTURE_HORTICULTURE_FUR_FARMING = 'AGRICULTURE_HORTICULTURE_FUR_FARMING';
+const BUSINESS_ACTIVITY_TYPE_FISHING_AND_HUNTING_AT_SEA = 'FISHING_AND_HUNTING_AT_SEA';
+const BUSINESS_ACTIVITY_TYPE_REINDEER_HUSBANDRY = 'REINDEER_HUSBANDRY';
+const BUSINESS_ACTIVITY_TYPE_FAMILY_DAY_CARE_CENTRE_IN_OWN_HOME = 'FAMILY_DAY_CARE_CENTRE_IN_OWN_HOME';
+const BUSINESS_ACTIVITY_TYPE_SLATE_QUARRYING = 'SLATE_QUARRYING';
+const BUSINESS_ACTIVITY_TYPE_FORESTRY = 'FORESTRY';
 
     /**
      * Gets allowable values of the enum
@@ -383,13 +284,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     {
         return [
             self::BUSINESS_ACTIVITY_TYPE_OTHER_COMMERCIAL_ACTIVITIES,
-            self::BUSINESS_ACTIVITY_TYPE_AGRICULTURE_HORTICULTURE_FUR_FARMING,
-            self::BUSINESS_ACTIVITY_TYPE_FISHING_AND_HUNTING_AT_SEA,
-            self::BUSINESS_ACTIVITY_TYPE_REINDEER_HUSBANDRY,
-            self::BUSINESS_ACTIVITY_TYPE_FAMILY_DAY_CARE_CENTRE_IN_OWN_HOME,
-            self::BUSINESS_ACTIVITY_TYPE_SLATE_QUARRYING,
-            self::BUSINESS_ACTIVITY_TYPE_FORESTRY,
-        ];
+self::BUSINESS_ACTIVITY_TYPE_AGRICULTURE_HORTICULTURE_FUR_FARMING,
+self::BUSINESS_ACTIVITY_TYPE_FISHING_AND_HUNTING_AT_SEA,
+self::BUSINESS_ACTIVITY_TYPE_REINDEER_HUSBANDRY,
+self::BUSINESS_ACTIVITY_TYPE_FAMILY_DAY_CARE_CENTRE_IN_OWN_HOME,
+self::BUSINESS_ACTIVITY_TYPE_SLATE_QUARRYING,
+self::BUSINESS_ACTIVITY_TYPE_FORESTRY,        ];
     }
 
     /**
@@ -407,48 +307,30 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
      */
     public function __construct(array $data = null)
     {
-        $this->setIfExists('year_end_report', $data ?? [], null);
-        $this->setIfExists('income_group_id', $data ?? [], null);
-        $this->setIfExists('business_activity_type', $data ?? [], null);
-        $this->setIfExists('business_activity_description', $data ?? [], null);
-        $this->setIfExists('business_income', $data ?? [], null);
-        $this->setIfExists('business_income_after_shared_with_spouse', $data ?? [], null);
-        $this->setIfExists('corrected_business_income', $data ?? [], null);
-        $this->setIfExists('deductions_for_risk_free_return', $data ?? [], null);
-        $this->setIfExists('risk_free_return', $data ?? [], null);
-        $this->setIfExists('valid_basis_for_risk_free_return', $data ?? [], null);
-        $this->setIfExists('personal_income_for_the_year', $data ?? [], null);
-        $this->setIfExists('after_shared_with_spouse', $data ?? [], null);
-        $this->setIfExists('calculated_personal_income_spouse', $data ?? [], null);
-        $this->setIfExists('calculated_business_income_spouse', $data ?? [], null);
-        $this->setIfExists('after_coordination', $data ?? [], null);
-        $this->setIfExists('sum_opening_balance_before_enterprise_debt', $data ?? [], null);
-        $this->setIfExists('sum_closing_balance_before_enterprise_debt', $data ?? [], null);
-        $this->setIfExists('sum_opening_balance_after_enterprise_debt', $data ?? [], null);
-        $this->setIfExists('sum_closing_balance_after_enterprise_debt', $data ?? [], null);
-        $this->setIfExists('basis_for_risk_free_return_ex_enterprise_debt', $data ?? [], null);
-        $this->setIfExists('basis_enterprise_debt', $data ?? [], null);
-        $this->setIfExists('basis_for_risk_free_return_inc_enterprise_debt', $data ?? [], null);
-        $this->setIfExists('balance_groups', $data ?? [], null);
-        $this->setIfExists('posts', $data ?? [], null);
-    }
-
-    /**
-    * Sets $this->container[$variableName] to the given data or to the given default Value; if $variableName
-    * is nullable and its value is set to null in the $fields array, then mark it as "set to null" in the
-    * $this->openAPINullablesSetToNull array
-    *
-    * @param string $variableName
-    * @param array  $fields
-    * @param mixed  $defaultValue
-    */
-    private function setIfExists(string $variableName, array $fields, $defaultValue): void
-    {
-        if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
-            $this->openAPINullablesSetToNull[] = $variableName;
-        }
-
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $this->container['year_end_report'] = isset($data['year_end_report']) ? $data['year_end_report'] : null;
+        $this->container['income_group_id'] = isset($data['income_group_id']) ? $data['income_group_id'] : null;
+        $this->container['business_activity_type'] = isset($data['business_activity_type']) ? $data['business_activity_type'] : null;
+        $this->container['business_activity_description'] = isset($data['business_activity_description']) ? $data['business_activity_description'] : null;
+        $this->container['business_income'] = isset($data['business_income']) ? $data['business_income'] : null;
+        $this->container['business_income_after_shared_with_spouse'] = isset($data['business_income_after_shared_with_spouse']) ? $data['business_income_after_shared_with_spouse'] : null;
+        $this->container['corrected_business_income'] = isset($data['corrected_business_income']) ? $data['corrected_business_income'] : null;
+        $this->container['deductions_for_risk_free_return'] = isset($data['deductions_for_risk_free_return']) ? $data['deductions_for_risk_free_return'] : null;
+        $this->container['risk_free_return'] = isset($data['risk_free_return']) ? $data['risk_free_return'] : null;
+        $this->container['valid_basis_for_risk_free_return'] = isset($data['valid_basis_for_risk_free_return']) ? $data['valid_basis_for_risk_free_return'] : null;
+        $this->container['personal_income_for_the_year'] = isset($data['personal_income_for_the_year']) ? $data['personal_income_for_the_year'] : null;
+        $this->container['after_shared_with_spouse'] = isset($data['after_shared_with_spouse']) ? $data['after_shared_with_spouse'] : null;
+        $this->container['calculated_personal_income_spouse'] = isset($data['calculated_personal_income_spouse']) ? $data['calculated_personal_income_spouse'] : null;
+        $this->container['calculated_business_income_spouse'] = isset($data['calculated_business_income_spouse']) ? $data['calculated_business_income_spouse'] : null;
+        $this->container['after_coordination'] = isset($data['after_coordination']) ? $data['after_coordination'] : null;
+        $this->container['sum_opening_balance_before_enterprise_debt'] = isset($data['sum_opening_balance_before_enterprise_debt']) ? $data['sum_opening_balance_before_enterprise_debt'] : null;
+        $this->container['sum_closing_balance_before_enterprise_debt'] = isset($data['sum_closing_balance_before_enterprise_debt']) ? $data['sum_closing_balance_before_enterprise_debt'] : null;
+        $this->container['sum_opening_balance_after_enterprise_debt'] = isset($data['sum_opening_balance_after_enterprise_debt']) ? $data['sum_opening_balance_after_enterprise_debt'] : null;
+        $this->container['sum_closing_balance_after_enterprise_debt'] = isset($data['sum_closing_balance_after_enterprise_debt']) ? $data['sum_closing_balance_after_enterprise_debt'] : null;
+        $this->container['basis_for_risk_free_return_ex_enterprise_debt'] = isset($data['basis_for_risk_free_return_ex_enterprise_debt']) ? $data['basis_for_risk_free_return_ex_enterprise_debt'] : null;
+        $this->container['basis_enterprise_debt'] = isset($data['basis_enterprise_debt']) ? $data['basis_enterprise_debt'] : null;
+        $this->container['basis_for_risk_free_return_inc_enterprise_debt'] = isset($data['basis_for_risk_free_return_inc_enterprise_debt']) ? $data['basis_for_risk_free_return_inc_enterprise_debt'] : null;
+        $this->container['balance_groups'] = isset($data['balance_groups']) ? $data['balance_groups'] : null;
+        $this->container['posts'] = isset($data['posts']) ? $data['posts'] : null;
     }
 
     /**
@@ -460,15 +342,10 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     {
         $invalidProperties = [];
 
-        if (!is_null($this->container['income_group_id']) && ($this->container['income_group_id'] < 0)) {
-            $invalidProperties[] = "invalid value for 'income_group_id', must be bigger than or equal to 0.";
-        }
-
         $allowedValues = $this->getBusinessActivityTypeAllowableValues();
         if (!is_null($this->container['business_activity_type']) && !in_array($this->container['business_activity_type'], $allowedValues, true)) {
             $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'business_activity_type', must be one of '%s'",
-                $this->container['business_activity_type'],
+                "invalid value for 'business_activity_type', must be one of '%s'",
                 implode("', '", $allowedValues)
             );
         }
@@ -491,7 +368,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets year_end_report
      *
-     * @return \Learnist\Tripletex\Model\YearEndReport|null
+     * @return \Learnist\Tripletex\Model\YearEndReport
      */
     public function getYearEndReport()
     {
@@ -501,15 +378,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets year_end_report
      *
-     * @param \Learnist\Tripletex\Model\YearEndReport|null $year_end_report year_end_report
+     * @param \Learnist\Tripletex\Model\YearEndReport $year_end_report year_end_report
      *
-     * @return self
+     * @return $this
      */
     public function setYearEndReport($year_end_report)
     {
-        if (is_null($year_end_report)) {
-            throw new \InvalidArgumentException('non-nullable year_end_report cannot be null');
-        }
         $this->container['year_end_report'] = $year_end_report;
 
         return $this;
@@ -518,7 +392,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets income_group_id
      *
-     * @return int|null
+     * @return int
      */
     public function getIncomeGroupId()
     {
@@ -528,20 +402,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets income_group_id
      *
-     * @param int|null $income_group_id income_group_id
+     * @param int $income_group_id income_group_id
      *
-     * @return self
+     * @return $this
      */
     public function setIncomeGroupId($income_group_id)
     {
-        if (is_null($income_group_id)) {
-            throw new \InvalidArgumentException('non-nullable income_group_id cannot be null');
-        }
-
-        if (($income_group_id < 0)) {
-            throw new \InvalidArgumentException('invalid value for $income_group_id when calling PersonalIncomeOverview., must be bigger than or equal to 0.');
-        }
-
         $this->container['income_group_id'] = $income_group_id;
 
         return $this;
@@ -550,7 +416,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets business_activity_type
      *
-     * @return string|null
+     * @return string
      */
     public function getBusinessActivityType()
     {
@@ -560,21 +426,17 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets business_activity_type
      *
-     * @param string|null $business_activity_type business_activity_type
+     * @param string $business_activity_type business_activity_type
      *
-     * @return self
+     * @return $this
      */
     public function setBusinessActivityType($business_activity_type)
     {
-        if (is_null($business_activity_type)) {
-            throw new \InvalidArgumentException('non-nullable business_activity_type cannot be null');
-        }
         $allowedValues = $this->getBusinessActivityTypeAllowableValues();
-        if (!in_array($business_activity_type, $allowedValues, true)) {
+        if (!is_null($business_activity_type) && !in_array($business_activity_type, $allowedValues, true)) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    "Invalid value '%s' for 'business_activity_type', must be one of '%s'",
-                    $business_activity_type,
+                    "Invalid value for 'business_activity_type', must be one of '%s'",
                     implode("', '", $allowedValues)
                 )
             );
@@ -587,7 +449,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets business_activity_description
      *
-     * @return string|null
+     * @return string
      */
     public function getBusinessActivityDescription()
     {
@@ -597,15 +459,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets business_activity_description
      *
-     * @param string|null $business_activity_description business_activity_description
+     * @param string $business_activity_description business_activity_description
      *
-     * @return self
+     * @return $this
      */
     public function setBusinessActivityDescription($business_activity_description)
     {
-        if (is_null($business_activity_description)) {
-            throw new \InvalidArgumentException('non-nullable business_activity_description cannot be null');
-        }
         $this->container['business_activity_description'] = $business_activity_description;
 
         return $this;
@@ -614,7 +473,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets business_income
      *
-     * @return float|null
+     * @return float
      */
     public function getBusinessIncome()
     {
@@ -624,15 +483,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets business_income
      *
-     * @param float|null $business_income business_income
+     * @param float $business_income business_income
      *
-     * @return self
+     * @return $this
      */
     public function setBusinessIncome($business_income)
     {
-        if (is_null($business_income)) {
-            throw new \InvalidArgumentException('non-nullable business_income cannot be null');
-        }
         $this->container['business_income'] = $business_income;
 
         return $this;
@@ -641,7 +497,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets business_income_after_shared_with_spouse
      *
-     * @return float|null
+     * @return float
      */
     public function getBusinessIncomeAfterSharedWithSpouse()
     {
@@ -651,15 +507,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets business_income_after_shared_with_spouse
      *
-     * @param float|null $business_income_after_shared_with_spouse business_income_after_shared_with_spouse
+     * @param float $business_income_after_shared_with_spouse business_income_after_shared_with_spouse
      *
-     * @return self
+     * @return $this
      */
     public function setBusinessIncomeAfterSharedWithSpouse($business_income_after_shared_with_spouse)
     {
-        if (is_null($business_income_after_shared_with_spouse)) {
-            throw new \InvalidArgumentException('non-nullable business_income_after_shared_with_spouse cannot be null');
-        }
         $this->container['business_income_after_shared_with_spouse'] = $business_income_after_shared_with_spouse;
 
         return $this;
@@ -668,7 +521,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets corrected_business_income
      *
-     * @return float|null
+     * @return float
      */
     public function getCorrectedBusinessIncome()
     {
@@ -678,15 +531,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets corrected_business_income
      *
-     * @param float|null $corrected_business_income corrected_business_income
+     * @param float $corrected_business_income corrected_business_income
      *
-     * @return self
+     * @return $this
      */
     public function setCorrectedBusinessIncome($corrected_business_income)
     {
-        if (is_null($corrected_business_income)) {
-            throw new \InvalidArgumentException('non-nullable corrected_business_income cannot be null');
-        }
         $this->container['corrected_business_income'] = $corrected_business_income;
 
         return $this;
@@ -695,7 +545,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets deductions_for_risk_free_return
      *
-     * @return float|null
+     * @return float
      */
     public function getDeductionsForRiskFreeReturn()
     {
@@ -705,15 +555,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets deductions_for_risk_free_return
      *
-     * @param float|null $deductions_for_risk_free_return deductions_for_risk_free_return
+     * @param float $deductions_for_risk_free_return deductions_for_risk_free_return
      *
-     * @return self
+     * @return $this
      */
     public function setDeductionsForRiskFreeReturn($deductions_for_risk_free_return)
     {
-        if (is_null($deductions_for_risk_free_return)) {
-            throw new \InvalidArgumentException('non-nullable deductions_for_risk_free_return cannot be null');
-        }
         $this->container['deductions_for_risk_free_return'] = $deductions_for_risk_free_return;
 
         return $this;
@@ -722,7 +569,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets risk_free_return
      *
-     * @return float|null
+     * @return float
      */
     public function getRiskFreeReturn()
     {
@@ -732,15 +579,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets risk_free_return
      *
-     * @param float|null $risk_free_return risk_free_return
+     * @param float $risk_free_return risk_free_return
      *
-     * @return self
+     * @return $this
      */
     public function setRiskFreeReturn($risk_free_return)
     {
-        if (is_null($risk_free_return)) {
-            throw new \InvalidArgumentException('non-nullable risk_free_return cannot be null');
-        }
         $this->container['risk_free_return'] = $risk_free_return;
 
         return $this;
@@ -749,7 +593,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets valid_basis_for_risk_free_return
      *
-     * @return bool|null
+     * @return bool
      */
     public function getValidBasisForRiskFreeReturn()
     {
@@ -759,15 +603,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets valid_basis_for_risk_free_return
      *
-     * @param bool|null $valid_basis_for_risk_free_return valid_basis_for_risk_free_return
+     * @param bool $valid_basis_for_risk_free_return valid_basis_for_risk_free_return
      *
-     * @return self
+     * @return $this
      */
     public function setValidBasisForRiskFreeReturn($valid_basis_for_risk_free_return)
     {
-        if (is_null($valid_basis_for_risk_free_return)) {
-            throw new \InvalidArgumentException('non-nullable valid_basis_for_risk_free_return cannot be null');
-        }
         $this->container['valid_basis_for_risk_free_return'] = $valid_basis_for_risk_free_return;
 
         return $this;
@@ -776,7 +617,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets personal_income_for_the_year
      *
-     * @return float|null
+     * @return float
      */
     public function getPersonalIncomeForTheYear()
     {
@@ -786,15 +627,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets personal_income_for_the_year
      *
-     * @param float|null $personal_income_for_the_year personal_income_for_the_year
+     * @param float $personal_income_for_the_year personal_income_for_the_year
      *
-     * @return self
+     * @return $this
      */
     public function setPersonalIncomeForTheYear($personal_income_for_the_year)
     {
-        if (is_null($personal_income_for_the_year)) {
-            throw new \InvalidArgumentException('non-nullable personal_income_for_the_year cannot be null');
-        }
         $this->container['personal_income_for_the_year'] = $personal_income_for_the_year;
 
         return $this;
@@ -803,7 +641,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets after_shared_with_spouse
      *
-     * @return float|null
+     * @return float
      */
     public function getAfterSharedWithSpouse()
     {
@@ -813,15 +651,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets after_shared_with_spouse
      *
-     * @param float|null $after_shared_with_spouse after_shared_with_spouse
+     * @param float $after_shared_with_spouse after_shared_with_spouse
      *
-     * @return self
+     * @return $this
      */
     public function setAfterSharedWithSpouse($after_shared_with_spouse)
     {
-        if (is_null($after_shared_with_spouse)) {
-            throw new \InvalidArgumentException('non-nullable after_shared_with_spouse cannot be null');
-        }
         $this->container['after_shared_with_spouse'] = $after_shared_with_spouse;
 
         return $this;
@@ -830,7 +665,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets calculated_personal_income_spouse
      *
-     * @return float|null
+     * @return float
      */
     public function getCalculatedPersonalIncomeSpouse()
     {
@@ -840,15 +675,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets calculated_personal_income_spouse
      *
-     * @param float|null $calculated_personal_income_spouse calculated_personal_income_spouse
+     * @param float $calculated_personal_income_spouse calculated_personal_income_spouse
      *
-     * @return self
+     * @return $this
      */
     public function setCalculatedPersonalIncomeSpouse($calculated_personal_income_spouse)
     {
-        if (is_null($calculated_personal_income_spouse)) {
-            throw new \InvalidArgumentException('non-nullable calculated_personal_income_spouse cannot be null');
-        }
         $this->container['calculated_personal_income_spouse'] = $calculated_personal_income_spouse;
 
         return $this;
@@ -857,7 +689,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets calculated_business_income_spouse
      *
-     * @return float|null
+     * @return float
      */
     public function getCalculatedBusinessIncomeSpouse()
     {
@@ -867,15 +699,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets calculated_business_income_spouse
      *
-     * @param float|null $calculated_business_income_spouse calculated_business_income_spouse
+     * @param float $calculated_business_income_spouse calculated_business_income_spouse
      *
-     * @return self
+     * @return $this
      */
     public function setCalculatedBusinessIncomeSpouse($calculated_business_income_spouse)
     {
-        if (is_null($calculated_business_income_spouse)) {
-            throw new \InvalidArgumentException('non-nullable calculated_business_income_spouse cannot be null');
-        }
         $this->container['calculated_business_income_spouse'] = $calculated_business_income_spouse;
 
         return $this;
@@ -884,7 +713,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets after_coordination
      *
-     * @return float|null
+     * @return float
      */
     public function getAfterCoordination()
     {
@@ -894,15 +723,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets after_coordination
      *
-     * @param float|null $after_coordination after_coordination
+     * @param float $after_coordination after_coordination
      *
-     * @return self
+     * @return $this
      */
     public function setAfterCoordination($after_coordination)
     {
-        if (is_null($after_coordination)) {
-            throw new \InvalidArgumentException('non-nullable after_coordination cannot be null');
-        }
         $this->container['after_coordination'] = $after_coordination;
 
         return $this;
@@ -911,7 +737,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets sum_opening_balance_before_enterprise_debt
      *
-     * @return float|null
+     * @return float
      */
     public function getSumOpeningBalanceBeforeEnterpriseDebt()
     {
@@ -921,15 +747,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets sum_opening_balance_before_enterprise_debt
      *
-     * @param float|null $sum_opening_balance_before_enterprise_debt sum_opening_balance_before_enterprise_debt
+     * @param float $sum_opening_balance_before_enterprise_debt sum_opening_balance_before_enterprise_debt
      *
-     * @return self
+     * @return $this
      */
     public function setSumOpeningBalanceBeforeEnterpriseDebt($sum_opening_balance_before_enterprise_debt)
     {
-        if (is_null($sum_opening_balance_before_enterprise_debt)) {
-            throw new \InvalidArgumentException('non-nullable sum_opening_balance_before_enterprise_debt cannot be null');
-        }
         $this->container['sum_opening_balance_before_enterprise_debt'] = $sum_opening_balance_before_enterprise_debt;
 
         return $this;
@@ -938,7 +761,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets sum_closing_balance_before_enterprise_debt
      *
-     * @return float|null
+     * @return float
      */
     public function getSumClosingBalanceBeforeEnterpriseDebt()
     {
@@ -948,15 +771,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets sum_closing_balance_before_enterprise_debt
      *
-     * @param float|null $sum_closing_balance_before_enterprise_debt sum_closing_balance_before_enterprise_debt
+     * @param float $sum_closing_balance_before_enterprise_debt sum_closing_balance_before_enterprise_debt
      *
-     * @return self
+     * @return $this
      */
     public function setSumClosingBalanceBeforeEnterpriseDebt($sum_closing_balance_before_enterprise_debt)
     {
-        if (is_null($sum_closing_balance_before_enterprise_debt)) {
-            throw new \InvalidArgumentException('non-nullable sum_closing_balance_before_enterprise_debt cannot be null');
-        }
         $this->container['sum_closing_balance_before_enterprise_debt'] = $sum_closing_balance_before_enterprise_debt;
 
         return $this;
@@ -965,7 +785,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets sum_opening_balance_after_enterprise_debt
      *
-     * @return float|null
+     * @return float
      */
     public function getSumOpeningBalanceAfterEnterpriseDebt()
     {
@@ -975,15 +795,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets sum_opening_balance_after_enterprise_debt
      *
-     * @param float|null $sum_opening_balance_after_enterprise_debt sum_opening_balance_after_enterprise_debt
+     * @param float $sum_opening_balance_after_enterprise_debt sum_opening_balance_after_enterprise_debt
      *
-     * @return self
+     * @return $this
      */
     public function setSumOpeningBalanceAfterEnterpriseDebt($sum_opening_balance_after_enterprise_debt)
     {
-        if (is_null($sum_opening_balance_after_enterprise_debt)) {
-            throw new \InvalidArgumentException('non-nullable sum_opening_balance_after_enterprise_debt cannot be null');
-        }
         $this->container['sum_opening_balance_after_enterprise_debt'] = $sum_opening_balance_after_enterprise_debt;
 
         return $this;
@@ -992,7 +809,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets sum_closing_balance_after_enterprise_debt
      *
-     * @return float|null
+     * @return float
      */
     public function getSumClosingBalanceAfterEnterpriseDebt()
     {
@@ -1002,15 +819,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets sum_closing_balance_after_enterprise_debt
      *
-     * @param float|null $sum_closing_balance_after_enterprise_debt sum_closing_balance_after_enterprise_debt
+     * @param float $sum_closing_balance_after_enterprise_debt sum_closing_balance_after_enterprise_debt
      *
-     * @return self
+     * @return $this
      */
     public function setSumClosingBalanceAfterEnterpriseDebt($sum_closing_balance_after_enterprise_debt)
     {
-        if (is_null($sum_closing_balance_after_enterprise_debt)) {
-            throw new \InvalidArgumentException('non-nullable sum_closing_balance_after_enterprise_debt cannot be null');
-        }
         $this->container['sum_closing_balance_after_enterprise_debt'] = $sum_closing_balance_after_enterprise_debt;
 
         return $this;
@@ -1019,7 +833,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets basis_for_risk_free_return_ex_enterprise_debt
      *
-     * @return float|null
+     * @return float
      */
     public function getBasisForRiskFreeReturnExEnterpriseDebt()
     {
@@ -1029,15 +843,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets basis_for_risk_free_return_ex_enterprise_debt
      *
-     * @param float|null $basis_for_risk_free_return_ex_enterprise_debt basis_for_risk_free_return_ex_enterprise_debt
+     * @param float $basis_for_risk_free_return_ex_enterprise_debt basis_for_risk_free_return_ex_enterprise_debt
      *
-     * @return self
+     * @return $this
      */
     public function setBasisForRiskFreeReturnExEnterpriseDebt($basis_for_risk_free_return_ex_enterprise_debt)
     {
-        if (is_null($basis_for_risk_free_return_ex_enterprise_debt)) {
-            throw new \InvalidArgumentException('non-nullable basis_for_risk_free_return_ex_enterprise_debt cannot be null');
-        }
         $this->container['basis_for_risk_free_return_ex_enterprise_debt'] = $basis_for_risk_free_return_ex_enterprise_debt;
 
         return $this;
@@ -1046,7 +857,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets basis_enterprise_debt
      *
-     * @return float|null
+     * @return float
      */
     public function getBasisEnterpriseDebt()
     {
@@ -1056,15 +867,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets basis_enterprise_debt
      *
-     * @param float|null $basis_enterprise_debt basis_enterprise_debt
+     * @param float $basis_enterprise_debt basis_enterprise_debt
      *
-     * @return self
+     * @return $this
      */
     public function setBasisEnterpriseDebt($basis_enterprise_debt)
     {
-        if (is_null($basis_enterprise_debt)) {
-            throw new \InvalidArgumentException('non-nullable basis_enterprise_debt cannot be null');
-        }
         $this->container['basis_enterprise_debt'] = $basis_enterprise_debt;
 
         return $this;
@@ -1073,7 +881,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets basis_for_risk_free_return_inc_enterprise_debt
      *
-     * @return float|null
+     * @return float
      */
     public function getBasisForRiskFreeReturnIncEnterpriseDebt()
     {
@@ -1083,15 +891,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets basis_for_risk_free_return_inc_enterprise_debt
      *
-     * @param float|null $basis_for_risk_free_return_inc_enterprise_debt basis_for_risk_free_return_inc_enterprise_debt
+     * @param float $basis_for_risk_free_return_inc_enterprise_debt basis_for_risk_free_return_inc_enterprise_debt
      *
-     * @return self
+     * @return $this
      */
     public function setBasisForRiskFreeReturnIncEnterpriseDebt($basis_for_risk_free_return_inc_enterprise_debt)
     {
-        if (is_null($basis_for_risk_free_return_inc_enterprise_debt)) {
-            throw new \InvalidArgumentException('non-nullable basis_for_risk_free_return_inc_enterprise_debt cannot be null');
-        }
         $this->container['basis_for_risk_free_return_inc_enterprise_debt'] = $basis_for_risk_free_return_inc_enterprise_debt;
 
         return $this;
@@ -1100,7 +905,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets balance_groups
      *
-     * @return \Learnist\Tripletex\Model\BalanceGroup[]|null
+     * @return \Learnist\Tripletex\Model\BalanceGroup[]
      */
     public function getBalanceGroups()
     {
@@ -1110,15 +915,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets balance_groups
      *
-     * @param \Learnist\Tripletex\Model\BalanceGroup[]|null $balance_groups balance_groups
+     * @param \Learnist\Tripletex\Model\BalanceGroup[] $balance_groups balance_groups
      *
-     * @return self
+     * @return $this
      */
     public function setBalanceGroups($balance_groups)
     {
-        if (is_null($balance_groups)) {
-            throw new \InvalidArgumentException('non-nullable balance_groups cannot be null');
-        }
         $this->container['balance_groups'] = $balance_groups;
 
         return $this;
@@ -1127,7 +929,7 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Gets posts
      *
-     * @return \Learnist\Tripletex\Model\PersonalIncome[]|null
+     * @return \Learnist\Tripletex\Model\PersonalIncome[]
      */
     public function getPosts()
     {
@@ -1137,15 +939,12 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets posts
      *
-     * @param \Learnist\Tripletex\Model\PersonalIncome[]|null $posts posts
+     * @param \Learnist\Tripletex\Model\PersonalIncome[] $posts posts
      *
-     * @return self
+     * @return $this
      */
     public function setPosts($posts)
     {
-        if (is_null($posts)) {
-            throw new \InvalidArgumentException('non-nullable posts cannot be null');
-        }
         $this->container['posts'] = $posts;
 
         return $this;
@@ -1157,7 +956,8 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
      *
      * @return boolean
      */
-    public function offsetExists($offset): bool
+    #[\ReturnTypeWillChange] 
+    public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
     }
@@ -1167,23 +967,24 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
      *
      * @param integer $offset Offset
      *
-     * @return mixed|null
+     * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[\ReturnTypeWillChange] 
     public function offsetGet($offset)
     {
-        return $this->container[$offset] ?? null;
+        return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
 
     /**
      * Sets value based on offset.
      *
-     * @param int|null $offset Offset
-     * @param mixed    $value  Value to be set
+     * @param integer $offset Offset
+     * @param mixed   $value  Value to be set
      *
      * @return void
      */
-    public function offsetSet($offset, $value): void
+    #[\ReturnTypeWillChange] 
+    public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -1199,22 +1000,10 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
      *
      * @return void
      */
-    public function offsetUnset($offset): void
+    #[\ReturnTypeWillChange] 
+    public function offsetUnset($offset)
     {
         unset($this->container[$offset]);
-    }
-
-    /**
-     * Serializes the object to a value that can be serialized natively by json_encode().
-     * @link https://www.php.net/manual/en/jsonserializable.jsonserialize.php
-     *
-     * @return mixed Returns data which can be serialized by json_encode(), which is a value
-     * of any type other than a resource.
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
-    {
-       return ObjectSerializer::sanitizeForSerialization($this);
     }
 
     /**
@@ -1224,21 +1013,13 @@ class PersonalIncomeOverview implements ModelInterface, ArrayAccess, \JsonSerial
      */
     public function __toString()
     {
-        return json_encode(
-            ObjectSerializer::sanitizeForSerialization($this),
-            JSON_PRETTY_PRINT
-        );
-    }
+        if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
+            return json_encode(
+                ObjectSerializer::sanitizeForSerialization($this),
+                JSON_PRETTY_PRINT
+            );
+        }
 
-    /**
-     * Gets a header-safe presentation of the object
-     *
-     * @return string
-     */
-    public function toHeaderValue()
-    {
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
 }
-
-

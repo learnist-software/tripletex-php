@@ -1,18 +1,18 @@
-# # ProductUnitMaster
+# ProductUnitMaster
 
 ## Properties
-
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **int** |  | [optional]
-**version** | **int** |  | [optional]
-**changes** | [**\Learnist\Tripletex\Model\Change[]**](Change.md) |  | [optional] [readonly]
-**url** | **string** |  | [optional] [readonly]
-**name** | **string** |  | [optional] [readonly]
-**name_short** | **string** |  | [optional] [readonly]
-**common_code** | **string** |  | [optional] [readonly]
-**peppol_name** | **string** |  | [optional] [readonly]
-**peppol_symbol** | **string** |  | [optional] [readonly]
-**is_inactive** | **bool** |  | [optional] [readonly]
+**id** | **int** |  | [optional] 
+**version** | **int** |  | [optional] 
+**changes** | [**\Learnist\Tripletex\Model\Change[]**](Change.md) |  | [optional] 
+**url** | **string** |  | [optional] 
+**name** | **string** |  | [optional] 
+**name_short** | **string** |  | [optional] 
+**common_code** | **string** |  | [optional] 
+**peppol_name** | **string** |  | [optional] 
+**peppol_symbol** | **string** |  | [optional] 
+**is_inactive** | **bool** |  | [optional] 
 
-[[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)
+[[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
+

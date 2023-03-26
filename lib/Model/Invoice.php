@@ -2,12 +2,12 @@
 /**
  * Invoice
  *
- * PHP version 7.4
+ * PHP version 5
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
 
 /**
@@ -15,14 +15,14 @@
  *
  * ## Usage  - **Download the spec** [swagger.json](/v2/swagger.json) file, it is a [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification).  - **Generating a client** can easily be done using tools like [swagger-codegen](https://github.com/swagger-api/swagger-codegen) or other that accepts [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) specs.     - For swagger codegen it is recommended to use the flag: **--removeOperationIdPrefix**.        Unique operation ids are about to be introduced to the spec, and this ensures forward compatibility - and results in less verbose generated code.   ## Overview  - Partial resource updating is done using the `PUT` method with optional fields instead of the `PATCH` method.  - **Actions** or **commands** are represented in our RESTful path with a prefixed `:`. Example: `/v2/hours/123/:approve`.  - **Summaries** or **aggregated** results are represented in our RESTful path with a prefixed `>`. Example: `/v2/hours/>thisWeeksBillables`.  - **Request ID** is a key found in all responses in the header with the name `x-tlx-request-id`. For validation and error responses it is also in the response body. If additional log information is absolutely necessary, our support division can locate the key value.  - **version** This is a revision number found on all persisted resources. If included, it will prevent your PUT/POST from overriding any updates to the resource since your GET.  - **Date** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DD`.  - **DateTime** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DDThh:mm:ss`.  - **Searching** is done by entering values in the optional fields for each API call. The values fall into the following categories: range, in, exact and like.  - **Missing fields** or even **no response data** can occur because result objects and fields are filtered on authorization.  - **See [GitHub](https://github.com/Tripletex/tripletex-api2) for more documentation, examples, changelog and more.**  - **See [FAQ](https://tripletex.no/execute/docViewer?articleId=906&language=0) for additional information.**   ## Authentication  - **Tokens:** The Tripletex API uses 3 different tokens    - **consumerToken** is a token provided to the consumer by Tripletex after the API 2.0 registration is completed.    - **employeeToken** is a token created by an administrator in your Tripletex account via the user settings and the tab \"API access\". Each employee token must be given a set of entitlements. [Read more here.](https://tripletex.no/execute/docViewer?articleId=1505&languageId=0)    - **sessionToken** is the token from `/token/session/:create` which requires a consumerToken and an employeeToken created with the same consumer token, but not an authentication header.  - **Authentication** is done via [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)    - **username** is used to specify what company to access.      - `0` or blank means the company of the employee.      - Any other value means accountant clients. Use `/company/>withLoginAccess` to get a list of those.    - **password** is the **sessionToken**.    - If you need to create the header yourself use `Authorization: Basic <encoded token>` where `encoded token` is the string `<target company id or 0>:<your session token>` Base64 encoded.   ## Tags  - `[BETA]` This is a beta endpoint and can be subject to change. - `[DEPRECATED]` Deprecated means that we intend to remove/change this feature or capability in a future \"major\" API release. We therefore discourage all use of this feature/capability.   ## Fields  Use the `fields` parameter to specify which fields should be returned. This also supports fields from sub elements, done via `<field>(<subResourceFields>)`. `*` means all fields for that resource. Example values: - `project,activity,hours`  returns `{project:..., activity:...., hours:...}`. - just `project` returns `\"project\" : { \"id\": 12345, \"url\": \"tripletex.no/v2/projects/12345\"  }`. - `project(*)` returns `\"project\" : { \"id\": 12345 \"name\":\"ProjectName\" \"number.....startDate\": \"2013-01-07\" }`. - `project(name)` returns `\"project\" : { \"name\":\"ProjectName\" }`. - All resources and some subResources :  `*,activity(name),employee(*)`.   ## Sorting  Use the `sorting` parameter to specify sorting. It takes a comma separated list, where a `-` prefix denotes descending. You can sort by sub object with the following format: `<field>.<subObjectField>`. Example values: - `date` - `project.name` - `project.name, -date`   ## Changes  To get the changes for a resource, `changes` have to be explicitly specified as part of the `fields` parameter, e.g. `*,changes`. There are currently two types of change available:  - `CREATE` for when the resource was created - `UPDATE` for when the resource was updated  **NOTE** > For objects created prior to October 24th 2018 the list may be incomplete, but will always contain the CREATE and the last change (if the object has been changed after creation).   ## Rate limiting  Rate limiting is performed on the API calls for an employee for each API consumer. Status regarding the rate limit is returned as headers: - `X-Rate-Limit-Limit` - The number of allowed requests in the current period. - `X-Rate-Limit-Remaining` - The number of remaining requests. - `X-Rate-Limit-Reset` - The number of seconds left in the current period.  Once the rate limit is hit, all requests will return HTTP status code `429` for the remainder of the current period.   ## Response envelope  #### Multiple values  ```json {   \"fullResultSize\": ###, // {number} [DEPRECATED]   \"from\": ###, // {number} Paging starting from   \"count\": ###, // {number} Paging count   \"versionDigest\": \"###\", // {string} Hash of full result, null if no result   \"values\": [...{...object...},{...object...},{...object...}...] } ```  #### Single value  ```json {   \"value\": {...single object...} } ```   ## WebHook envelope  ```json {   \"subscriptionId\": ###, // Subscription id   \"event\": \"object.verb\", // As listed from /v2/event/   \"id\": ###, // Id of object this event is for   \"value\": {... single object, null if object.deleted ...} } ```   ## Error/warning envelope  ```json {   \"status\": ###, // {number} HTTP status code   \"code\": #####, // {number} internal status code of event   \"message\": \"###\", // {string} Basic feedback message in your language   \"link\": \"###\", // {string} Link to doc   \"developerMessage\": \"###\", // {string} More technical message   \"validationMessages\": [ // {array} List of validation messages, can be null     {       \"field\": \"###\", // {string} Name of field       \"message\": \"###\" // {string} Validation message for field     }   ],   \"requestId\": \"###\" // {string} Same as x-tlx-request-id  } ```   ## Status codes / Error codes  - **200 OK** - **201 Created** - From POSTs that create something new. - **204 No Content** - When there is no answer, ex: \"/:anAction\" or DELETE. - **400 Bad request** -   -  **4000** Bad Request Exception   - **11000** Illegal Filter Exception   - **12000** Path Param Exception   - **24000** Cryptography Exception - **401 Unauthorized** - When authentication is required and has failed or has not yet been provided   -  **3000** Authentication Exception - **403 Forbidden** - When AuthorisationManager says no.   -  **9000** Security Exception - **404 Not Found** - For resources that does not exist.   -  **6000** Not Found Exception - **409 Conflict** - Such as an edit conflict between multiple simultaneous updates   -  **7000** Object Exists Exception   -  **8000** Revision Exception   - **10000** Locked Exception   - **14000** Duplicate entry - **422 Bad Request** - For Required fields or things like malformed payload.   - **15000** Value Validation Exception   - **16000** Mapping Exception   - **17000** Sorting Exception   - **18000** Validation Exception   - **21000** Param Exception   - **22000** Invalid JSON Exception   - **23000** Result Set Too Large Exception - **429 Too Many Requests** - Request rate limit hit - **500 Internal Error** - Unexpected condition was encountered and no more specific message is suitable   - **1000** Exception
  *
- * The version of the OpenAPI document: 2.70.19
- * Generated by: https://openapi-generator.tech
- * OpenAPI Generator version: 6.5.0-SNAPSHOT
+ * OpenAPI spec version: 2.70.19
+ * 
+ * Generated by: https://github.com/swagger-api/swagger-codegen.git
+ * Swagger Codegen version: 3.0.41
  */
-
 /**
- * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
- * https://openapi-generator.tech
+ * NOTE: This class is auto generated by the swagger code generator program.
+ * https://github.com/swagger-api/swagger-codegen
  * Do not edit the class manually.
  */
 
@@ -36,188 +36,126 @@ use \Learnist\Tripletex\ObjectSerializer;
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- * @implements \ArrayAccess<string, mixed>
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
-class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
+class Invoice implements ModelInterface, ArrayAccess
 {
-    public const DISCRIMINATOR = null;
+    const DISCRIMINATOR = null;
 
     /**
       * The original name of the model.
       *
       * @var string
       */
-    protected static $openAPIModelName = 'Invoice';
+    protected static $swaggerModelName = 'Invoice';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
       *
       * @var string[]
       */
-    protected static $openAPITypes = [
+    protected static $swaggerTypes = [
         'id' => 'int',
-        'version' => 'int',
-        'changes' => '\Learnist\Tripletex\Model\Change[]',
-        'url' => 'string',
-        'invoice_number' => 'int',
-        'invoice_date' => 'string',
-        'customer' => '\Learnist\Tripletex\Model\Customer',
-        'credited_invoice' => 'int',
-        'is_credited' => 'bool',
-        'invoice_due_date' => 'string',
-        'kid' => 'string',
-        'invoice_comment' => 'string',
-        'comment' => 'string',
-        'orders' => '\Learnist\Tripletex\Model\Order[]',
-        'order_lines' => '\Learnist\Tripletex\Model\OrderLine[]',
-        'travel_reports' => '\Learnist\Tripletex\Model\TravelExpense[]',
-        'project_invoice_details' => '\Learnist\Tripletex\Model\ProjectInvoiceDetails[]',
-        'voucher' => '\Learnist\Tripletex\Model\Voucher',
-        'delivery_date' => 'string',
-        'amount' => 'float',
-        'amount_currency' => 'float',
-        'amount_excluding_vat' => 'float',
-        'amount_excluding_vat_currency' => 'float',
-        'amount_roundoff' => 'float',
-        'amount_roundoff_currency' => 'float',
-        'amount_outstanding' => 'float',
-        'amount_currency_outstanding' => 'float',
-        'amount_outstanding_total' => 'float',
-        'amount_currency_outstanding_total' => 'float',
-        'sum_remits' => 'float',
-        'currency' => '\Learnist\Tripletex\Model\Currency',
-        'is_credit_note' => 'bool',
-        'is_charged' => 'bool',
-        'is_approved' => 'bool',
-        'postings' => '\Learnist\Tripletex\Model\Posting[]',
-        'reminders' => '\Learnist\Tripletex\Model\Reminder[]',
-        'invoice_remarks' => 'string',
-        'invoice_remark' => '\Learnist\Tripletex\Model\InvoiceRemark',
-        'payment_type_id' => 'int',
-        'paid_amount' => 'float',
-        'is_periodization_possible' => 'bool',
-        'ehf_send_status' => 'string'
-    ];
+'version' => 'int',
+'changes' => '\Learnist\Tripletex\Model\Change[]',
+'url' => 'string',
+'invoice_number' => 'int',
+'invoice_date' => 'string',
+'customer' => '\Learnist\Tripletex\Model\Customer',
+'credited_invoice' => 'int',
+'is_credited' => 'bool',
+'invoice_due_date' => 'string',
+'kid' => 'string',
+'invoice_comment' => 'string',
+'comment' => 'string',
+'orders' => '\Learnist\Tripletex\Model\Order[]',
+'order_lines' => '\Learnist\Tripletex\Model\OrderLine[]',
+'travel_reports' => '\Learnist\Tripletex\Model\TravelExpense[]',
+'project_invoice_details' => '\Learnist\Tripletex\Model\ProjectInvoiceDetails[]',
+'voucher' => '\Learnist\Tripletex\Model\Voucher',
+'delivery_date' => 'string',
+'amount' => 'float',
+'amount_currency' => 'float',
+'amount_excluding_vat' => 'float',
+'amount_excluding_vat_currency' => 'float',
+'amount_roundoff' => 'float',
+'amount_roundoff_currency' => 'float',
+'amount_outstanding' => 'float',
+'amount_currency_outstanding' => 'float',
+'amount_outstanding_total' => 'float',
+'amount_currency_outstanding_total' => 'float',
+'sum_remits' => 'float',
+'currency' => '\Learnist\Tripletex\Model\Currency',
+'is_credit_note' => 'bool',
+'is_charged' => 'bool',
+'is_approved' => 'bool',
+'postings' => '\Learnist\Tripletex\Model\Posting[]',
+'reminders' => '\Learnist\Tripletex\Model\Reminder[]',
+'invoice_remarks' => 'string',
+'invoice_remark' => '\Learnist\Tripletex\Model\InvoiceRemark',
+'payment_type_id' => 'int',
+'paid_amount' => 'float',
+'is_periodization_possible' => 'bool',
+'ehf_send_status' => 'string'    ];
 
     /**
       * Array of property to format mappings. Used for (de)serialization
       *
       * @var string[]
-      * @phpstan-var array<string, string|null>
-      * @psalm-var array<string, string|null>
       */
-    protected static $openAPIFormats = [
+    protected static $swaggerFormats = [
         'id' => 'int32',
-        'version' => 'int32',
-        'changes' => null,
-        'url' => null,
-        'invoice_number' => 'int32',
-        'invoice_date' => null,
-        'customer' => null,
-        'credited_invoice' => 'int32',
-        'is_credited' => null,
-        'invoice_due_date' => null,
-        'kid' => null,
-        'invoice_comment' => null,
-        'comment' => null,
-        'orders' => null,
-        'order_lines' => null,
-        'travel_reports' => null,
-        'project_invoice_details' => null,
-        'voucher' => null,
-        'delivery_date' => null,
-        'amount' => null,
-        'amount_currency' => null,
-        'amount_excluding_vat' => null,
-        'amount_excluding_vat_currency' => null,
-        'amount_roundoff' => null,
-        'amount_roundoff_currency' => null,
-        'amount_outstanding' => null,
-        'amount_currency_outstanding' => null,
-        'amount_outstanding_total' => null,
-        'amount_currency_outstanding_total' => null,
-        'sum_remits' => null,
-        'currency' => null,
-        'is_credit_note' => null,
-        'is_charged' => null,
-        'is_approved' => null,
-        'postings' => null,
-        'reminders' => null,
-        'invoice_remarks' => null,
-        'invoice_remark' => null,
-        'payment_type_id' => 'int32',
-        'paid_amount' => null,
-        'is_periodization_possible' => null,
-        'ehf_send_status' => null
-    ];
-
-    /**
-      * Array of nullable properties. Used for (de)serialization
-      *
-      * @var boolean[]
-      */
-    protected static array $openAPINullables = [
-        'id' => false,
-		'version' => false,
-		'changes' => false,
-		'url' => false,
-		'invoice_number' => false,
-		'invoice_date' => false,
-		'customer' => false,
-		'credited_invoice' => false,
-		'is_credited' => false,
-		'invoice_due_date' => false,
-		'kid' => false,
-		'invoice_comment' => false,
-		'comment' => false,
-		'orders' => false,
-		'order_lines' => false,
-		'travel_reports' => false,
-		'project_invoice_details' => false,
-		'voucher' => false,
-		'delivery_date' => false,
-		'amount' => false,
-		'amount_currency' => false,
-		'amount_excluding_vat' => false,
-		'amount_excluding_vat_currency' => false,
-		'amount_roundoff' => false,
-		'amount_roundoff_currency' => false,
-		'amount_outstanding' => false,
-		'amount_currency_outstanding' => false,
-		'amount_outstanding_total' => false,
-		'amount_currency_outstanding_total' => false,
-		'sum_remits' => false,
-		'currency' => false,
-		'is_credit_note' => false,
-		'is_charged' => false,
-		'is_approved' => false,
-		'postings' => false,
-		'reminders' => false,
-		'invoice_remarks' => false,
-		'invoice_remark' => false,
-		'payment_type_id' => false,
-		'paid_amount' => false,
-		'is_periodization_possible' => false,
-		'ehf_send_status' => false
-    ];
-
-    /**
-      * If a nullable field gets set to null, insert it here
-      *
-      * @var boolean[]
-      */
-    protected array $openAPINullablesSetToNull = [];
+'version' => 'int32',
+'changes' => null,
+'url' => null,
+'invoice_number' => 'int32',
+'invoice_date' => null,
+'customer' => null,
+'credited_invoice' => 'int32',
+'is_credited' => null,
+'invoice_due_date' => null,
+'kid' => null,
+'invoice_comment' => null,
+'comment' => null,
+'orders' => null,
+'order_lines' => null,
+'travel_reports' => null,
+'project_invoice_details' => null,
+'voucher' => null,
+'delivery_date' => null,
+'amount' => null,
+'amount_currency' => null,
+'amount_excluding_vat' => null,
+'amount_excluding_vat_currency' => null,
+'amount_roundoff' => null,
+'amount_roundoff_currency' => null,
+'amount_outstanding' => null,
+'amount_currency_outstanding' => null,
+'amount_outstanding_total' => null,
+'amount_currency_outstanding_total' => null,
+'sum_remits' => null,
+'currency' => null,
+'is_credit_note' => null,
+'is_charged' => null,
+'is_approved' => null,
+'postings' => null,
+'reminders' => null,
+'invoice_remarks' => null,
+'invoice_remark' => null,
+'payment_type_id' => 'int32',
+'paid_amount' => null,
+'is_periodization_possible' => null,
+'ehf_send_status' => null    ];
 
     /**
      * Array of property to type mappings. Used for (de)serialization
      *
      * @return array
      */
-    public static function openAPITypes()
+    public static function swaggerTypes()
     {
-        return self::$openAPITypes;
+        return self::$swaggerTypes;
     }
 
     /**
@@ -225,61 +163,9 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return array
      */
-    public static function openAPIFormats()
+    public static function swaggerFormats()
     {
-        return self::$openAPIFormats;
-    }
-
-    /**
-     * Array of nullable properties
-     *
-     * @return array
-     */
-    protected static function openAPINullables(): array
-    {
-        return self::$openAPINullables;
-    }
-
-    /**
-     * Array of nullable field names deliberately set to null
-     *
-     * @return boolean[]
-     */
-    private function getOpenAPINullablesSetToNull(): array
-    {
-        return $this->openAPINullablesSetToNull;
-    }
-
-    /**
-     * Setter - Array of nullable field names deliberately set to null
-     *
-     * @param boolean[] $openAPINullablesSetToNull
-     */
-    private function setOpenAPINullablesSetToNull(array $openAPINullablesSetToNull): void
-    {
-        $this->openAPINullablesSetToNull = $openAPINullablesSetToNull;
-    }
-
-    /**
-     * Checks if a property is nullable
-     *
-     * @param string $property
-     * @return bool
-     */
-    public static function isNullable(string $property): bool
-    {
-        return self::openAPINullables()[$property] ?? false;
-    }
-
-    /**
-     * Checks if a nullable property is set to null.
-     *
-     * @param string $property
-     * @return bool
-     */
-    public function isNullableSetToNull(string $property): bool
-    {
-        return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+        return self::$swaggerFormats;
     }
 
     /**
@@ -290,48 +176,47 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $attributeMap = [
         'id' => 'id',
-        'version' => 'version',
-        'changes' => 'changes',
-        'url' => 'url',
-        'invoice_number' => 'invoiceNumber',
-        'invoice_date' => 'invoiceDate',
-        'customer' => 'customer',
-        'credited_invoice' => 'creditedInvoice',
-        'is_credited' => 'isCredited',
-        'invoice_due_date' => 'invoiceDueDate',
-        'kid' => 'kid',
-        'invoice_comment' => 'invoiceComment',
-        'comment' => 'comment',
-        'orders' => 'orders',
-        'order_lines' => 'orderLines',
-        'travel_reports' => 'travelReports',
-        'project_invoice_details' => 'projectInvoiceDetails',
-        'voucher' => 'voucher',
-        'delivery_date' => 'deliveryDate',
-        'amount' => 'amount',
-        'amount_currency' => 'amountCurrency',
-        'amount_excluding_vat' => 'amountExcludingVat',
-        'amount_excluding_vat_currency' => 'amountExcludingVatCurrency',
-        'amount_roundoff' => 'amountRoundoff',
-        'amount_roundoff_currency' => 'amountRoundoffCurrency',
-        'amount_outstanding' => 'amountOutstanding',
-        'amount_currency_outstanding' => 'amountCurrencyOutstanding',
-        'amount_outstanding_total' => 'amountOutstandingTotal',
-        'amount_currency_outstanding_total' => 'amountCurrencyOutstandingTotal',
-        'sum_remits' => 'sumRemits',
-        'currency' => 'currency',
-        'is_credit_note' => 'isCreditNote',
-        'is_charged' => 'isCharged',
-        'is_approved' => 'isApproved',
-        'postings' => 'postings',
-        'reminders' => 'reminders',
-        'invoice_remarks' => 'invoiceRemarks',
-        'invoice_remark' => 'invoiceRemark',
-        'payment_type_id' => 'paymentTypeId',
-        'paid_amount' => 'paidAmount',
-        'is_periodization_possible' => 'isPeriodizationPossible',
-        'ehf_send_status' => 'ehfSendStatus'
-    ];
+'version' => 'version',
+'changes' => 'changes',
+'url' => 'url',
+'invoice_number' => 'invoiceNumber',
+'invoice_date' => 'invoiceDate',
+'customer' => 'customer',
+'credited_invoice' => 'creditedInvoice',
+'is_credited' => 'isCredited',
+'invoice_due_date' => 'invoiceDueDate',
+'kid' => 'kid',
+'invoice_comment' => 'invoiceComment',
+'comment' => 'comment',
+'orders' => 'orders',
+'order_lines' => 'orderLines',
+'travel_reports' => 'travelReports',
+'project_invoice_details' => 'projectInvoiceDetails',
+'voucher' => 'voucher',
+'delivery_date' => 'deliveryDate',
+'amount' => 'amount',
+'amount_currency' => 'amountCurrency',
+'amount_excluding_vat' => 'amountExcludingVat',
+'amount_excluding_vat_currency' => 'amountExcludingVatCurrency',
+'amount_roundoff' => 'amountRoundoff',
+'amount_roundoff_currency' => 'amountRoundoffCurrency',
+'amount_outstanding' => 'amountOutstanding',
+'amount_currency_outstanding' => 'amountCurrencyOutstanding',
+'amount_outstanding_total' => 'amountOutstandingTotal',
+'amount_currency_outstanding_total' => 'amountCurrencyOutstandingTotal',
+'sum_remits' => 'sumRemits',
+'currency' => 'currency',
+'is_credit_note' => 'isCreditNote',
+'is_charged' => 'isCharged',
+'is_approved' => 'isApproved',
+'postings' => 'postings',
+'reminders' => 'reminders',
+'invoice_remarks' => 'invoiceRemarks',
+'invoice_remark' => 'invoiceRemark',
+'payment_type_id' => 'paymentTypeId',
+'paid_amount' => 'paidAmount',
+'is_periodization_possible' => 'isPeriodizationPossible',
+'ehf_send_status' => 'ehfSendStatus'    ];
 
     /**
      * Array of attributes to setter functions (for deserialization of responses)
@@ -340,48 +225,47 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $setters = [
         'id' => 'setId',
-        'version' => 'setVersion',
-        'changes' => 'setChanges',
-        'url' => 'setUrl',
-        'invoice_number' => 'setInvoiceNumber',
-        'invoice_date' => 'setInvoiceDate',
-        'customer' => 'setCustomer',
-        'credited_invoice' => 'setCreditedInvoice',
-        'is_credited' => 'setIsCredited',
-        'invoice_due_date' => 'setInvoiceDueDate',
-        'kid' => 'setKid',
-        'invoice_comment' => 'setInvoiceComment',
-        'comment' => 'setComment',
-        'orders' => 'setOrders',
-        'order_lines' => 'setOrderLines',
-        'travel_reports' => 'setTravelReports',
-        'project_invoice_details' => 'setProjectInvoiceDetails',
-        'voucher' => 'setVoucher',
-        'delivery_date' => 'setDeliveryDate',
-        'amount' => 'setAmount',
-        'amount_currency' => 'setAmountCurrency',
-        'amount_excluding_vat' => 'setAmountExcludingVat',
-        'amount_excluding_vat_currency' => 'setAmountExcludingVatCurrency',
-        'amount_roundoff' => 'setAmountRoundoff',
-        'amount_roundoff_currency' => 'setAmountRoundoffCurrency',
-        'amount_outstanding' => 'setAmountOutstanding',
-        'amount_currency_outstanding' => 'setAmountCurrencyOutstanding',
-        'amount_outstanding_total' => 'setAmountOutstandingTotal',
-        'amount_currency_outstanding_total' => 'setAmountCurrencyOutstandingTotal',
-        'sum_remits' => 'setSumRemits',
-        'currency' => 'setCurrency',
-        'is_credit_note' => 'setIsCreditNote',
-        'is_charged' => 'setIsCharged',
-        'is_approved' => 'setIsApproved',
-        'postings' => 'setPostings',
-        'reminders' => 'setReminders',
-        'invoice_remarks' => 'setInvoiceRemarks',
-        'invoice_remark' => 'setInvoiceRemark',
-        'payment_type_id' => 'setPaymentTypeId',
-        'paid_amount' => 'setPaidAmount',
-        'is_periodization_possible' => 'setIsPeriodizationPossible',
-        'ehf_send_status' => 'setEhfSendStatus'
-    ];
+'version' => 'setVersion',
+'changes' => 'setChanges',
+'url' => 'setUrl',
+'invoice_number' => 'setInvoiceNumber',
+'invoice_date' => 'setInvoiceDate',
+'customer' => 'setCustomer',
+'credited_invoice' => 'setCreditedInvoice',
+'is_credited' => 'setIsCredited',
+'invoice_due_date' => 'setInvoiceDueDate',
+'kid' => 'setKid',
+'invoice_comment' => 'setInvoiceComment',
+'comment' => 'setComment',
+'orders' => 'setOrders',
+'order_lines' => 'setOrderLines',
+'travel_reports' => 'setTravelReports',
+'project_invoice_details' => 'setProjectInvoiceDetails',
+'voucher' => 'setVoucher',
+'delivery_date' => 'setDeliveryDate',
+'amount' => 'setAmount',
+'amount_currency' => 'setAmountCurrency',
+'amount_excluding_vat' => 'setAmountExcludingVat',
+'amount_excluding_vat_currency' => 'setAmountExcludingVatCurrency',
+'amount_roundoff' => 'setAmountRoundoff',
+'amount_roundoff_currency' => 'setAmountRoundoffCurrency',
+'amount_outstanding' => 'setAmountOutstanding',
+'amount_currency_outstanding' => 'setAmountCurrencyOutstanding',
+'amount_outstanding_total' => 'setAmountOutstandingTotal',
+'amount_currency_outstanding_total' => 'setAmountCurrencyOutstandingTotal',
+'sum_remits' => 'setSumRemits',
+'currency' => 'setCurrency',
+'is_credit_note' => 'setIsCreditNote',
+'is_charged' => 'setIsCharged',
+'is_approved' => 'setIsApproved',
+'postings' => 'setPostings',
+'reminders' => 'setReminders',
+'invoice_remarks' => 'setInvoiceRemarks',
+'invoice_remark' => 'setInvoiceRemark',
+'payment_type_id' => 'setPaymentTypeId',
+'paid_amount' => 'setPaidAmount',
+'is_periodization_possible' => 'setIsPeriodizationPossible',
+'ehf_send_status' => 'setEhfSendStatus'    ];
 
     /**
      * Array of attributes to getter functions (for serialization of requests)
@@ -390,48 +274,47 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $getters = [
         'id' => 'getId',
-        'version' => 'getVersion',
-        'changes' => 'getChanges',
-        'url' => 'getUrl',
-        'invoice_number' => 'getInvoiceNumber',
-        'invoice_date' => 'getInvoiceDate',
-        'customer' => 'getCustomer',
-        'credited_invoice' => 'getCreditedInvoice',
-        'is_credited' => 'getIsCredited',
-        'invoice_due_date' => 'getInvoiceDueDate',
-        'kid' => 'getKid',
-        'invoice_comment' => 'getInvoiceComment',
-        'comment' => 'getComment',
-        'orders' => 'getOrders',
-        'order_lines' => 'getOrderLines',
-        'travel_reports' => 'getTravelReports',
-        'project_invoice_details' => 'getProjectInvoiceDetails',
-        'voucher' => 'getVoucher',
-        'delivery_date' => 'getDeliveryDate',
-        'amount' => 'getAmount',
-        'amount_currency' => 'getAmountCurrency',
-        'amount_excluding_vat' => 'getAmountExcludingVat',
-        'amount_excluding_vat_currency' => 'getAmountExcludingVatCurrency',
-        'amount_roundoff' => 'getAmountRoundoff',
-        'amount_roundoff_currency' => 'getAmountRoundoffCurrency',
-        'amount_outstanding' => 'getAmountOutstanding',
-        'amount_currency_outstanding' => 'getAmountCurrencyOutstanding',
-        'amount_outstanding_total' => 'getAmountOutstandingTotal',
-        'amount_currency_outstanding_total' => 'getAmountCurrencyOutstandingTotal',
-        'sum_remits' => 'getSumRemits',
-        'currency' => 'getCurrency',
-        'is_credit_note' => 'getIsCreditNote',
-        'is_charged' => 'getIsCharged',
-        'is_approved' => 'getIsApproved',
-        'postings' => 'getPostings',
-        'reminders' => 'getReminders',
-        'invoice_remarks' => 'getInvoiceRemarks',
-        'invoice_remark' => 'getInvoiceRemark',
-        'payment_type_id' => 'getPaymentTypeId',
-        'paid_amount' => 'getPaidAmount',
-        'is_periodization_possible' => 'getIsPeriodizationPossible',
-        'ehf_send_status' => 'getEhfSendStatus'
-    ];
+'version' => 'getVersion',
+'changes' => 'getChanges',
+'url' => 'getUrl',
+'invoice_number' => 'getInvoiceNumber',
+'invoice_date' => 'getInvoiceDate',
+'customer' => 'getCustomer',
+'credited_invoice' => 'getCreditedInvoice',
+'is_credited' => 'getIsCredited',
+'invoice_due_date' => 'getInvoiceDueDate',
+'kid' => 'getKid',
+'invoice_comment' => 'getInvoiceComment',
+'comment' => 'getComment',
+'orders' => 'getOrders',
+'order_lines' => 'getOrderLines',
+'travel_reports' => 'getTravelReports',
+'project_invoice_details' => 'getProjectInvoiceDetails',
+'voucher' => 'getVoucher',
+'delivery_date' => 'getDeliveryDate',
+'amount' => 'getAmount',
+'amount_currency' => 'getAmountCurrency',
+'amount_excluding_vat' => 'getAmountExcludingVat',
+'amount_excluding_vat_currency' => 'getAmountExcludingVatCurrency',
+'amount_roundoff' => 'getAmountRoundoff',
+'amount_roundoff_currency' => 'getAmountRoundoffCurrency',
+'amount_outstanding' => 'getAmountOutstanding',
+'amount_currency_outstanding' => 'getAmountCurrencyOutstanding',
+'amount_outstanding_total' => 'getAmountOutstandingTotal',
+'amount_currency_outstanding_total' => 'getAmountCurrencyOutstandingTotal',
+'sum_remits' => 'getSumRemits',
+'currency' => 'getCurrency',
+'is_credit_note' => 'getIsCreditNote',
+'is_charged' => 'getIsCharged',
+'is_approved' => 'getIsApproved',
+'postings' => 'getPostings',
+'reminders' => 'getReminders',
+'invoice_remarks' => 'getInvoiceRemarks',
+'invoice_remark' => 'getInvoiceRemark',
+'payment_type_id' => 'getPaymentTypeId',
+'paid_amount' => 'getPaidAmount',
+'is_periodization_possible' => 'getIsPeriodizationPossible',
+'ehf_send_status' => 'getEhfSendStatus'    ];
 
     /**
      * Array of attributes where the key is the local name,
@@ -471,13 +354,13 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function getModelName()
     {
-        return self::$openAPIModelName;
+        return self::$swaggerModelName;
     }
 
-    public const EHF_SEND_STATUS_DO_NOT_SEND = 'DO_NOT_SEND';
-    public const EHF_SEND_STATUS_SEND = 'SEND';
-    public const EHF_SEND_STATUS_SENT = 'SENT';
-    public const EHF_SEND_STATUS_SEND_FAILURE_RECIPIENT_NOT_FOUND = 'SEND_FAILURE_RECIPIENT_NOT_FOUND';
+    const EHF_SEND_STATUS_DO_NOT_SEND = 'DO_NOT_SEND';
+const EHF_SEND_STATUS_SEND = 'SEND';
+const EHF_SEND_STATUS_SENT = 'SENT';
+const EHF_SEND_STATUS_SEND_FAILURE_RECIPIENT_NOT_FOUND = 'SEND_FAILURE_RECIPIENT_NOT_FOUND';
 
     /**
      * Gets allowable values of the enum
@@ -488,10 +371,9 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     {
         return [
             self::EHF_SEND_STATUS_DO_NOT_SEND,
-            self::EHF_SEND_STATUS_SEND,
-            self::EHF_SEND_STATUS_SENT,
-            self::EHF_SEND_STATUS_SEND_FAILURE_RECIPIENT_NOT_FOUND,
-        ];
+self::EHF_SEND_STATUS_SEND,
+self::EHF_SEND_STATUS_SENT,
+self::EHF_SEND_STATUS_SEND_FAILURE_RECIPIENT_NOT_FOUND,        ];
     }
 
     /**
@@ -509,66 +391,48 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __construct(array $data = null)
     {
-        $this->setIfExists('id', $data ?? [], null);
-        $this->setIfExists('version', $data ?? [], null);
-        $this->setIfExists('changes', $data ?? [], null);
-        $this->setIfExists('url', $data ?? [], null);
-        $this->setIfExists('invoice_number', $data ?? [], null);
-        $this->setIfExists('invoice_date', $data ?? [], null);
-        $this->setIfExists('customer', $data ?? [], null);
-        $this->setIfExists('credited_invoice', $data ?? [], null);
-        $this->setIfExists('is_credited', $data ?? [], null);
-        $this->setIfExists('invoice_due_date', $data ?? [], null);
-        $this->setIfExists('kid', $data ?? [], null);
-        $this->setIfExists('invoice_comment', $data ?? [], null);
-        $this->setIfExists('comment', $data ?? [], null);
-        $this->setIfExists('orders', $data ?? [], null);
-        $this->setIfExists('order_lines', $data ?? [], null);
-        $this->setIfExists('travel_reports', $data ?? [], null);
-        $this->setIfExists('project_invoice_details', $data ?? [], null);
-        $this->setIfExists('voucher', $data ?? [], null);
-        $this->setIfExists('delivery_date', $data ?? [], null);
-        $this->setIfExists('amount', $data ?? [], null);
-        $this->setIfExists('amount_currency', $data ?? [], null);
-        $this->setIfExists('amount_excluding_vat', $data ?? [], null);
-        $this->setIfExists('amount_excluding_vat_currency', $data ?? [], null);
-        $this->setIfExists('amount_roundoff', $data ?? [], null);
-        $this->setIfExists('amount_roundoff_currency', $data ?? [], null);
-        $this->setIfExists('amount_outstanding', $data ?? [], null);
-        $this->setIfExists('amount_currency_outstanding', $data ?? [], null);
-        $this->setIfExists('amount_outstanding_total', $data ?? [], null);
-        $this->setIfExists('amount_currency_outstanding_total', $data ?? [], null);
-        $this->setIfExists('sum_remits', $data ?? [], null);
-        $this->setIfExists('currency', $data ?? [], null);
-        $this->setIfExists('is_credit_note', $data ?? [], null);
-        $this->setIfExists('is_charged', $data ?? [], null);
-        $this->setIfExists('is_approved', $data ?? [], null);
-        $this->setIfExists('postings', $data ?? [], null);
-        $this->setIfExists('reminders', $data ?? [], null);
-        $this->setIfExists('invoice_remarks', $data ?? [], null);
-        $this->setIfExists('invoice_remark', $data ?? [], null);
-        $this->setIfExists('payment_type_id', $data ?? [], null);
-        $this->setIfExists('paid_amount', $data ?? [], null);
-        $this->setIfExists('is_periodization_possible', $data ?? [], null);
-        $this->setIfExists('ehf_send_status', $data ?? [], null);
-    }
-
-    /**
-    * Sets $this->container[$variableName] to the given data or to the given default Value; if $variableName
-    * is nullable and its value is set to null in the $fields array, then mark it as "set to null" in the
-    * $this->openAPINullablesSetToNull array
-    *
-    * @param string $variableName
-    * @param array  $fields
-    * @param mixed  $defaultValue
-    */
-    private function setIfExists(string $variableName, array $fields, $defaultValue): void
-    {
-        if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
-            $this->openAPINullablesSetToNull[] = $variableName;
-        }
-
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $this->container['id'] = isset($data['id']) ? $data['id'] : null;
+        $this->container['version'] = isset($data['version']) ? $data['version'] : null;
+        $this->container['changes'] = isset($data['changes']) ? $data['changes'] : null;
+        $this->container['url'] = isset($data['url']) ? $data['url'] : null;
+        $this->container['invoice_number'] = isset($data['invoice_number']) ? $data['invoice_number'] : null;
+        $this->container['invoice_date'] = isset($data['invoice_date']) ? $data['invoice_date'] : null;
+        $this->container['customer'] = isset($data['customer']) ? $data['customer'] : null;
+        $this->container['credited_invoice'] = isset($data['credited_invoice']) ? $data['credited_invoice'] : null;
+        $this->container['is_credited'] = isset($data['is_credited']) ? $data['is_credited'] : null;
+        $this->container['invoice_due_date'] = isset($data['invoice_due_date']) ? $data['invoice_due_date'] : null;
+        $this->container['kid'] = isset($data['kid']) ? $data['kid'] : null;
+        $this->container['invoice_comment'] = isset($data['invoice_comment']) ? $data['invoice_comment'] : null;
+        $this->container['comment'] = isset($data['comment']) ? $data['comment'] : null;
+        $this->container['orders'] = isset($data['orders']) ? $data['orders'] : null;
+        $this->container['order_lines'] = isset($data['order_lines']) ? $data['order_lines'] : null;
+        $this->container['travel_reports'] = isset($data['travel_reports']) ? $data['travel_reports'] : null;
+        $this->container['project_invoice_details'] = isset($data['project_invoice_details']) ? $data['project_invoice_details'] : null;
+        $this->container['voucher'] = isset($data['voucher']) ? $data['voucher'] : null;
+        $this->container['delivery_date'] = isset($data['delivery_date']) ? $data['delivery_date'] : null;
+        $this->container['amount'] = isset($data['amount']) ? $data['amount'] : null;
+        $this->container['amount_currency'] = isset($data['amount_currency']) ? $data['amount_currency'] : null;
+        $this->container['amount_excluding_vat'] = isset($data['amount_excluding_vat']) ? $data['amount_excluding_vat'] : null;
+        $this->container['amount_excluding_vat_currency'] = isset($data['amount_excluding_vat_currency']) ? $data['amount_excluding_vat_currency'] : null;
+        $this->container['amount_roundoff'] = isset($data['amount_roundoff']) ? $data['amount_roundoff'] : null;
+        $this->container['amount_roundoff_currency'] = isset($data['amount_roundoff_currency']) ? $data['amount_roundoff_currency'] : null;
+        $this->container['amount_outstanding'] = isset($data['amount_outstanding']) ? $data['amount_outstanding'] : null;
+        $this->container['amount_currency_outstanding'] = isset($data['amount_currency_outstanding']) ? $data['amount_currency_outstanding'] : null;
+        $this->container['amount_outstanding_total'] = isset($data['amount_outstanding_total']) ? $data['amount_outstanding_total'] : null;
+        $this->container['amount_currency_outstanding_total'] = isset($data['amount_currency_outstanding_total']) ? $data['amount_currency_outstanding_total'] : null;
+        $this->container['sum_remits'] = isset($data['sum_remits']) ? $data['sum_remits'] : null;
+        $this->container['currency'] = isset($data['currency']) ? $data['currency'] : null;
+        $this->container['is_credit_note'] = isset($data['is_credit_note']) ? $data['is_credit_note'] : null;
+        $this->container['is_charged'] = isset($data['is_charged']) ? $data['is_charged'] : null;
+        $this->container['is_approved'] = isset($data['is_approved']) ? $data['is_approved'] : null;
+        $this->container['postings'] = isset($data['postings']) ? $data['postings'] : null;
+        $this->container['reminders'] = isset($data['reminders']) ? $data['reminders'] : null;
+        $this->container['invoice_remarks'] = isset($data['invoice_remarks']) ? $data['invoice_remarks'] : null;
+        $this->container['invoice_remark'] = isset($data['invoice_remark']) ? $data['invoice_remark'] : null;
+        $this->container['payment_type_id'] = isset($data['payment_type_id']) ? $data['payment_type_id'] : null;
+        $this->container['paid_amount'] = isset($data['paid_amount']) ? $data['paid_amount'] : null;
+        $this->container['is_periodization_possible'] = isset($data['is_periodization_possible']) ? $data['is_periodization_possible'] : null;
+        $this->container['ehf_send_status'] = isset($data['ehf_send_status']) ? $data['ehf_send_status'] : null;
     }
 
     /**
@@ -580,32 +444,19 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     {
         $invalidProperties = [];
 
-        if (!is_null($this->container['invoice_number']) && ($this->container['invoice_number'] < 0)) {
-            $invalidProperties[] = "invalid value for 'invoice_number', must be bigger than or equal to 0.";
-        }
-
         if ($this->container['invoice_date'] === null) {
             $invalidProperties[] = "'invoice_date' can't be null";
         }
         if ($this->container['invoice_due_date'] === null) {
             $invalidProperties[] = "'invoice_due_date' can't be null";
         }
-        if (!is_null($this->container['kid']) && (mb_strlen($this->container['kid']) > 25)) {
-            $invalidProperties[] = "invalid value for 'kid', the character length must be smaller than or equal to 25.";
-        }
-
         if ($this->container['orders'] === null) {
             $invalidProperties[] = "'orders' can't be null";
         }
-        if (!is_null($this->container['payment_type_id']) && ($this->container['payment_type_id'] < 0)) {
-            $invalidProperties[] = "invalid value for 'payment_type_id', must be bigger than or equal to 0.";
-        }
-
         $allowedValues = $this->getEhfSendStatusAllowableValues();
         if (!is_null($this->container['ehf_send_status']) && !in_array($this->container['ehf_send_status'], $allowedValues, true)) {
             $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'ehf_send_status', must be one of '%s'",
-                $this->container['ehf_send_status'],
+                "invalid value for 'ehf_send_status', must be one of '%s'",
                 implode("', '", $allowedValues)
             );
         }
@@ -628,7 +479,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets id
      *
-     * @return int|null
+     * @return int
      */
     public function getId()
     {
@@ -638,15 +489,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets id
      *
-     * @param int|null $id id
+     * @param int $id id
      *
-     * @return self
+     * @return $this
      */
     public function setId($id)
     {
-        if (is_null($id)) {
-            throw new \InvalidArgumentException('non-nullable id cannot be null');
-        }
         $this->container['id'] = $id;
 
         return $this;
@@ -655,7 +503,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets version
      *
-     * @return int|null
+     * @return int
      */
     public function getVersion()
     {
@@ -665,15 +513,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets version
      *
-     * @param int|null $version version
+     * @param int $version version
      *
-     * @return self
+     * @return $this
      */
     public function setVersion($version)
     {
-        if (is_null($version)) {
-            throw new \InvalidArgumentException('non-nullable version cannot be null');
-        }
         $this->container['version'] = $version;
 
         return $this;
@@ -682,7 +527,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets changes
      *
-     * @return \Learnist\Tripletex\Model\Change[]|null
+     * @return \Learnist\Tripletex\Model\Change[]
      */
     public function getChanges()
     {
@@ -692,15 +537,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets changes
      *
-     * @param \Learnist\Tripletex\Model\Change[]|null $changes changes
+     * @param \Learnist\Tripletex\Model\Change[] $changes changes
      *
-     * @return self
+     * @return $this
      */
     public function setChanges($changes)
     {
-        if (is_null($changes)) {
-            throw new \InvalidArgumentException('non-nullable changes cannot be null');
-        }
         $this->container['changes'] = $changes;
 
         return $this;
@@ -709,7 +551,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets url
      *
-     * @return string|null
+     * @return string
      */
     public function getUrl()
     {
@@ -719,15 +561,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets url
      *
-     * @param string|null $url url
+     * @param string $url url
      *
-     * @return self
+     * @return $this
      */
     public function setUrl($url)
     {
-        if (is_null($url)) {
-            throw new \InvalidArgumentException('non-nullable url cannot be null');
-        }
         $this->container['url'] = $url;
 
         return $this;
@@ -736,7 +575,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets invoice_number
      *
-     * @return int|null
+     * @return int
      */
     public function getInvoiceNumber()
     {
@@ -746,20 +585,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets invoice_number
      *
-     * @param int|null $invoice_number If value is set to 0, the invoice number will be generated.
+     * @param int $invoice_number If value is set to 0, the invoice number will be generated.
      *
-     * @return self
+     * @return $this
      */
     public function setInvoiceNumber($invoice_number)
     {
-        if (is_null($invoice_number)) {
-            throw new \InvalidArgumentException('non-nullable invoice_number cannot be null');
-        }
-
-        if (($invoice_number < 0)) {
-            throw new \InvalidArgumentException('invalid value for $invoice_number when calling Invoice., must be bigger than or equal to 0.');
-        }
-
         $this->container['invoice_number'] = $invoice_number;
 
         return $this;
@@ -780,13 +611,10 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @param string $invoice_date invoice_date
      *
-     * @return self
+     * @return $this
      */
     public function setInvoiceDate($invoice_date)
     {
-        if (is_null($invoice_date)) {
-            throw new \InvalidArgumentException('non-nullable invoice_date cannot be null');
-        }
         $this->container['invoice_date'] = $invoice_date;
 
         return $this;
@@ -795,7 +623,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets customer
      *
-     * @return \Learnist\Tripletex\Model\Customer|null
+     * @return \Learnist\Tripletex\Model\Customer
      */
     public function getCustomer()
     {
@@ -805,15 +633,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets customer
      *
-     * @param \Learnist\Tripletex\Model\Customer|null $customer customer
+     * @param \Learnist\Tripletex\Model\Customer $customer customer
      *
-     * @return self
+     * @return $this
      */
     public function setCustomer($customer)
     {
-        if (is_null($customer)) {
-            throw new \InvalidArgumentException('non-nullable customer cannot be null');
-        }
         $this->container['customer'] = $customer;
 
         return $this;
@@ -822,7 +647,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets credited_invoice
      *
-     * @return int|null
+     * @return int
      */
     public function getCreditedInvoice()
     {
@@ -832,15 +657,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets credited_invoice
      *
-     * @param int|null $credited_invoice The id of the original invoice if this is a credit note.
+     * @param int $credited_invoice The id of the original invoice if this is a credit note.
      *
-     * @return self
+     * @return $this
      */
     public function setCreditedInvoice($credited_invoice)
     {
-        if (is_null($credited_invoice)) {
-            throw new \InvalidArgumentException('non-nullable credited_invoice cannot be null');
-        }
         $this->container['credited_invoice'] = $credited_invoice;
 
         return $this;
@@ -849,7 +671,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets is_credited
      *
-     * @return bool|null
+     * @return bool
      */
     public function getIsCredited()
     {
@@ -859,15 +681,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets is_credited
      *
-     * @param bool|null $is_credited is_credited
+     * @param bool $is_credited is_credited
      *
-     * @return self
+     * @return $this
      */
     public function setIsCredited($is_credited)
     {
-        if (is_null($is_credited)) {
-            throw new \InvalidArgumentException('non-nullable is_credited cannot be null');
-        }
         $this->container['is_credited'] = $is_credited;
 
         return $this;
@@ -888,13 +707,10 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @param string $invoice_due_date invoice_due_date
      *
-     * @return self
+     * @return $this
      */
     public function setInvoiceDueDate($invoice_due_date)
     {
-        if (is_null($invoice_due_date)) {
-            throw new \InvalidArgumentException('non-nullable invoice_due_date cannot be null');
-        }
         $this->container['invoice_due_date'] = $invoice_due_date;
 
         return $this;
@@ -903,7 +719,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets kid
      *
-     * @return string|null
+     * @return string
      */
     public function getKid()
     {
@@ -913,19 +729,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets kid
      *
-     * @param string|null $kid KID - Kundeidentifikasjonsnummer.
+     * @param string $kid KID - Kundeidentifikasjonsnummer.
      *
-     * @return self
+     * @return $this
      */
     public function setKid($kid)
     {
-        if (is_null($kid)) {
-            throw new \InvalidArgumentException('non-nullable kid cannot be null');
-        }
-        if ((mb_strlen($kid) > 25)) {
-            throw new \InvalidArgumentException('invalid length for $kid when calling Invoice., must be smaller than or equal to 25.');
-        }
-
         $this->container['kid'] = $kid;
 
         return $this;
@@ -934,7 +743,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets invoice_comment
      *
-     * @return string|null
+     * @return string
      */
     public function getInvoiceComment()
     {
@@ -944,15 +753,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets invoice_comment
      *
-     * @param string|null $invoice_comment Comment text for the invoice. This was specified on the order as invoiceComment.
+     * @param string $invoice_comment Comment text for the invoice. This was specified on the order as invoiceComment.
      *
-     * @return self
+     * @return $this
      */
     public function setInvoiceComment($invoice_comment)
     {
-        if (is_null($invoice_comment)) {
-            throw new \InvalidArgumentException('non-nullable invoice_comment cannot be null');
-        }
         $this->container['invoice_comment'] = $invoice_comment;
 
         return $this;
@@ -961,7 +767,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets comment
      *
-     * @return string|null
+     * @return string
      */
     public function getComment()
     {
@@ -971,15 +777,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets comment
      *
-     * @param string|null $comment Comment text for the specific invoice.
+     * @param string $comment Comment text for the specific invoice.
      *
-     * @return self
+     * @return $this
      */
     public function setComment($comment)
     {
-        if (is_null($comment)) {
-            throw new \InvalidArgumentException('non-nullable comment cannot be null');
-        }
         $this->container['comment'] = $comment;
 
         return $this;
@@ -1000,13 +803,10 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @param \Learnist\Tripletex\Model\Order[] $orders Related orders. Only one order per invoice is supported at the moment.
      *
-     * @return self
+     * @return $this
      */
     public function setOrders($orders)
     {
-        if (is_null($orders)) {
-            throw new \InvalidArgumentException('non-nullable orders cannot be null');
-        }
         $this->container['orders'] = $orders;
 
         return $this;
@@ -1015,7 +815,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets order_lines
      *
-     * @return \Learnist\Tripletex\Model\OrderLine[]|null
+     * @return \Learnist\Tripletex\Model\OrderLine[]
      */
     public function getOrderLines()
     {
@@ -1025,15 +825,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets order_lines
      *
-     * @param \Learnist\Tripletex\Model\OrderLine[]|null $order_lines Orderlines connected to the invoice.
+     * @param \Learnist\Tripletex\Model\OrderLine[] $order_lines Orderlines connected to the invoice.
      *
-     * @return self
+     * @return $this
      */
     public function setOrderLines($order_lines)
     {
-        if (is_null($order_lines)) {
-            throw new \InvalidArgumentException('non-nullable order_lines cannot be null');
-        }
         $this->container['order_lines'] = $order_lines;
 
         return $this;
@@ -1042,7 +839,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets travel_reports
      *
-     * @return \Learnist\Tripletex\Model\TravelExpense[]|null
+     * @return \Learnist\Tripletex\Model\TravelExpense[]
      */
     public function getTravelReports()
     {
@@ -1052,15 +849,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets travel_reports
      *
-     * @param \Learnist\Tripletex\Model\TravelExpense[]|null $travel_reports Travel reports connected to the invoice.
+     * @param \Learnist\Tripletex\Model\TravelExpense[] $travel_reports Travel reports connected to the invoice.
      *
-     * @return self
+     * @return $this
      */
     public function setTravelReports($travel_reports)
     {
-        if (is_null($travel_reports)) {
-            throw new \InvalidArgumentException('non-nullable travel_reports cannot be null');
-        }
         $this->container['travel_reports'] = $travel_reports;
 
         return $this;
@@ -1069,7 +863,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets project_invoice_details
      *
-     * @return \Learnist\Tripletex\Model\ProjectInvoiceDetails[]|null
+     * @return \Learnist\Tripletex\Model\ProjectInvoiceDetails[]
      */
     public function getProjectInvoiceDetails()
     {
@@ -1079,15 +873,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets project_invoice_details
      *
-     * @param \Learnist\Tripletex\Model\ProjectInvoiceDetails[]|null $project_invoice_details ProjectInvoiceDetails contains additional information about the invoice, in particular invoices for projects. It contains information about the charged project, the fee amount, extra percent and amount, extra costs, travel expenses, invoice and project comments, akonto amount and values determining if extra costs, akonto and hours should be included. ProjectInvoiceDetails is an object which represents the relation between an invoice and a Project, Orderline and OrderOut object.
+     * @param \Learnist\Tripletex\Model\ProjectInvoiceDetails[] $project_invoice_details ProjectInvoiceDetails contains additional information about the invoice, in particular invoices for projects. It contains information about the charged project, the fee amount, extra percent and amount, extra costs, travel expenses, invoice and project comments, akonto amount and values determining if extra costs, akonto and hours should be included. ProjectInvoiceDetails is an object which represents the relation between an invoice and a Project, Orderline and OrderOut object.
      *
-     * @return self
+     * @return $this
      */
     public function setProjectInvoiceDetails($project_invoice_details)
     {
-        if (is_null($project_invoice_details)) {
-            throw new \InvalidArgumentException('non-nullable project_invoice_details cannot be null');
-        }
         $this->container['project_invoice_details'] = $project_invoice_details;
 
         return $this;
@@ -1096,7 +887,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets voucher
      *
-     * @return \Learnist\Tripletex\Model\Voucher|null
+     * @return \Learnist\Tripletex\Model\Voucher
      */
     public function getVoucher()
     {
@@ -1106,15 +897,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets voucher
      *
-     * @param \Learnist\Tripletex\Model\Voucher|null $voucher voucher
+     * @param \Learnist\Tripletex\Model\Voucher $voucher voucher
      *
-     * @return self
+     * @return $this
      */
     public function setVoucher($voucher)
     {
-        if (is_null($voucher)) {
-            throw new \InvalidArgumentException('non-nullable voucher cannot be null');
-        }
         $this->container['voucher'] = $voucher;
 
         return $this;
@@ -1123,7 +911,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets delivery_date
      *
-     * @return string|null
+     * @return string
      */
     public function getDeliveryDate()
     {
@@ -1133,15 +921,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets delivery_date
      *
-     * @param string|null $delivery_date The delivery date.
+     * @param string $delivery_date The delivery date.
      *
-     * @return self
+     * @return $this
      */
     public function setDeliveryDate($delivery_date)
     {
-        if (is_null($delivery_date)) {
-            throw new \InvalidArgumentException('non-nullable delivery_date cannot be null');
-        }
         $this->container['delivery_date'] = $delivery_date;
 
         return $this;
@@ -1150,7 +935,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets amount
      *
-     * @return float|null
+     * @return float
      */
     public function getAmount()
     {
@@ -1160,15 +945,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets amount
      *
-     * @param float|null $amount In the company’s currency, typically NOK.
+     * @param float $amount In the company’s currency, typically NOK.
      *
-     * @return self
+     * @return $this
      */
     public function setAmount($amount)
     {
-        if (is_null($amount)) {
-            throw new \InvalidArgumentException('non-nullable amount cannot be null');
-        }
         $this->container['amount'] = $amount;
 
         return $this;
@@ -1177,7 +959,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets amount_currency
      *
-     * @return float|null
+     * @return float
      */
     public function getAmountCurrency()
     {
@@ -1187,15 +969,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets amount_currency
      *
-     * @param float|null $amount_currency In the specified currency.
+     * @param float $amount_currency In the specified currency.
      *
-     * @return self
+     * @return $this
      */
     public function setAmountCurrency($amount_currency)
     {
-        if (is_null($amount_currency)) {
-            throw new \InvalidArgumentException('non-nullable amount_currency cannot be null');
-        }
         $this->container['amount_currency'] = $amount_currency;
 
         return $this;
@@ -1204,7 +983,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets amount_excluding_vat
      *
-     * @return float|null
+     * @return float
      */
     public function getAmountExcludingVat()
     {
@@ -1214,15 +993,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets amount_excluding_vat
      *
-     * @param float|null $amount_excluding_vat Amount excluding VAT (NOK).
+     * @param float $amount_excluding_vat Amount excluding VAT (NOK).
      *
-     * @return self
+     * @return $this
      */
     public function setAmountExcludingVat($amount_excluding_vat)
     {
-        if (is_null($amount_excluding_vat)) {
-            throw new \InvalidArgumentException('non-nullable amount_excluding_vat cannot be null');
-        }
         $this->container['amount_excluding_vat'] = $amount_excluding_vat;
 
         return $this;
@@ -1231,7 +1007,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets amount_excluding_vat_currency
      *
-     * @return float|null
+     * @return float
      */
     public function getAmountExcludingVatCurrency()
     {
@@ -1241,15 +1017,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets amount_excluding_vat_currency
      *
-     * @param float|null $amount_excluding_vat_currency Amount excluding VAT in the specified currency.
+     * @param float $amount_excluding_vat_currency Amount excluding VAT in the specified currency.
      *
-     * @return self
+     * @return $this
      */
     public function setAmountExcludingVatCurrency($amount_excluding_vat_currency)
     {
-        if (is_null($amount_excluding_vat_currency)) {
-            throw new \InvalidArgumentException('non-nullable amount_excluding_vat_currency cannot be null');
-        }
         $this->container['amount_excluding_vat_currency'] = $amount_excluding_vat_currency;
 
         return $this;
@@ -1258,7 +1031,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets amount_roundoff
      *
-     * @return float|null
+     * @return float
      */
     public function getAmountRoundoff()
     {
@@ -1268,15 +1041,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets amount_roundoff
      *
-     * @param float|null $amount_roundoff Amount of round off to nearest integer.
+     * @param float $amount_roundoff Amount of round off to nearest integer.
      *
-     * @return self
+     * @return $this
      */
     public function setAmountRoundoff($amount_roundoff)
     {
-        if (is_null($amount_roundoff)) {
-            throw new \InvalidArgumentException('non-nullable amount_roundoff cannot be null');
-        }
         $this->container['amount_roundoff'] = $amount_roundoff;
 
         return $this;
@@ -1285,7 +1055,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets amount_roundoff_currency
      *
-     * @return float|null
+     * @return float
      */
     public function getAmountRoundoffCurrency()
     {
@@ -1295,15 +1065,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets amount_roundoff_currency
      *
-     * @param float|null $amount_roundoff_currency Amount of round off to nearest integer in the specified currency.
+     * @param float $amount_roundoff_currency Amount of round off to nearest integer in the specified currency.
      *
-     * @return self
+     * @return $this
      */
     public function setAmountRoundoffCurrency($amount_roundoff_currency)
     {
-        if (is_null($amount_roundoff_currency)) {
-            throw new \InvalidArgumentException('non-nullable amount_roundoff_currency cannot be null');
-        }
         $this->container['amount_roundoff_currency'] = $amount_roundoff_currency;
 
         return $this;
@@ -1312,7 +1079,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets amount_outstanding
      *
-     * @return float|null
+     * @return float
      */
     public function getAmountOutstanding()
     {
@@ -1322,15 +1089,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets amount_outstanding
      *
-     * @param float|null $amount_outstanding The amount outstanding based on the history collection, excluding reminders and any existing remits, in the invoice currency.
+     * @param float $amount_outstanding The amount outstanding based on the history collection, excluding reminders and any existing remits, in the invoice currency.
      *
-     * @return self
+     * @return $this
      */
     public function setAmountOutstanding($amount_outstanding)
     {
-        if (is_null($amount_outstanding)) {
-            throw new \InvalidArgumentException('non-nullable amount_outstanding cannot be null');
-        }
         $this->container['amount_outstanding'] = $amount_outstanding;
 
         return $this;
@@ -1339,7 +1103,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets amount_currency_outstanding
      *
-     * @return float|null
+     * @return float
      */
     public function getAmountCurrencyOutstanding()
     {
@@ -1349,15 +1113,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets amount_currency_outstanding
      *
-     * @param float|null $amount_currency_outstanding The amountCurrency outstanding based on the history collection, excluding reminders and any existing remits, in the invoice currency.
+     * @param float $amount_currency_outstanding The amountCurrency outstanding based on the history collection, excluding reminders and any existing remits, in the invoice currency.
      *
-     * @return self
+     * @return $this
      */
     public function setAmountCurrencyOutstanding($amount_currency_outstanding)
     {
-        if (is_null($amount_currency_outstanding)) {
-            throw new \InvalidArgumentException('non-nullable amount_currency_outstanding cannot be null');
-        }
         $this->container['amount_currency_outstanding'] = $amount_currency_outstanding;
 
         return $this;
@@ -1366,7 +1127,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets amount_outstanding_total
      *
-     * @return float|null
+     * @return float
      */
     public function getAmountOutstandingTotal()
     {
@@ -1376,15 +1137,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets amount_outstanding_total
      *
-     * @param float|null $amount_outstanding_total The amount outstanding based on the history collection and including the last reminder and any existing remits. This is the total invoice balance including reminders and remittances, in the invoice currency.
+     * @param float $amount_outstanding_total The amount outstanding based on the history collection and including the last reminder and any existing remits. This is the total invoice balance including reminders and remittances, in the invoice currency.
      *
-     * @return self
+     * @return $this
      */
     public function setAmountOutstandingTotal($amount_outstanding_total)
     {
-        if (is_null($amount_outstanding_total)) {
-            throw new \InvalidArgumentException('non-nullable amount_outstanding_total cannot be null');
-        }
         $this->container['amount_outstanding_total'] = $amount_outstanding_total;
 
         return $this;
@@ -1393,7 +1151,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets amount_currency_outstanding_total
      *
-     * @return float|null
+     * @return float
      */
     public function getAmountCurrencyOutstandingTotal()
     {
@@ -1403,15 +1161,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets amount_currency_outstanding_total
      *
-     * @param float|null $amount_currency_outstanding_total The amountCurrency outstanding based on the history collection and including the last reminder and any existing remits. This is the total invoice balance including reminders and remittances, in the invoice currency.
+     * @param float $amount_currency_outstanding_total The amountCurrency outstanding based on the history collection and including the last reminder and any existing remits. This is the total invoice balance including reminders and remittances, in the invoice currency.
      *
-     * @return self
+     * @return $this
      */
     public function setAmountCurrencyOutstandingTotal($amount_currency_outstanding_total)
     {
-        if (is_null($amount_currency_outstanding_total)) {
-            throw new \InvalidArgumentException('non-nullable amount_currency_outstanding_total cannot be null');
-        }
         $this->container['amount_currency_outstanding_total'] = $amount_currency_outstanding_total;
 
         return $this;
@@ -1420,7 +1175,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets sum_remits
      *
-     * @return float|null
+     * @return float
      */
     public function getSumRemits()
     {
@@ -1430,15 +1185,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets sum_remits
      *
-     * @param float|null $sum_remits The sum of all open remittances of the invoice. Remittances are reimbursement payments back to the customer and are therefore relevant to the bookkeeping of the invoice in the accounts.
+     * @param float $sum_remits The sum of all open remittances of the invoice. Remittances are reimbursement payments back to the customer and are therefore relevant to the bookkeeping of the invoice in the accounts.
      *
-     * @return self
+     * @return $this
      */
     public function setSumRemits($sum_remits)
     {
-        if (is_null($sum_remits)) {
-            throw new \InvalidArgumentException('non-nullable sum_remits cannot be null');
-        }
         $this->container['sum_remits'] = $sum_remits;
 
         return $this;
@@ -1447,7 +1199,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets currency
      *
-     * @return \Learnist\Tripletex\Model\Currency|null
+     * @return \Learnist\Tripletex\Model\Currency
      */
     public function getCurrency()
     {
@@ -1457,15 +1209,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets currency
      *
-     * @param \Learnist\Tripletex\Model\Currency|null $currency currency
+     * @param \Learnist\Tripletex\Model\Currency $currency currency
      *
-     * @return self
+     * @return $this
      */
     public function setCurrency($currency)
     {
-        if (is_null($currency)) {
-            throw new \InvalidArgumentException('non-nullable currency cannot be null');
-        }
         $this->container['currency'] = $currency;
 
         return $this;
@@ -1474,7 +1223,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets is_credit_note
      *
-     * @return bool|null
+     * @return bool
      */
     public function getIsCreditNote()
     {
@@ -1484,15 +1233,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets is_credit_note
      *
-     * @param bool|null $is_credit_note is_credit_note
+     * @param bool $is_credit_note is_credit_note
      *
-     * @return self
+     * @return $this
      */
     public function setIsCreditNote($is_credit_note)
     {
-        if (is_null($is_credit_note)) {
-            throw new \InvalidArgumentException('non-nullable is_credit_note cannot be null');
-        }
         $this->container['is_credit_note'] = $is_credit_note;
 
         return $this;
@@ -1501,7 +1247,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets is_charged
      *
-     * @return bool|null
+     * @return bool
      */
     public function getIsCharged()
     {
@@ -1511,15 +1257,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets is_charged
      *
-     * @param bool|null $is_charged is_charged
+     * @param bool $is_charged is_charged
      *
-     * @return self
+     * @return $this
      */
     public function setIsCharged($is_charged)
     {
-        if (is_null($is_charged)) {
-            throw new \InvalidArgumentException('non-nullable is_charged cannot be null');
-        }
         $this->container['is_charged'] = $is_charged;
 
         return $this;
@@ -1528,7 +1271,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets is_approved
      *
-     * @return bool|null
+     * @return bool
      */
     public function getIsApproved()
     {
@@ -1538,15 +1281,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets is_approved
      *
-     * @param bool|null $is_approved is_approved
+     * @param bool $is_approved is_approved
      *
-     * @return self
+     * @return $this
      */
     public function setIsApproved($is_approved)
     {
-        if (is_null($is_approved)) {
-            throw new \InvalidArgumentException('non-nullable is_approved cannot be null');
-        }
         $this->container['is_approved'] = $is_approved;
 
         return $this;
@@ -1555,7 +1295,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets postings
      *
-     * @return \Learnist\Tripletex\Model\Posting[]|null
+     * @return \Learnist\Tripletex\Model\Posting[]
      */
     public function getPostings()
     {
@@ -1565,15 +1305,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets postings
      *
-     * @param \Learnist\Tripletex\Model\Posting[]|null $postings The invoice postings, which includes a posting for the invoice with a positive amount, and one or more posting for the payments with negative amounts.
+     * @param \Learnist\Tripletex\Model\Posting[] $postings The invoice postings, which includes a posting for the invoice with a positive amount, and one or more posting for the payments with negative amounts.
      *
-     * @return self
+     * @return $this
      */
     public function setPostings($postings)
     {
-        if (is_null($postings)) {
-            throw new \InvalidArgumentException('non-nullable postings cannot be null');
-        }
         $this->container['postings'] = $postings;
 
         return $this;
@@ -1582,7 +1319,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets reminders
      *
-     * @return \Learnist\Tripletex\Model\Reminder[]|null
+     * @return \Learnist\Tripletex\Model\Reminder[]
      */
     public function getReminders()
     {
@@ -1592,15 +1329,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets reminders
      *
-     * @param \Learnist\Tripletex\Model\Reminder[]|null $reminders Invoice debt collection and reminders.
+     * @param \Learnist\Tripletex\Model\Reminder[] $reminders Invoice debt collection and reminders.
      *
-     * @return self
+     * @return $this
      */
     public function setReminders($reminders)
     {
-        if (is_null($reminders)) {
-            throw new \InvalidArgumentException('non-nullable reminders cannot be null');
-        }
         $this->container['reminders'] = $reminders;
 
         return $this;
@@ -1609,7 +1343,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets invoice_remarks
      *
-     * @return string|null
+     * @return string
      */
     public function getInvoiceRemarks()
     {
@@ -1619,15 +1353,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets invoice_remarks
      *
-     * @param string|null $invoice_remarks Deprecated Invoice remarks - please use the 'invoiceRemark' instead.
+     * @param string $invoice_remarks Deprecated Invoice remarks - please use the 'invoiceRemark' instead.
      *
-     * @return self
+     * @return $this
      */
     public function setInvoiceRemarks($invoice_remarks)
     {
-        if (is_null($invoice_remarks)) {
-            throw new \InvalidArgumentException('non-nullable invoice_remarks cannot be null');
-        }
         $this->container['invoice_remarks'] = $invoice_remarks;
 
         return $this;
@@ -1636,7 +1367,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets invoice_remark
      *
-     * @return \Learnist\Tripletex\Model\InvoiceRemark|null
+     * @return \Learnist\Tripletex\Model\InvoiceRemark
      */
     public function getInvoiceRemark()
     {
@@ -1646,15 +1377,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets invoice_remark
      *
-     * @param \Learnist\Tripletex\Model\InvoiceRemark|null $invoice_remark invoice_remark
+     * @param \Learnist\Tripletex\Model\InvoiceRemark $invoice_remark invoice_remark
      *
-     * @return self
+     * @return $this
      */
     public function setInvoiceRemark($invoice_remark)
     {
-        if (is_null($invoice_remark)) {
-            throw new \InvalidArgumentException('non-nullable invoice_remark cannot be null');
-        }
         $this->container['invoice_remark'] = $invoice_remark;
 
         return $this;
@@ -1663,7 +1391,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets payment_type_id
      *
-     * @return int|null
+     * @return int
      */
     public function getPaymentTypeId()
     {
@@ -1673,20 +1401,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets payment_type_id
      *
-     * @param int|null $payment_type_id [BETA] Optional. Used to specify payment type for prepaid invoices. Payment type can be specified here, or as a parameter to the /invoice API endpoint.
+     * @param int $payment_type_id [BETA] Optional. Used to specify payment type for prepaid invoices. Payment type can be specified here, or as a parameter to the /invoice API endpoint.
      *
-     * @return self
+     * @return $this
      */
     public function setPaymentTypeId($payment_type_id)
     {
-        if (is_null($payment_type_id)) {
-            throw new \InvalidArgumentException('non-nullable payment_type_id cannot be null');
-        }
-
-        if (($payment_type_id < 0)) {
-            throw new \InvalidArgumentException('invalid value for $payment_type_id when calling Invoice., must be bigger than or equal to 0.');
-        }
-
         $this->container['payment_type_id'] = $payment_type_id;
 
         return $this;
@@ -1695,7 +1415,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets paid_amount
      *
-     * @return float|null
+     * @return float
      */
     public function getPaidAmount()
     {
@@ -1705,15 +1425,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets paid_amount
      *
-     * @param float|null $paid_amount [BETA] Optional. Used to specify the prepaid amount of the invoice. The paid amount can be specified here, or as a parameter to the /invoice API endpoint.
+     * @param float $paid_amount [BETA] Optional. Used to specify the prepaid amount of the invoice. The paid amount can be specified here, or as a parameter to the /invoice API endpoint.
      *
-     * @return self
+     * @return $this
      */
     public function setPaidAmount($paid_amount)
     {
-        if (is_null($paid_amount)) {
-            throw new \InvalidArgumentException('non-nullable paid_amount cannot be null');
-        }
         $this->container['paid_amount'] = $paid_amount;
 
         return $this;
@@ -1722,7 +1439,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets is_periodization_possible
      *
-     * @return bool|null
+     * @return bool
      */
     public function getIsPeriodizationPossible()
     {
@@ -1732,15 +1449,12 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets is_periodization_possible
      *
-     * @param bool|null $is_periodization_possible is_periodization_possible
+     * @param bool $is_periodization_possible is_periodization_possible
      *
-     * @return self
+     * @return $this
      */
     public function setIsPeriodizationPossible($is_periodization_possible)
     {
-        if (is_null($is_periodization_possible)) {
-            throw new \InvalidArgumentException('non-nullable is_periodization_possible cannot be null');
-        }
         $this->container['is_periodization_possible'] = $is_periodization_possible;
 
         return $this;
@@ -1749,7 +1463,7 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets ehf_send_status
      *
-     * @return string|null
+     * @return string
      */
     public function getEhfSendStatus()
     {
@@ -1759,21 +1473,17 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets ehf_send_status
      *
-     * @param string|null $ehf_send_status [Deprecated] EHF (Peppol) send status. This only shows status for historic EHFs.
+     * @param string $ehf_send_status [Deprecated] EHF (Peppol) send status. This only shows status for historic EHFs.
      *
-     * @return self
+     * @return $this
      */
     public function setEhfSendStatus($ehf_send_status)
     {
-        if (is_null($ehf_send_status)) {
-            throw new \InvalidArgumentException('non-nullable ehf_send_status cannot be null');
-        }
         $allowedValues = $this->getEhfSendStatusAllowableValues();
-        if (!in_array($ehf_send_status, $allowedValues, true)) {
+        if (!is_null($ehf_send_status) && !in_array($ehf_send_status, $allowedValues, true)) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    "Invalid value '%s' for 'ehf_send_status', must be one of '%s'",
-                    $ehf_send_status,
+                    "Invalid value for 'ehf_send_status', must be one of '%s'",
                     implode("', '", $allowedValues)
                 )
             );
@@ -1789,7 +1499,8 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return boolean
      */
-    public function offsetExists($offset): bool
+    #[\ReturnTypeWillChange] 
+    public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
     }
@@ -1799,23 +1510,24 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @param integer $offset Offset
      *
-     * @return mixed|null
+     * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[\ReturnTypeWillChange] 
     public function offsetGet($offset)
     {
-        return $this->container[$offset] ?? null;
+        return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
 
     /**
      * Sets value based on offset.
      *
-     * @param int|null $offset Offset
-     * @param mixed    $value  Value to be set
+     * @param integer $offset Offset
+     * @param mixed   $value  Value to be set
      *
      * @return void
      */
-    public function offsetSet($offset, $value): void
+    #[\ReturnTypeWillChange] 
+    public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -1831,22 +1543,10 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetUnset($offset): void
+    #[\ReturnTypeWillChange] 
+    public function offsetUnset($offset)
     {
         unset($this->container[$offset]);
-    }
-
-    /**
-     * Serializes the object to a value that can be serialized natively by json_encode().
-     * @link https://www.php.net/manual/en/jsonserializable.jsonserialize.php
-     *
-     * @return mixed Returns data which can be serialized by json_encode(), which is a value
-     * of any type other than a resource.
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
-    {
-       return ObjectSerializer::sanitizeForSerialization($this);
     }
 
     /**
@@ -1856,21 +1556,13 @@ class Invoice implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __toString()
     {
-        return json_encode(
-            ObjectSerializer::sanitizeForSerialization($this),
-            JSON_PRETTY_PRINT
-        );
-    }
+        if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
+            return json_encode(
+                ObjectSerializer::sanitizeForSerialization($this),
+                JSON_PRETTY_PRINT
+            );
+        }
 
-    /**
-     * Gets a header-safe presentation of the object
-     *
-     * @return string
-     */
-    public function toHeaderValue()
-    {
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
 }
-
-

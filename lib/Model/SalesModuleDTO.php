@@ -2,12 +2,12 @@
 /**
  * SalesModuleDTO
  *
- * PHP version 7.4
+ * PHP version 5
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
 
 /**
@@ -15,14 +15,14 @@
  *
  * ## Usage  - **Download the spec** [swagger.json](/v2/swagger.json) file, it is a [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification).  - **Generating a client** can easily be done using tools like [swagger-codegen](https://github.com/swagger-api/swagger-codegen) or other that accepts [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) specs.     - For swagger codegen it is recommended to use the flag: **--removeOperationIdPrefix**.        Unique operation ids are about to be introduced to the spec, and this ensures forward compatibility - and results in less verbose generated code.   ## Overview  - Partial resource updating is done using the `PUT` method with optional fields instead of the `PATCH` method.  - **Actions** or **commands** are represented in our RESTful path with a prefixed `:`. Example: `/v2/hours/123/:approve`.  - **Summaries** or **aggregated** results are represented in our RESTful path with a prefixed `>`. Example: `/v2/hours/>thisWeeksBillables`.  - **Request ID** is a key found in all responses in the header with the name `x-tlx-request-id`. For validation and error responses it is also in the response body. If additional log information is absolutely necessary, our support division can locate the key value.  - **version** This is a revision number found on all persisted resources. If included, it will prevent your PUT/POST from overriding any updates to the resource since your GET.  - **Date** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DD`.  - **DateTime** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DDThh:mm:ss`.  - **Searching** is done by entering values in the optional fields for each API call. The values fall into the following categories: range, in, exact and like.  - **Missing fields** or even **no response data** can occur because result objects and fields are filtered on authorization.  - **See [GitHub](https://github.com/Tripletex/tripletex-api2) for more documentation, examples, changelog and more.**  - **See [FAQ](https://tripletex.no/execute/docViewer?articleId=906&language=0) for additional information.**   ## Authentication  - **Tokens:** The Tripletex API uses 3 different tokens    - **consumerToken** is a token provided to the consumer by Tripletex after the API 2.0 registration is completed.    - **employeeToken** is a token created by an administrator in your Tripletex account via the user settings and the tab \"API access\". Each employee token must be given a set of entitlements. [Read more here.](https://tripletex.no/execute/docViewer?articleId=1505&languageId=0)    - **sessionToken** is the token from `/token/session/:create` which requires a consumerToken and an employeeToken created with the same consumer token, but not an authentication header.  - **Authentication** is done via [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)    - **username** is used to specify what company to access.      - `0` or blank means the company of the employee.      - Any other value means accountant clients. Use `/company/>withLoginAccess` to get a list of those.    - **password** is the **sessionToken**.    - If you need to create the header yourself use `Authorization: Basic <encoded token>` where `encoded token` is the string `<target company id or 0>:<your session token>` Base64 encoded.   ## Tags  - `[BETA]` This is a beta endpoint and can be subject to change. - `[DEPRECATED]` Deprecated means that we intend to remove/change this feature or capability in a future \"major\" API release. We therefore discourage all use of this feature/capability.   ## Fields  Use the `fields` parameter to specify which fields should be returned. This also supports fields from sub elements, done via `<field>(<subResourceFields>)`. `*` means all fields for that resource. Example values: - `project,activity,hours`  returns `{project:..., activity:...., hours:...}`. - just `project` returns `\"project\" : { \"id\": 12345, \"url\": \"tripletex.no/v2/projects/12345\"  }`. - `project(*)` returns `\"project\" : { \"id\": 12345 \"name\":\"ProjectName\" \"number.....startDate\": \"2013-01-07\" }`. - `project(name)` returns `\"project\" : { \"name\":\"ProjectName\" }`. - All resources and some subResources :  `*,activity(name),employee(*)`.   ## Sorting  Use the `sorting` parameter to specify sorting. It takes a comma separated list, where a `-` prefix denotes descending. You can sort by sub object with the following format: `<field>.<subObjectField>`. Example values: - `date` - `project.name` - `project.name, -date`   ## Changes  To get the changes for a resource, `changes` have to be explicitly specified as part of the `fields` parameter, e.g. `*,changes`. There are currently two types of change available:  - `CREATE` for when the resource was created - `UPDATE` for when the resource was updated  **NOTE** > For objects created prior to October 24th 2018 the list may be incomplete, but will always contain the CREATE and the last change (if the object has been changed after creation).   ## Rate limiting  Rate limiting is performed on the API calls for an employee for each API consumer. Status regarding the rate limit is returned as headers: - `X-Rate-Limit-Limit` - The number of allowed requests in the current period. - `X-Rate-Limit-Remaining` - The number of remaining requests. - `X-Rate-Limit-Reset` - The number of seconds left in the current period.  Once the rate limit is hit, all requests will return HTTP status code `429` for the remainder of the current period.   ## Response envelope  #### Multiple values  ```json {   \"fullResultSize\": ###, // {number} [DEPRECATED]   \"from\": ###, // {number} Paging starting from   \"count\": ###, // {number} Paging count   \"versionDigest\": \"###\", // {string} Hash of full result, null if no result   \"values\": [...{...object...},{...object...},{...object...}...] } ```  #### Single value  ```json {   \"value\": {...single object...} } ```   ## WebHook envelope  ```json {   \"subscriptionId\": ###, // Subscription id   \"event\": \"object.verb\", // As listed from /v2/event/   \"id\": ###, // Id of object this event is for   \"value\": {... single object, null if object.deleted ...} } ```   ## Error/warning envelope  ```json {   \"status\": ###, // {number} HTTP status code   \"code\": #####, // {number} internal status code of event   \"message\": \"###\", // {string} Basic feedback message in your language   \"link\": \"###\", // {string} Link to doc   \"developerMessage\": \"###\", // {string} More technical message   \"validationMessages\": [ // {array} List of validation messages, can be null     {       \"field\": \"###\", // {string} Name of field       \"message\": \"###\" // {string} Validation message for field     }   ],   \"requestId\": \"###\" // {string} Same as x-tlx-request-id  } ```   ## Status codes / Error codes  - **200 OK** - **201 Created** - From POSTs that create something new. - **204 No Content** - When there is no answer, ex: \"/:anAction\" or DELETE. - **400 Bad request** -   -  **4000** Bad Request Exception   - **11000** Illegal Filter Exception   - **12000** Path Param Exception   - **24000** Cryptography Exception - **401 Unauthorized** - When authentication is required and has failed or has not yet been provided   -  **3000** Authentication Exception - **403 Forbidden** - When AuthorisationManager says no.   -  **9000** Security Exception - **404 Not Found** - For resources that does not exist.   -  **6000** Not Found Exception - **409 Conflict** - Such as an edit conflict between multiple simultaneous updates   -  **7000** Object Exists Exception   -  **8000** Revision Exception   - **10000** Locked Exception   - **14000** Duplicate entry - **422 Bad Request** - For Required fields or things like malformed payload.   - **15000** Value Validation Exception   - **16000** Mapping Exception   - **17000** Sorting Exception   - **18000** Validation Exception   - **21000** Param Exception   - **22000** Invalid JSON Exception   - **23000** Result Set Too Large Exception - **429 Too Many Requests** - Request rate limit hit - **500 Internal Error** - Unexpected condition was encountered and no more specific message is suitable   - **1000** Exception
  *
- * The version of the OpenAPI document: 2.70.19
- * Generated by: https://openapi-generator.tech
- * OpenAPI Generator version: 6.5.0-SNAPSHOT
+ * OpenAPI spec version: 2.70.19
+ * 
+ * Generated by: https://github.com/swagger-api/swagger-codegen.git
+ * Swagger Codegen version: 3.0.41
  */
-
 /**
- * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
- * https://openapi-generator.tech
+ * NOTE: This class is auto generated by the swagger code generator program.
+ * https://github.com/swagger-api/swagger-codegen
  * Do not edit the class manually.
  */
 
@@ -36,68 +36,46 @@ use \Learnist\Tripletex\ObjectSerializer;
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- * @implements \ArrayAccess<string, mixed>
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
-class SalesModuleDTO implements ModelInterface, ArrayAccess, \JsonSerializable
+class SalesModuleDTO implements ModelInterface, ArrayAccess
 {
-    public const DISCRIMINATOR = null;
+    const DISCRIMINATOR = null;
 
     /**
       * The original name of the model.
       *
       * @var string
       */
-    protected static $openAPIModelName = 'SalesModuleDTO';
+    protected static $swaggerModelName = 'SalesModuleDTO';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
       *
       * @var string[]
       */
-    protected static $openAPITypes = [
+    protected static $swaggerTypes = [
         'name' => 'string',
-        'cost_start_date' => 'string'
-    ];
+'cost_start_date' => 'string'    ];
 
     /**
       * Array of property to format mappings. Used for (de)serialization
       *
       * @var string[]
-      * @phpstan-var array<string, string|null>
-      * @psalm-var array<string, string|null>
       */
-    protected static $openAPIFormats = [
+    protected static $swaggerFormats = [
         'name' => null,
-        'cost_start_date' => null
-    ];
-
-    /**
-      * Array of nullable properties. Used for (de)serialization
-      *
-      * @var boolean[]
-      */
-    protected static array $openAPINullables = [
-        'name' => false,
-		'cost_start_date' => false
-    ];
-
-    /**
-      * If a nullable field gets set to null, insert it here
-      *
-      * @var boolean[]
-      */
-    protected array $openAPINullablesSetToNull = [];
+'cost_start_date' => null    ];
 
     /**
      * Array of property to type mappings. Used for (de)serialization
      *
      * @return array
      */
-    public static function openAPITypes()
+    public static function swaggerTypes()
     {
-        return self::$openAPITypes;
+        return self::$swaggerTypes;
     }
 
     /**
@@ -105,61 +83,9 @@ class SalesModuleDTO implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return array
      */
-    public static function openAPIFormats()
+    public static function swaggerFormats()
     {
-        return self::$openAPIFormats;
-    }
-
-    /**
-     * Array of nullable properties
-     *
-     * @return array
-     */
-    protected static function openAPINullables(): array
-    {
-        return self::$openAPINullables;
-    }
-
-    /**
-     * Array of nullable field names deliberately set to null
-     *
-     * @return boolean[]
-     */
-    private function getOpenAPINullablesSetToNull(): array
-    {
-        return $this->openAPINullablesSetToNull;
-    }
-
-    /**
-     * Setter - Array of nullable field names deliberately set to null
-     *
-     * @param boolean[] $openAPINullablesSetToNull
-     */
-    private function setOpenAPINullablesSetToNull(array $openAPINullablesSetToNull): void
-    {
-        $this->openAPINullablesSetToNull = $openAPINullablesSetToNull;
-    }
-
-    /**
-     * Checks if a property is nullable
-     *
-     * @param string $property
-     * @return bool
-     */
-    public static function isNullable(string $property): bool
-    {
-        return self::openAPINullables()[$property] ?? false;
-    }
-
-    /**
-     * Checks if a nullable property is set to null.
-     *
-     * @param string $property
-     * @return bool
-     */
-    public function isNullableSetToNull(string $property): bool
-    {
-        return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+        return self::$swaggerFormats;
     }
 
     /**
@@ -170,8 +96,7 @@ class SalesModuleDTO implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $attributeMap = [
         'name' => 'name',
-        'cost_start_date' => 'costStartDate'
-    ];
+'cost_start_date' => 'costStartDate'    ];
 
     /**
      * Array of attributes to setter functions (for deserialization of responses)
@@ -180,8 +105,7 @@ class SalesModuleDTO implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $setters = [
         'name' => 'setName',
-        'cost_start_date' => 'setCostStartDate'
-    ];
+'cost_start_date' => 'setCostStartDate'    ];
 
     /**
      * Array of attributes to getter functions (for serialization of requests)
@@ -190,8 +114,7 @@ class SalesModuleDTO implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $getters = [
         'name' => 'getName',
-        'cost_start_date' => 'getCostStartDate'
-    ];
+'cost_start_date' => 'getCostStartDate'    ];
 
     /**
      * Array of attributes where the key is the local name,
@@ -231,58 +154,58 @@ class SalesModuleDTO implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function getModelName()
     {
-        return self::$openAPIModelName;
+        return self::$swaggerModelName;
     }
 
-    public const NAME_MAMUT = 'MAMUT';
-    public const NAME_MAMUT_WITH_WAGE = 'MAMUT_WITH_WAGE';
-    public const NAME_AGRO_LICENCE = 'AGRO_LICENCE';
-    public const NAME_AGRO_CLIENT = 'AGRO_CLIENT';
-    public const NAME_AGRO_DOCUMENT_CENTER = 'AGRO_DOCUMENT_CENTER';
-    public const NAME_AGRO_INVOICE = 'AGRO_INVOICE';
-    public const NAME_AGRO_INVOICE_MIGRATED = 'AGRO_INVOICE_MIGRATED';
-    public const NAME_AGRO_WAGE = 'AGRO_WAGE';
-    public const NAME_NO1_TS = 'NO1TS';
-    public const NAME_NO1_TS_TRAVELREPORT = 'NO1TS_TRAVELREPORT';
-    public const NAME_NO1_TS_ACCOUNTING = 'NO1TS_ACCOUNTING';
-    public const NAME_BASIS = 'BASIS';
-    public const NAME_SMART = 'SMART';
-    public const NAME_PLUSS = 'PLUSS';
-    public const NAME_KOMPLETT = 'KOMPLETT';
-    public const NAME_VVS = 'VVS';
-    public const NAME_ELECTRO = 'ELECTRO';
-    public const NAME_ACCOUNTING_OFFICE = 'ACCOUNTING_OFFICE';
-    public const NAME_SMART_WAGE = 'SMART_WAGE';
-    public const NAME_SMART_TIME_TRACKING = 'SMART_TIME_TRACKING';
-    public const NAME_SMART_PROJECT = 'SMART_PROJECT';
-    public const NAME_OCR = 'OCR';
-    public const NAME_API_V2 = 'API_V2';
-    public const NAME_ELECTRONIC_VOUCHERS = 'ELECTRONIC_VOUCHERS';
-    public const NAME_UP_TO_100_VOUCHERS = 'UP_TO_100_VOUCHERS';
-    public const NAME_UP_TO_500_VOUCHERS = 'UP_TO_500_VOUCHERS';
-    public const NAME_UP_TO_1000_VOUCHERS = 'UP_TO_1000_VOUCHERS';
-    public const NAME_UP_TO_2000_VOUCHERS = 'UP_TO_2000_VOUCHERS';
-    public const NAME_UP_TO_3500_VOUCHERS = 'UP_TO_3500_VOUCHERS';
-    public const NAME_UP_TO_5000_VOUCHERS = 'UP_TO_5000_VOUCHERS';
-    public const NAME_UP_TO_10000_VOUCHERS = 'UP_TO_10000_VOUCHERS';
-    public const NAME_UNLIMITED_VOUCHERS = 'UNLIMITED_VOUCHERS';
-    public const NAME_UP_TO_100_VOUCHERS_AUTOMATION = 'UP_TO_100_VOUCHERS_AUTOMATION';
-    public const NAME_UP_TO_500_VOUCHERS_AUTOMATION = 'UP_TO_500_VOUCHERS_AUTOMATION';
-    public const NAME_UP_TO_1000_VOUCHERS_AUTOMATION = 'UP_TO_1000_VOUCHERS_AUTOMATION';
-    public const NAME_UP_TO_2000_VOUCHERS_AUTOMATION = 'UP_TO_2000_VOUCHERS_AUTOMATION';
-    public const NAME_UP_TO_3500_VOUCHERS_AUTOMATION = 'UP_TO_3500_VOUCHERS_AUTOMATION';
-    public const NAME_UP_TO_5000_VOUCHERS_AUTOMATION = 'UP_TO_5000_VOUCHERS_AUTOMATION';
-    public const NAME_UP_TO_10000_VOUCHERS_AUTOMATION = 'UP_TO_10000_VOUCHERS_AUTOMATION';
-    public const NAME_UNLIMITED_VOUCHERS_AUTOMATION = 'UNLIMITED_VOUCHERS_AUTOMATION';
-    public const NAME_LOGISTICS = 'LOGISTICS';
-    public const NAME_MIKRO = 'MIKRO';
-    public const NAME_AUTOPLUS_MINI = 'AUTOPLUS_MINI';
-    public const NAME_AUTOPLUS_MEDIUM = 'AUTOPLUS_MEDIUM';
-    public const NAME_AUTOPLUS_STOR = 'AUTOPLUS_STOR';
-    public const NAME_INTEGRATION_PARTNER = 'INTEGRATION_PARTNER';
-    public const NAME_PROJECT = 'PROJECT';
-    public const NAME_YEAR_END_REPORTING_ENK = 'YEAR_END_REPORTING_ENK';
-    public const NAME_YEAR_END_REPORTING_AS = 'YEAR_END_REPORTING_AS';
+    const NAME_MAMUT = 'MAMUT';
+const NAME_MAMUT_WITH_WAGE = 'MAMUT_WITH_WAGE';
+const NAME_AGRO_LICENCE = 'AGRO_LICENCE';
+const NAME_AGRO_CLIENT = 'AGRO_CLIENT';
+const NAME_AGRO_DOCUMENT_CENTER = 'AGRO_DOCUMENT_CENTER';
+const NAME_AGRO_INVOICE = 'AGRO_INVOICE';
+const NAME_AGRO_INVOICE_MIGRATED = 'AGRO_INVOICE_MIGRATED';
+const NAME_AGRO_WAGE = 'AGRO_WAGE';
+const NAME_NO1_TS = 'NO1TS';
+const NAME_NO1_TS_TRAVELREPORT = 'NO1TS_TRAVELREPORT';
+const NAME_NO1_TS_ACCOUNTING = 'NO1TS_ACCOUNTING';
+const NAME_BASIS = 'BASIS';
+const NAME_SMART = 'SMART';
+const NAME_PLUSS = 'PLUSS';
+const NAME_KOMPLETT = 'KOMPLETT';
+const NAME_VVS = 'VVS';
+const NAME_ELECTRO = 'ELECTRO';
+const NAME_ACCOUNTING_OFFICE = 'ACCOUNTING_OFFICE';
+const NAME_SMART_WAGE = 'SMART_WAGE';
+const NAME_SMART_TIME_TRACKING = 'SMART_TIME_TRACKING';
+const NAME_SMART_PROJECT = 'SMART_PROJECT';
+const NAME_OCR = 'OCR';
+const NAME_API_V2 = 'API_V2';
+const NAME_ELECTRONIC_VOUCHERS = 'ELECTRONIC_VOUCHERS';
+const NAME_UP_TO_100_VOUCHERS = 'UP_TO_100_VOUCHERS';
+const NAME_UP_TO_500_VOUCHERS = 'UP_TO_500_VOUCHERS';
+const NAME_UP_TO_1000_VOUCHERS = 'UP_TO_1000_VOUCHERS';
+const NAME_UP_TO_2000_VOUCHERS = 'UP_TO_2000_VOUCHERS';
+const NAME_UP_TO_3500_VOUCHERS = 'UP_TO_3500_VOUCHERS';
+const NAME_UP_TO_5000_VOUCHERS = 'UP_TO_5000_VOUCHERS';
+const NAME_UP_TO_10000_VOUCHERS = 'UP_TO_10000_VOUCHERS';
+const NAME_UNLIMITED_VOUCHERS = 'UNLIMITED_VOUCHERS';
+const NAME_UP_TO_100_VOUCHERS_AUTOMATION = 'UP_TO_100_VOUCHERS_AUTOMATION';
+const NAME_UP_TO_500_VOUCHERS_AUTOMATION = 'UP_TO_500_VOUCHERS_AUTOMATION';
+const NAME_UP_TO_1000_VOUCHERS_AUTOMATION = 'UP_TO_1000_VOUCHERS_AUTOMATION';
+const NAME_UP_TO_2000_VOUCHERS_AUTOMATION = 'UP_TO_2000_VOUCHERS_AUTOMATION';
+const NAME_UP_TO_3500_VOUCHERS_AUTOMATION = 'UP_TO_3500_VOUCHERS_AUTOMATION';
+const NAME_UP_TO_5000_VOUCHERS_AUTOMATION = 'UP_TO_5000_VOUCHERS_AUTOMATION';
+const NAME_UP_TO_10000_VOUCHERS_AUTOMATION = 'UP_TO_10000_VOUCHERS_AUTOMATION';
+const NAME_UNLIMITED_VOUCHERS_AUTOMATION = 'UNLIMITED_VOUCHERS_AUTOMATION';
+const NAME_LOGISTICS = 'LOGISTICS';
+const NAME_MIKRO = 'MIKRO';
+const NAME_AUTOPLUS_MINI = 'AUTOPLUS_MINI';
+const NAME_AUTOPLUS_MEDIUM = 'AUTOPLUS_MEDIUM';
+const NAME_AUTOPLUS_STOR = 'AUTOPLUS_STOR';
+const NAME_INTEGRATION_PARTNER = 'INTEGRATION_PARTNER';
+const NAME_PROJECT = 'PROJECT';
+const NAME_YEAR_END_REPORTING_ENK = 'YEAR_END_REPORTING_ENK';
+const NAME_YEAR_END_REPORTING_AS = 'YEAR_END_REPORTING_AS';
 
     /**
      * Gets allowable values of the enum
@@ -293,55 +216,54 @@ class SalesModuleDTO implements ModelInterface, ArrayAccess, \JsonSerializable
     {
         return [
             self::NAME_MAMUT,
-            self::NAME_MAMUT_WITH_WAGE,
-            self::NAME_AGRO_LICENCE,
-            self::NAME_AGRO_CLIENT,
-            self::NAME_AGRO_DOCUMENT_CENTER,
-            self::NAME_AGRO_INVOICE,
-            self::NAME_AGRO_INVOICE_MIGRATED,
-            self::NAME_AGRO_WAGE,
-            self::NAME_NO1_TS,
-            self::NAME_NO1_TS_TRAVELREPORT,
-            self::NAME_NO1_TS_ACCOUNTING,
-            self::NAME_BASIS,
-            self::NAME_SMART,
-            self::NAME_PLUSS,
-            self::NAME_KOMPLETT,
-            self::NAME_VVS,
-            self::NAME_ELECTRO,
-            self::NAME_ACCOUNTING_OFFICE,
-            self::NAME_SMART_WAGE,
-            self::NAME_SMART_TIME_TRACKING,
-            self::NAME_SMART_PROJECT,
-            self::NAME_OCR,
-            self::NAME_API_V2,
-            self::NAME_ELECTRONIC_VOUCHERS,
-            self::NAME_UP_TO_100_VOUCHERS,
-            self::NAME_UP_TO_500_VOUCHERS,
-            self::NAME_UP_TO_1000_VOUCHERS,
-            self::NAME_UP_TO_2000_VOUCHERS,
-            self::NAME_UP_TO_3500_VOUCHERS,
-            self::NAME_UP_TO_5000_VOUCHERS,
-            self::NAME_UP_TO_10000_VOUCHERS,
-            self::NAME_UNLIMITED_VOUCHERS,
-            self::NAME_UP_TO_100_VOUCHERS_AUTOMATION,
-            self::NAME_UP_TO_500_VOUCHERS_AUTOMATION,
-            self::NAME_UP_TO_1000_VOUCHERS_AUTOMATION,
-            self::NAME_UP_TO_2000_VOUCHERS_AUTOMATION,
-            self::NAME_UP_TO_3500_VOUCHERS_AUTOMATION,
-            self::NAME_UP_TO_5000_VOUCHERS_AUTOMATION,
-            self::NAME_UP_TO_10000_VOUCHERS_AUTOMATION,
-            self::NAME_UNLIMITED_VOUCHERS_AUTOMATION,
-            self::NAME_LOGISTICS,
-            self::NAME_MIKRO,
-            self::NAME_AUTOPLUS_MINI,
-            self::NAME_AUTOPLUS_MEDIUM,
-            self::NAME_AUTOPLUS_STOR,
-            self::NAME_INTEGRATION_PARTNER,
-            self::NAME_PROJECT,
-            self::NAME_YEAR_END_REPORTING_ENK,
-            self::NAME_YEAR_END_REPORTING_AS,
-        ];
+self::NAME_MAMUT_WITH_WAGE,
+self::NAME_AGRO_LICENCE,
+self::NAME_AGRO_CLIENT,
+self::NAME_AGRO_DOCUMENT_CENTER,
+self::NAME_AGRO_INVOICE,
+self::NAME_AGRO_INVOICE_MIGRATED,
+self::NAME_AGRO_WAGE,
+self::NAME_NO1_TS,
+self::NAME_NO1_TS_TRAVELREPORT,
+self::NAME_NO1_TS_ACCOUNTING,
+self::NAME_BASIS,
+self::NAME_SMART,
+self::NAME_PLUSS,
+self::NAME_KOMPLETT,
+self::NAME_VVS,
+self::NAME_ELECTRO,
+self::NAME_ACCOUNTING_OFFICE,
+self::NAME_SMART_WAGE,
+self::NAME_SMART_TIME_TRACKING,
+self::NAME_SMART_PROJECT,
+self::NAME_OCR,
+self::NAME_API_V2,
+self::NAME_ELECTRONIC_VOUCHERS,
+self::NAME_UP_TO_100_VOUCHERS,
+self::NAME_UP_TO_500_VOUCHERS,
+self::NAME_UP_TO_1000_VOUCHERS,
+self::NAME_UP_TO_2000_VOUCHERS,
+self::NAME_UP_TO_3500_VOUCHERS,
+self::NAME_UP_TO_5000_VOUCHERS,
+self::NAME_UP_TO_10000_VOUCHERS,
+self::NAME_UNLIMITED_VOUCHERS,
+self::NAME_UP_TO_100_VOUCHERS_AUTOMATION,
+self::NAME_UP_TO_500_VOUCHERS_AUTOMATION,
+self::NAME_UP_TO_1000_VOUCHERS_AUTOMATION,
+self::NAME_UP_TO_2000_VOUCHERS_AUTOMATION,
+self::NAME_UP_TO_3500_VOUCHERS_AUTOMATION,
+self::NAME_UP_TO_5000_VOUCHERS_AUTOMATION,
+self::NAME_UP_TO_10000_VOUCHERS_AUTOMATION,
+self::NAME_UNLIMITED_VOUCHERS_AUTOMATION,
+self::NAME_LOGISTICS,
+self::NAME_MIKRO,
+self::NAME_AUTOPLUS_MINI,
+self::NAME_AUTOPLUS_MEDIUM,
+self::NAME_AUTOPLUS_STOR,
+self::NAME_INTEGRATION_PARTNER,
+self::NAME_PROJECT,
+self::NAME_YEAR_END_REPORTING_ENK,
+self::NAME_YEAR_END_REPORTING_AS,        ];
     }
 
     /**
@@ -359,26 +281,8 @@ class SalesModuleDTO implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __construct(array $data = null)
     {
-        $this->setIfExists('name', $data ?? [], null);
-        $this->setIfExists('cost_start_date', $data ?? [], null);
-    }
-
-    /**
-    * Sets $this->container[$variableName] to the given data or to the given default Value; if $variableName
-    * is nullable and its value is set to null in the $fields array, then mark it as "set to null" in the
-    * $this->openAPINullablesSetToNull array
-    *
-    * @param string $variableName
-    * @param array  $fields
-    * @param mixed  $defaultValue
-    */
-    private function setIfExists(string $variableName, array $fields, $defaultValue): void
-    {
-        if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
-            $this->openAPINullablesSetToNull[] = $variableName;
-        }
-
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $this->container['name'] = isset($data['name']) ? $data['name'] : null;
+        $this->container['cost_start_date'] = isset($data['cost_start_date']) ? $data['cost_start_date'] : null;
     }
 
     /**
@@ -396,8 +300,7 @@ class SalesModuleDTO implements ModelInterface, ArrayAccess, \JsonSerializable
         $allowedValues = $this->getNameAllowableValues();
         if (!is_null($this->container['name']) && !in_array($this->container['name'], $allowedValues, true)) {
             $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'name', must be one of '%s'",
-                $this->container['name'],
+                "invalid value for 'name', must be one of '%s'",
                 implode("', '", $allowedValues)
             );
         }
@@ -432,19 +335,15 @@ class SalesModuleDTO implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @param string $name name
      *
-     * @return self
+     * @return $this
      */
     public function setName($name)
     {
-        if (is_null($name)) {
-            throw new \InvalidArgumentException('non-nullable name cannot be null');
-        }
         $allowedValues = $this->getNameAllowableValues();
         if (!in_array($name, $allowedValues, true)) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    "Invalid value '%s' for 'name', must be one of '%s'",
-                    $name,
+                    "Invalid value for 'name', must be one of '%s'",
                     implode("', '", $allowedValues)
                 )
             );
@@ -457,7 +356,7 @@ class SalesModuleDTO implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets cost_start_date
      *
-     * @return string|null
+     * @return string
      */
     public function getCostStartDate()
     {
@@ -467,15 +366,12 @@ class SalesModuleDTO implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets cost_start_date
      *
-     * @param string|null $cost_start_date cost_start_date
+     * @param string $cost_start_date cost_start_date
      *
-     * @return self
+     * @return $this
      */
     public function setCostStartDate($cost_start_date)
     {
-        if (is_null($cost_start_date)) {
-            throw new \InvalidArgumentException('non-nullable cost_start_date cannot be null');
-        }
         $this->container['cost_start_date'] = $cost_start_date;
 
         return $this;
@@ -487,7 +383,8 @@ class SalesModuleDTO implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return boolean
      */
-    public function offsetExists($offset): bool
+    #[\ReturnTypeWillChange] 
+    public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
     }
@@ -497,23 +394,24 @@ class SalesModuleDTO implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @param integer $offset Offset
      *
-     * @return mixed|null
+     * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[\ReturnTypeWillChange] 
     public function offsetGet($offset)
     {
-        return $this->container[$offset] ?? null;
+        return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
 
     /**
      * Sets value based on offset.
      *
-     * @param int|null $offset Offset
-     * @param mixed    $value  Value to be set
+     * @param integer $offset Offset
+     * @param mixed   $value  Value to be set
      *
      * @return void
      */
-    public function offsetSet($offset, $value): void
+    #[\ReturnTypeWillChange] 
+    public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -529,22 +427,10 @@ class SalesModuleDTO implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetUnset($offset): void
+    #[\ReturnTypeWillChange] 
+    public function offsetUnset($offset)
     {
         unset($this->container[$offset]);
-    }
-
-    /**
-     * Serializes the object to a value that can be serialized natively by json_encode().
-     * @link https://www.php.net/manual/en/jsonserializable.jsonserialize.php
-     *
-     * @return mixed Returns data which can be serialized by json_encode(), which is a value
-     * of any type other than a resource.
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
-    {
-       return ObjectSerializer::sanitizeForSerialization($this);
     }
 
     /**
@@ -554,21 +440,13 @@ class SalesModuleDTO implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __toString()
     {
-        return json_encode(
-            ObjectSerializer::sanitizeForSerialization($this),
-            JSON_PRETTY_PRINT
-        );
-    }
+        if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
+            return json_encode(
+                ObjectSerializer::sanitizeForSerialization($this),
+                JSON_PRETTY_PRINT
+            );
+        }
 
-    /**
-     * Gets a header-safe presentation of the object
-     *
-     * @return string
-     */
-    public function toHeaderValue()
-    {
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
 }
-
-

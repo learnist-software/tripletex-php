@@ -2,12 +2,12 @@
 /**
  * MySubscriptionModuleDTO
  *
- * PHP version 7.4
+ * PHP version 5
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
 
 /**
@@ -15,14 +15,14 @@
  *
  * ## Usage  - **Download the spec** [swagger.json](/v2/swagger.json) file, it is a [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification).  - **Generating a client** can easily be done using tools like [swagger-codegen](https://github.com/swagger-api/swagger-codegen) or other that accepts [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) specs.     - For swagger codegen it is recommended to use the flag: **--removeOperationIdPrefix**.        Unique operation ids are about to be introduced to the spec, and this ensures forward compatibility - and results in less verbose generated code.   ## Overview  - Partial resource updating is done using the `PUT` method with optional fields instead of the `PATCH` method.  - **Actions** or **commands** are represented in our RESTful path with a prefixed `:`. Example: `/v2/hours/123/:approve`.  - **Summaries** or **aggregated** results are represented in our RESTful path with a prefixed `>`. Example: `/v2/hours/>thisWeeksBillables`.  - **Request ID** is a key found in all responses in the header with the name `x-tlx-request-id`. For validation and error responses it is also in the response body. If additional log information is absolutely necessary, our support division can locate the key value.  - **version** This is a revision number found on all persisted resources. If included, it will prevent your PUT/POST from overriding any updates to the resource since your GET.  - **Date** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DD`.  - **DateTime** follows the **[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)** standard, meaning the format `YYYY-MM-DDThh:mm:ss`.  - **Searching** is done by entering values in the optional fields for each API call. The values fall into the following categories: range, in, exact and like.  - **Missing fields** or even **no response data** can occur because result objects and fields are filtered on authorization.  - **See [GitHub](https://github.com/Tripletex/tripletex-api2) for more documentation, examples, changelog and more.**  - **See [FAQ](https://tripletex.no/execute/docViewer?articleId=906&language=0) for additional information.**   ## Authentication  - **Tokens:** The Tripletex API uses 3 different tokens    - **consumerToken** is a token provided to the consumer by Tripletex after the API 2.0 registration is completed.    - **employeeToken** is a token created by an administrator in your Tripletex account via the user settings and the tab \"API access\". Each employee token must be given a set of entitlements. [Read more here.](https://tripletex.no/execute/docViewer?articleId=1505&languageId=0)    - **sessionToken** is the token from `/token/session/:create` which requires a consumerToken and an employeeToken created with the same consumer token, but not an authentication header.  - **Authentication** is done via [Basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)    - **username** is used to specify what company to access.      - `0` or blank means the company of the employee.      - Any other value means accountant clients. Use `/company/>withLoginAccess` to get a list of those.    - **password** is the **sessionToken**.    - If you need to create the header yourself use `Authorization: Basic <encoded token>` where `encoded token` is the string `<target company id or 0>:<your session token>` Base64 encoded.   ## Tags  - `[BETA]` This is a beta endpoint and can be subject to change. - `[DEPRECATED]` Deprecated means that we intend to remove/change this feature or capability in a future \"major\" API release. We therefore discourage all use of this feature/capability.   ## Fields  Use the `fields` parameter to specify which fields should be returned. This also supports fields from sub elements, done via `<field>(<subResourceFields>)`. `*` means all fields for that resource. Example values: - `project,activity,hours`  returns `{project:..., activity:...., hours:...}`. - just `project` returns `\"project\" : { \"id\": 12345, \"url\": \"tripletex.no/v2/projects/12345\"  }`. - `project(*)` returns `\"project\" : { \"id\": 12345 \"name\":\"ProjectName\" \"number.....startDate\": \"2013-01-07\" }`. - `project(name)` returns `\"project\" : { \"name\":\"ProjectName\" }`. - All resources and some subResources :  `*,activity(name),employee(*)`.   ## Sorting  Use the `sorting` parameter to specify sorting. It takes a comma separated list, where a `-` prefix denotes descending. You can sort by sub object with the following format: `<field>.<subObjectField>`. Example values: - `date` - `project.name` - `project.name, -date`   ## Changes  To get the changes for a resource, `changes` have to be explicitly specified as part of the `fields` parameter, e.g. `*,changes`. There are currently two types of change available:  - `CREATE` for when the resource was created - `UPDATE` for when the resource was updated  **NOTE** > For objects created prior to October 24th 2018 the list may be incomplete, but will always contain the CREATE and the last change (if the object has been changed after creation).   ## Rate limiting  Rate limiting is performed on the API calls for an employee for each API consumer. Status regarding the rate limit is returned as headers: - `X-Rate-Limit-Limit` - The number of allowed requests in the current period. - `X-Rate-Limit-Remaining` - The number of remaining requests. - `X-Rate-Limit-Reset` - The number of seconds left in the current period.  Once the rate limit is hit, all requests will return HTTP status code `429` for the remainder of the current period.   ## Response envelope  #### Multiple values  ```json {   \"fullResultSize\": ###, // {number} [DEPRECATED]   \"from\": ###, // {number} Paging starting from   \"count\": ###, // {number} Paging count   \"versionDigest\": \"###\", // {string} Hash of full result, null if no result   \"values\": [...{...object...},{...object...},{...object...}...] } ```  #### Single value  ```json {   \"value\": {...single object...} } ```   ## WebHook envelope  ```json {   \"subscriptionId\": ###, // Subscription id   \"event\": \"object.verb\", // As listed from /v2/event/   \"id\": ###, // Id of object this event is for   \"value\": {... single object, null if object.deleted ...} } ```   ## Error/warning envelope  ```json {   \"status\": ###, // {number} HTTP status code   \"code\": #####, // {number} internal status code of event   \"message\": \"###\", // {string} Basic feedback message in your language   \"link\": \"###\", // {string} Link to doc   \"developerMessage\": \"###\", // {string} More technical message   \"validationMessages\": [ // {array} List of validation messages, can be null     {       \"field\": \"###\", // {string} Name of field       \"message\": \"###\" // {string} Validation message for field     }   ],   \"requestId\": \"###\" // {string} Same as x-tlx-request-id  } ```   ## Status codes / Error codes  - **200 OK** - **201 Created** - From POSTs that create something new. - **204 No Content** - When there is no answer, ex: \"/:anAction\" or DELETE. - **400 Bad request** -   -  **4000** Bad Request Exception   - **11000** Illegal Filter Exception   - **12000** Path Param Exception   - **24000** Cryptography Exception - **401 Unauthorized** - When authentication is required and has failed or has not yet been provided   -  **3000** Authentication Exception - **403 Forbidden** - When AuthorisationManager says no.   -  **9000** Security Exception - **404 Not Found** - For resources that does not exist.   -  **6000** Not Found Exception - **409 Conflict** - Such as an edit conflict between multiple simultaneous updates   -  **7000** Object Exists Exception   -  **8000** Revision Exception   - **10000** Locked Exception   - **14000** Duplicate entry - **422 Bad Request** - For Required fields or things like malformed payload.   - **15000** Value Validation Exception   - **16000** Mapping Exception   - **17000** Sorting Exception   - **18000** Validation Exception   - **21000** Param Exception   - **22000** Invalid JSON Exception   - **23000** Result Set Too Large Exception - **429 Too Many Requests** - Request rate limit hit - **500 Internal Error** - Unexpected condition was encountered and no more specific message is suitable   - **1000** Exception
  *
- * The version of the OpenAPI document: 2.70.19
- * Generated by: https://openapi-generator.tech
- * OpenAPI Generator version: 6.5.0-SNAPSHOT
+ * OpenAPI spec version: 2.70.19
+ * 
+ * Generated by: https://github.com/swagger-api/swagger-codegen.git
+ * Swagger Codegen version: 3.0.41
  */
-
 /**
- * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
- * https://openapi-generator.tech
+ * NOTE: This class is auto generated by the swagger code generator program.
+ * https://github.com/swagger-api/swagger-codegen
  * Do not edit the class manually.
  */
 
@@ -36,155 +36,104 @@ use \Learnist\Tripletex\ObjectSerializer;
  *
  * @category Class
  * @package  Learnist\Tripletex
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- * @implements \ArrayAccess<string, mixed>
+ * @author   Swagger Codegen team
+ * @link     https://github.com/swagger-api/swagger-codegen
  */
-class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSerializable
+class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess
 {
-    public const DISCRIMINATOR = null;
+    const DISCRIMINATOR = null;
 
     /**
       * The original name of the model.
       *
       * @var string
       */
-    protected static $openAPIModelName = 'MySubscriptionModuleDTO';
+    protected static $swaggerModelName = 'MySubscriptionModuleDTO';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
       *
       * @var string[]
       */
-    protected static $openAPITypes = [
+    protected static $swaggerTypes = [
         'id' => 'int',
-        'category' => 'string',
-        'title' => 'string',
-        'short_description' => 'string',
-        'description_part1' => 'string',
-        'description_part2' => 'string',
-        'per_use_price' => 'object',
-        'per_user_price' => 'object',
-        'monthly_price' => 'object',
-        'yearly_price' => 'object',
-        'start_up_price' => 'object',
-        'per_user_over_limit_price' => 'object',
-        'price_description' => 'string',
-        'active' => 'bool',
-        'available' => 'bool',
-        'processing' => 'bool',
-        'info_text' => 'string',
-        'agreement_title' => 'string',
-        'agreement_text' => 'string',
-        'unavailable_text' => 'string',
-        'license_url' => 'string',
-        'license_text' => 'string',
-        'redirect_url' => 'string',
-        'price_line1_text' => 'string',
-        'price_line2_text' => 'string',
-        'price_line3_text' => 'string',
-        'price1' => 'object',
-        'price2' => 'object',
-        'price3' => 'object',
-        'can_deactivate' => 'bool',
-        'deactivation_error' => 'string'
-    ];
+'category' => 'string',
+'title' => 'string',
+'short_description' => 'string',
+'description_part1' => 'string',
+'description_part2' => 'string',
+'per_use_price' => '\Learnist\Tripletex\Model\TlxNumber',
+'per_user_price' => '\Learnist\Tripletex\Model\TlxNumber',
+'monthly_price' => '\Learnist\Tripletex\Model\TlxNumber',
+'yearly_price' => '\Learnist\Tripletex\Model\TlxNumber',
+'start_up_price' => '\Learnist\Tripletex\Model\TlxNumber',
+'per_user_over_limit_price' => '\Learnist\Tripletex\Model\TlxNumber',
+'price_description' => 'string',
+'active' => 'bool',
+'available' => 'bool',
+'processing' => 'bool',
+'info_text' => 'string',
+'agreement_title' => 'string',
+'agreement_text' => 'string',
+'unavailable_text' => 'string',
+'license_url' => 'string',
+'license_text' => 'string',
+'redirect_url' => 'string',
+'price_line1_text' => 'string',
+'price_line2_text' => 'string',
+'price_line3_text' => 'string',
+'price1' => '\Learnist\Tripletex\Model\TlxNumber',
+'price2' => '\Learnist\Tripletex\Model\TlxNumber',
+'price3' => '\Learnist\Tripletex\Model\TlxNumber',
+'can_deactivate' => 'bool',
+'deactivation_error' => 'string'    ];
 
     /**
       * Array of property to format mappings. Used for (de)serialization
       *
       * @var string[]
-      * @phpstan-var array<string, string|null>
-      * @psalm-var array<string, string|null>
       */
-    protected static $openAPIFormats = [
+    protected static $swaggerFormats = [
         'id' => 'int32',
-        'category' => null,
-        'title' => null,
-        'short_description' => null,
-        'description_part1' => null,
-        'description_part2' => null,
-        'per_use_price' => null,
-        'per_user_price' => null,
-        'monthly_price' => null,
-        'yearly_price' => null,
-        'start_up_price' => null,
-        'per_user_over_limit_price' => null,
-        'price_description' => null,
-        'active' => null,
-        'available' => null,
-        'processing' => null,
-        'info_text' => null,
-        'agreement_title' => null,
-        'agreement_text' => null,
-        'unavailable_text' => null,
-        'license_url' => null,
-        'license_text' => null,
-        'redirect_url' => null,
-        'price_line1_text' => null,
-        'price_line2_text' => null,
-        'price_line3_text' => null,
-        'price1' => null,
-        'price2' => null,
-        'price3' => null,
-        'can_deactivate' => null,
-        'deactivation_error' => null
-    ];
-
-    /**
-      * Array of nullable properties. Used for (de)serialization
-      *
-      * @var boolean[]
-      */
-    protected static array $openAPINullables = [
-        'id' => false,
-		'category' => false,
-		'title' => false,
-		'short_description' => false,
-		'description_part1' => false,
-		'description_part2' => false,
-		'per_use_price' => false,
-		'per_user_price' => false,
-		'monthly_price' => false,
-		'yearly_price' => false,
-		'start_up_price' => false,
-		'per_user_over_limit_price' => false,
-		'price_description' => false,
-		'active' => false,
-		'available' => false,
-		'processing' => false,
-		'info_text' => false,
-		'agreement_title' => false,
-		'agreement_text' => false,
-		'unavailable_text' => false,
-		'license_url' => false,
-		'license_text' => false,
-		'redirect_url' => false,
-		'price_line1_text' => false,
-		'price_line2_text' => false,
-		'price_line3_text' => false,
-		'price1' => false,
-		'price2' => false,
-		'price3' => false,
-		'can_deactivate' => false,
-		'deactivation_error' => false
-    ];
-
-    /**
-      * If a nullable field gets set to null, insert it here
-      *
-      * @var boolean[]
-      */
-    protected array $openAPINullablesSetToNull = [];
+'category' => null,
+'title' => null,
+'short_description' => null,
+'description_part1' => null,
+'description_part2' => null,
+'per_use_price' => null,
+'per_user_price' => null,
+'monthly_price' => null,
+'yearly_price' => null,
+'start_up_price' => null,
+'per_user_over_limit_price' => null,
+'price_description' => null,
+'active' => null,
+'available' => null,
+'processing' => null,
+'info_text' => null,
+'agreement_title' => null,
+'agreement_text' => null,
+'unavailable_text' => null,
+'license_url' => null,
+'license_text' => null,
+'redirect_url' => null,
+'price_line1_text' => null,
+'price_line2_text' => null,
+'price_line3_text' => null,
+'price1' => null,
+'price2' => null,
+'price3' => null,
+'can_deactivate' => null,
+'deactivation_error' => null    ];
 
     /**
      * Array of property to type mappings. Used for (de)serialization
      *
      * @return array
      */
-    public static function openAPITypes()
+    public static function swaggerTypes()
     {
-        return self::$openAPITypes;
+        return self::$swaggerTypes;
     }
 
     /**
@@ -192,61 +141,9 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
      *
      * @return array
      */
-    public static function openAPIFormats()
+    public static function swaggerFormats()
     {
-        return self::$openAPIFormats;
-    }
-
-    /**
-     * Array of nullable properties
-     *
-     * @return array
-     */
-    protected static function openAPINullables(): array
-    {
-        return self::$openAPINullables;
-    }
-
-    /**
-     * Array of nullable field names deliberately set to null
-     *
-     * @return boolean[]
-     */
-    private function getOpenAPINullablesSetToNull(): array
-    {
-        return $this->openAPINullablesSetToNull;
-    }
-
-    /**
-     * Setter - Array of nullable field names deliberately set to null
-     *
-     * @param boolean[] $openAPINullablesSetToNull
-     */
-    private function setOpenAPINullablesSetToNull(array $openAPINullablesSetToNull): void
-    {
-        $this->openAPINullablesSetToNull = $openAPINullablesSetToNull;
-    }
-
-    /**
-     * Checks if a property is nullable
-     *
-     * @param string $property
-     * @return bool
-     */
-    public static function isNullable(string $property): bool
-    {
-        return self::openAPINullables()[$property] ?? false;
-    }
-
-    /**
-     * Checks if a nullable property is set to null.
-     *
-     * @param string $property
-     * @return bool
-     */
-    public function isNullableSetToNull(string $property): bool
-    {
-        return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+        return self::$swaggerFormats;
     }
 
     /**
@@ -257,37 +154,36 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
      */
     protected static $attributeMap = [
         'id' => 'id',
-        'category' => 'category',
-        'title' => 'title',
-        'short_description' => 'shortDescription',
-        'description_part1' => 'descriptionPart1',
-        'description_part2' => 'descriptionPart2',
-        'per_use_price' => 'perUsePrice',
-        'per_user_price' => 'perUserPrice',
-        'monthly_price' => 'monthlyPrice',
-        'yearly_price' => 'yearlyPrice',
-        'start_up_price' => 'startUpPrice',
-        'per_user_over_limit_price' => 'perUserOverLimitPrice',
-        'price_description' => 'priceDescription',
-        'active' => 'active',
-        'available' => 'available',
-        'processing' => 'processing',
-        'info_text' => 'infoText',
-        'agreement_title' => 'agreementTitle',
-        'agreement_text' => 'agreementText',
-        'unavailable_text' => 'unavailableText',
-        'license_url' => 'licenseUrl',
-        'license_text' => 'licenseText',
-        'redirect_url' => 'redirectUrl',
-        'price_line1_text' => 'priceLine1Text',
-        'price_line2_text' => 'priceLine2Text',
-        'price_line3_text' => 'priceLine3Text',
-        'price1' => 'price1',
-        'price2' => 'price2',
-        'price3' => 'price3',
-        'can_deactivate' => 'canDeactivate',
-        'deactivation_error' => 'deactivationError'
-    ];
+'category' => 'category',
+'title' => 'title',
+'short_description' => 'shortDescription',
+'description_part1' => 'descriptionPart1',
+'description_part2' => 'descriptionPart2',
+'per_use_price' => 'perUsePrice',
+'per_user_price' => 'perUserPrice',
+'monthly_price' => 'monthlyPrice',
+'yearly_price' => 'yearlyPrice',
+'start_up_price' => 'startUpPrice',
+'per_user_over_limit_price' => 'perUserOverLimitPrice',
+'price_description' => 'priceDescription',
+'active' => 'active',
+'available' => 'available',
+'processing' => 'processing',
+'info_text' => 'infoText',
+'agreement_title' => 'agreementTitle',
+'agreement_text' => 'agreementText',
+'unavailable_text' => 'unavailableText',
+'license_url' => 'licenseUrl',
+'license_text' => 'licenseText',
+'redirect_url' => 'redirectUrl',
+'price_line1_text' => 'priceLine1Text',
+'price_line2_text' => 'priceLine2Text',
+'price_line3_text' => 'priceLine3Text',
+'price1' => 'price1',
+'price2' => 'price2',
+'price3' => 'price3',
+'can_deactivate' => 'canDeactivate',
+'deactivation_error' => 'deactivationError'    ];
 
     /**
      * Array of attributes to setter functions (for deserialization of responses)
@@ -296,37 +192,36 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
      */
     protected static $setters = [
         'id' => 'setId',
-        'category' => 'setCategory',
-        'title' => 'setTitle',
-        'short_description' => 'setShortDescription',
-        'description_part1' => 'setDescriptionPart1',
-        'description_part2' => 'setDescriptionPart2',
-        'per_use_price' => 'setPerUsePrice',
-        'per_user_price' => 'setPerUserPrice',
-        'monthly_price' => 'setMonthlyPrice',
-        'yearly_price' => 'setYearlyPrice',
-        'start_up_price' => 'setStartUpPrice',
-        'per_user_over_limit_price' => 'setPerUserOverLimitPrice',
-        'price_description' => 'setPriceDescription',
-        'active' => 'setActive',
-        'available' => 'setAvailable',
-        'processing' => 'setProcessing',
-        'info_text' => 'setInfoText',
-        'agreement_title' => 'setAgreementTitle',
-        'agreement_text' => 'setAgreementText',
-        'unavailable_text' => 'setUnavailableText',
-        'license_url' => 'setLicenseUrl',
-        'license_text' => 'setLicenseText',
-        'redirect_url' => 'setRedirectUrl',
-        'price_line1_text' => 'setPriceLine1Text',
-        'price_line2_text' => 'setPriceLine2Text',
-        'price_line3_text' => 'setPriceLine3Text',
-        'price1' => 'setPrice1',
-        'price2' => 'setPrice2',
-        'price3' => 'setPrice3',
-        'can_deactivate' => 'setCanDeactivate',
-        'deactivation_error' => 'setDeactivationError'
-    ];
+'category' => 'setCategory',
+'title' => 'setTitle',
+'short_description' => 'setShortDescription',
+'description_part1' => 'setDescriptionPart1',
+'description_part2' => 'setDescriptionPart2',
+'per_use_price' => 'setPerUsePrice',
+'per_user_price' => 'setPerUserPrice',
+'monthly_price' => 'setMonthlyPrice',
+'yearly_price' => 'setYearlyPrice',
+'start_up_price' => 'setStartUpPrice',
+'per_user_over_limit_price' => 'setPerUserOverLimitPrice',
+'price_description' => 'setPriceDescription',
+'active' => 'setActive',
+'available' => 'setAvailable',
+'processing' => 'setProcessing',
+'info_text' => 'setInfoText',
+'agreement_title' => 'setAgreementTitle',
+'agreement_text' => 'setAgreementText',
+'unavailable_text' => 'setUnavailableText',
+'license_url' => 'setLicenseUrl',
+'license_text' => 'setLicenseText',
+'redirect_url' => 'setRedirectUrl',
+'price_line1_text' => 'setPriceLine1Text',
+'price_line2_text' => 'setPriceLine2Text',
+'price_line3_text' => 'setPriceLine3Text',
+'price1' => 'setPrice1',
+'price2' => 'setPrice2',
+'price3' => 'setPrice3',
+'can_deactivate' => 'setCanDeactivate',
+'deactivation_error' => 'setDeactivationError'    ];
 
     /**
      * Array of attributes to getter functions (for serialization of requests)
@@ -335,37 +230,36 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
      */
     protected static $getters = [
         'id' => 'getId',
-        'category' => 'getCategory',
-        'title' => 'getTitle',
-        'short_description' => 'getShortDescription',
-        'description_part1' => 'getDescriptionPart1',
-        'description_part2' => 'getDescriptionPart2',
-        'per_use_price' => 'getPerUsePrice',
-        'per_user_price' => 'getPerUserPrice',
-        'monthly_price' => 'getMonthlyPrice',
-        'yearly_price' => 'getYearlyPrice',
-        'start_up_price' => 'getStartUpPrice',
-        'per_user_over_limit_price' => 'getPerUserOverLimitPrice',
-        'price_description' => 'getPriceDescription',
-        'active' => 'getActive',
-        'available' => 'getAvailable',
-        'processing' => 'getProcessing',
-        'info_text' => 'getInfoText',
-        'agreement_title' => 'getAgreementTitle',
-        'agreement_text' => 'getAgreementText',
-        'unavailable_text' => 'getUnavailableText',
-        'license_url' => 'getLicenseUrl',
-        'license_text' => 'getLicenseText',
-        'redirect_url' => 'getRedirectUrl',
-        'price_line1_text' => 'getPriceLine1Text',
-        'price_line2_text' => 'getPriceLine2Text',
-        'price_line3_text' => 'getPriceLine3Text',
-        'price1' => 'getPrice1',
-        'price2' => 'getPrice2',
-        'price3' => 'getPrice3',
-        'can_deactivate' => 'getCanDeactivate',
-        'deactivation_error' => 'getDeactivationError'
-    ];
+'category' => 'getCategory',
+'title' => 'getTitle',
+'short_description' => 'getShortDescription',
+'description_part1' => 'getDescriptionPart1',
+'description_part2' => 'getDescriptionPart2',
+'per_use_price' => 'getPerUsePrice',
+'per_user_price' => 'getPerUserPrice',
+'monthly_price' => 'getMonthlyPrice',
+'yearly_price' => 'getYearlyPrice',
+'start_up_price' => 'getStartUpPrice',
+'per_user_over_limit_price' => 'getPerUserOverLimitPrice',
+'price_description' => 'getPriceDescription',
+'active' => 'getActive',
+'available' => 'getAvailable',
+'processing' => 'getProcessing',
+'info_text' => 'getInfoText',
+'agreement_title' => 'getAgreementTitle',
+'agreement_text' => 'getAgreementText',
+'unavailable_text' => 'getUnavailableText',
+'license_url' => 'getLicenseUrl',
+'license_text' => 'getLicenseText',
+'redirect_url' => 'getRedirectUrl',
+'price_line1_text' => 'getPriceLine1Text',
+'price_line2_text' => 'getPriceLine2Text',
+'price_line3_text' => 'getPriceLine3Text',
+'price1' => 'getPrice1',
+'price2' => 'getPrice2',
+'price3' => 'getPrice3',
+'can_deactivate' => 'getCanDeactivate',
+'deactivation_error' => 'getDeactivationError'    ];
 
     /**
      * Array of attributes where the key is the local name,
@@ -405,9 +299,10 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
      */
     public function getModelName()
     {
-        return self::$openAPIModelName;
+        return self::$swaggerModelName;
     }
 
+    
 
     /**
      * Associative array for storing property values
@@ -424,55 +319,37 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
      */
     public function __construct(array $data = null)
     {
-        $this->setIfExists('id', $data ?? [], null);
-        $this->setIfExists('category', $data ?? [], null);
-        $this->setIfExists('title', $data ?? [], null);
-        $this->setIfExists('short_description', $data ?? [], null);
-        $this->setIfExists('description_part1', $data ?? [], null);
-        $this->setIfExists('description_part2', $data ?? [], null);
-        $this->setIfExists('per_use_price', $data ?? [], null);
-        $this->setIfExists('per_user_price', $data ?? [], null);
-        $this->setIfExists('monthly_price', $data ?? [], null);
-        $this->setIfExists('yearly_price', $data ?? [], null);
-        $this->setIfExists('start_up_price', $data ?? [], null);
-        $this->setIfExists('per_user_over_limit_price', $data ?? [], null);
-        $this->setIfExists('price_description', $data ?? [], null);
-        $this->setIfExists('active', $data ?? [], null);
-        $this->setIfExists('available', $data ?? [], null);
-        $this->setIfExists('processing', $data ?? [], null);
-        $this->setIfExists('info_text', $data ?? [], null);
-        $this->setIfExists('agreement_title', $data ?? [], null);
-        $this->setIfExists('agreement_text', $data ?? [], null);
-        $this->setIfExists('unavailable_text', $data ?? [], null);
-        $this->setIfExists('license_url', $data ?? [], null);
-        $this->setIfExists('license_text', $data ?? [], null);
-        $this->setIfExists('redirect_url', $data ?? [], null);
-        $this->setIfExists('price_line1_text', $data ?? [], null);
-        $this->setIfExists('price_line2_text', $data ?? [], null);
-        $this->setIfExists('price_line3_text', $data ?? [], null);
-        $this->setIfExists('price1', $data ?? [], null);
-        $this->setIfExists('price2', $data ?? [], null);
-        $this->setIfExists('price3', $data ?? [], null);
-        $this->setIfExists('can_deactivate', $data ?? [], null);
-        $this->setIfExists('deactivation_error', $data ?? [], null);
-    }
-
-    /**
-    * Sets $this->container[$variableName] to the given data or to the given default Value; if $variableName
-    * is nullable and its value is set to null in the $fields array, then mark it as "set to null" in the
-    * $this->openAPINullablesSetToNull array
-    *
-    * @param string $variableName
-    * @param array  $fields
-    * @param mixed  $defaultValue
-    */
-    private function setIfExists(string $variableName, array $fields, $defaultValue): void
-    {
-        if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
-            $this->openAPINullablesSetToNull[] = $variableName;
-        }
-
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $this->container['id'] = isset($data['id']) ? $data['id'] : null;
+        $this->container['category'] = isset($data['category']) ? $data['category'] : null;
+        $this->container['title'] = isset($data['title']) ? $data['title'] : null;
+        $this->container['short_description'] = isset($data['short_description']) ? $data['short_description'] : null;
+        $this->container['description_part1'] = isset($data['description_part1']) ? $data['description_part1'] : null;
+        $this->container['description_part2'] = isset($data['description_part2']) ? $data['description_part2'] : null;
+        $this->container['per_use_price'] = isset($data['per_use_price']) ? $data['per_use_price'] : null;
+        $this->container['per_user_price'] = isset($data['per_user_price']) ? $data['per_user_price'] : null;
+        $this->container['monthly_price'] = isset($data['monthly_price']) ? $data['monthly_price'] : null;
+        $this->container['yearly_price'] = isset($data['yearly_price']) ? $data['yearly_price'] : null;
+        $this->container['start_up_price'] = isset($data['start_up_price']) ? $data['start_up_price'] : null;
+        $this->container['per_user_over_limit_price'] = isset($data['per_user_over_limit_price']) ? $data['per_user_over_limit_price'] : null;
+        $this->container['price_description'] = isset($data['price_description']) ? $data['price_description'] : null;
+        $this->container['active'] = isset($data['active']) ? $data['active'] : null;
+        $this->container['available'] = isset($data['available']) ? $data['available'] : null;
+        $this->container['processing'] = isset($data['processing']) ? $data['processing'] : null;
+        $this->container['info_text'] = isset($data['info_text']) ? $data['info_text'] : null;
+        $this->container['agreement_title'] = isset($data['agreement_title']) ? $data['agreement_title'] : null;
+        $this->container['agreement_text'] = isset($data['agreement_text']) ? $data['agreement_text'] : null;
+        $this->container['unavailable_text'] = isset($data['unavailable_text']) ? $data['unavailable_text'] : null;
+        $this->container['license_url'] = isset($data['license_url']) ? $data['license_url'] : null;
+        $this->container['license_text'] = isset($data['license_text']) ? $data['license_text'] : null;
+        $this->container['redirect_url'] = isset($data['redirect_url']) ? $data['redirect_url'] : null;
+        $this->container['price_line1_text'] = isset($data['price_line1_text']) ? $data['price_line1_text'] : null;
+        $this->container['price_line2_text'] = isset($data['price_line2_text']) ? $data['price_line2_text'] : null;
+        $this->container['price_line3_text'] = isset($data['price_line3_text']) ? $data['price_line3_text'] : null;
+        $this->container['price1'] = isset($data['price1']) ? $data['price1'] : null;
+        $this->container['price2'] = isset($data['price2']) ? $data['price2'] : null;
+        $this->container['price3'] = isset($data['price3']) ? $data['price3'] : null;
+        $this->container['can_deactivate'] = isset($data['can_deactivate']) ? $data['can_deactivate'] : null;
+        $this->container['deactivation_error'] = isset($data['deactivation_error']) ? $data['deactivation_error'] : null;
     }
 
     /**
@@ -502,7 +379,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets id
      *
-     * @return int|null
+     * @return int
      */
     public function getId()
     {
@@ -512,15 +389,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets id
      *
-     * @param int|null $id id
+     * @param int $id id
      *
-     * @return self
+     * @return $this
      */
     public function setId($id)
     {
-        if (is_null($id)) {
-            throw new \InvalidArgumentException('non-nullable id cannot be null');
-        }
         $this->container['id'] = $id;
 
         return $this;
@@ -529,7 +403,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets category
      *
-     * @return string|null
+     * @return string
      */
     public function getCategory()
     {
@@ -539,15 +413,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets category
      *
-     * @param string|null $category category
+     * @param string $category category
      *
-     * @return self
+     * @return $this
      */
     public function setCategory($category)
     {
-        if (is_null($category)) {
-            throw new \InvalidArgumentException('non-nullable category cannot be null');
-        }
         $this->container['category'] = $category;
 
         return $this;
@@ -556,7 +427,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets title
      *
-     * @return string|null
+     * @return string
      */
     public function getTitle()
     {
@@ -566,15 +437,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets title
      *
-     * @param string|null $title title
+     * @param string $title title
      *
-     * @return self
+     * @return $this
      */
     public function setTitle($title)
     {
-        if (is_null($title)) {
-            throw new \InvalidArgumentException('non-nullable title cannot be null');
-        }
         $this->container['title'] = $title;
 
         return $this;
@@ -583,7 +451,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets short_description
      *
-     * @return string|null
+     * @return string
      */
     public function getShortDescription()
     {
@@ -593,15 +461,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets short_description
      *
-     * @param string|null $short_description short_description
+     * @param string $short_description short_description
      *
-     * @return self
+     * @return $this
      */
     public function setShortDescription($short_description)
     {
-        if (is_null($short_description)) {
-            throw new \InvalidArgumentException('non-nullable short_description cannot be null');
-        }
         $this->container['short_description'] = $short_description;
 
         return $this;
@@ -610,7 +475,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets description_part1
      *
-     * @return string|null
+     * @return string
      */
     public function getDescriptionPart1()
     {
@@ -620,15 +485,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets description_part1
      *
-     * @param string|null $description_part1 description_part1
+     * @param string $description_part1 description_part1
      *
-     * @return self
+     * @return $this
      */
     public function setDescriptionPart1($description_part1)
     {
-        if (is_null($description_part1)) {
-            throw new \InvalidArgumentException('non-nullable description_part1 cannot be null');
-        }
         $this->container['description_part1'] = $description_part1;
 
         return $this;
@@ -637,7 +499,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets description_part2
      *
-     * @return string|null
+     * @return string
      */
     public function getDescriptionPart2()
     {
@@ -647,15 +509,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets description_part2
      *
-     * @param string|null $description_part2 description_part2
+     * @param string $description_part2 description_part2
      *
-     * @return self
+     * @return $this
      */
     public function setDescriptionPart2($description_part2)
     {
-        if (is_null($description_part2)) {
-            throw new \InvalidArgumentException('non-nullable description_part2 cannot be null');
-        }
         $this->container['description_part2'] = $description_part2;
 
         return $this;
@@ -664,7 +523,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets per_use_price
      *
-     * @return object|null
+     * @return \Learnist\Tripletex\Model\TlxNumber
      */
     public function getPerUsePrice()
     {
@@ -674,15 +533,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets per_use_price
      *
-     * @param object|null $per_use_price per_use_price
+     * @param \Learnist\Tripletex\Model\TlxNumber $per_use_price per_use_price
      *
-     * @return self
+     * @return $this
      */
     public function setPerUsePrice($per_use_price)
     {
-        if (is_null($per_use_price)) {
-            throw new \InvalidArgumentException('non-nullable per_use_price cannot be null');
-        }
         $this->container['per_use_price'] = $per_use_price;
 
         return $this;
@@ -691,7 +547,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets per_user_price
      *
-     * @return object|null
+     * @return \Learnist\Tripletex\Model\TlxNumber
      */
     public function getPerUserPrice()
     {
@@ -701,15 +557,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets per_user_price
      *
-     * @param object|null $per_user_price per_user_price
+     * @param \Learnist\Tripletex\Model\TlxNumber $per_user_price per_user_price
      *
-     * @return self
+     * @return $this
      */
     public function setPerUserPrice($per_user_price)
     {
-        if (is_null($per_user_price)) {
-            throw new \InvalidArgumentException('non-nullable per_user_price cannot be null');
-        }
         $this->container['per_user_price'] = $per_user_price;
 
         return $this;
@@ -718,7 +571,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets monthly_price
      *
-     * @return object|null
+     * @return \Learnist\Tripletex\Model\TlxNumber
      */
     public function getMonthlyPrice()
     {
@@ -728,15 +581,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets monthly_price
      *
-     * @param object|null $monthly_price monthly_price
+     * @param \Learnist\Tripletex\Model\TlxNumber $monthly_price monthly_price
      *
-     * @return self
+     * @return $this
      */
     public function setMonthlyPrice($monthly_price)
     {
-        if (is_null($monthly_price)) {
-            throw new \InvalidArgumentException('non-nullable monthly_price cannot be null');
-        }
         $this->container['monthly_price'] = $monthly_price;
 
         return $this;
@@ -745,7 +595,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets yearly_price
      *
-     * @return object|null
+     * @return \Learnist\Tripletex\Model\TlxNumber
      */
     public function getYearlyPrice()
     {
@@ -755,15 +605,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets yearly_price
      *
-     * @param object|null $yearly_price yearly_price
+     * @param \Learnist\Tripletex\Model\TlxNumber $yearly_price yearly_price
      *
-     * @return self
+     * @return $this
      */
     public function setYearlyPrice($yearly_price)
     {
-        if (is_null($yearly_price)) {
-            throw new \InvalidArgumentException('non-nullable yearly_price cannot be null');
-        }
         $this->container['yearly_price'] = $yearly_price;
 
         return $this;
@@ -772,7 +619,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets start_up_price
      *
-     * @return object|null
+     * @return \Learnist\Tripletex\Model\TlxNumber
      */
     public function getStartUpPrice()
     {
@@ -782,15 +629,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets start_up_price
      *
-     * @param object|null $start_up_price start_up_price
+     * @param \Learnist\Tripletex\Model\TlxNumber $start_up_price start_up_price
      *
-     * @return self
+     * @return $this
      */
     public function setStartUpPrice($start_up_price)
     {
-        if (is_null($start_up_price)) {
-            throw new \InvalidArgumentException('non-nullable start_up_price cannot be null');
-        }
         $this->container['start_up_price'] = $start_up_price;
 
         return $this;
@@ -799,7 +643,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets per_user_over_limit_price
      *
-     * @return object|null
+     * @return \Learnist\Tripletex\Model\TlxNumber
      */
     public function getPerUserOverLimitPrice()
     {
@@ -809,15 +653,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets per_user_over_limit_price
      *
-     * @param object|null $per_user_over_limit_price per_user_over_limit_price
+     * @param \Learnist\Tripletex\Model\TlxNumber $per_user_over_limit_price per_user_over_limit_price
      *
-     * @return self
+     * @return $this
      */
     public function setPerUserOverLimitPrice($per_user_over_limit_price)
     {
-        if (is_null($per_user_over_limit_price)) {
-            throw new \InvalidArgumentException('non-nullable per_user_over_limit_price cannot be null');
-        }
         $this->container['per_user_over_limit_price'] = $per_user_over_limit_price;
 
         return $this;
@@ -826,7 +667,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets price_description
      *
-     * @return string|null
+     * @return string
      */
     public function getPriceDescription()
     {
@@ -836,15 +677,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets price_description
      *
-     * @param string|null $price_description price_description
+     * @param string $price_description price_description
      *
-     * @return self
+     * @return $this
      */
     public function setPriceDescription($price_description)
     {
-        if (is_null($price_description)) {
-            throw new \InvalidArgumentException('non-nullable price_description cannot be null');
-        }
         $this->container['price_description'] = $price_description;
 
         return $this;
@@ -853,7 +691,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets active
      *
-     * @return bool|null
+     * @return bool
      */
     public function getActive()
     {
@@ -863,15 +701,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets active
      *
-     * @param bool|null $active active
+     * @param bool $active active
      *
-     * @return self
+     * @return $this
      */
     public function setActive($active)
     {
-        if (is_null($active)) {
-            throw new \InvalidArgumentException('non-nullable active cannot be null');
-        }
         $this->container['active'] = $active;
 
         return $this;
@@ -880,7 +715,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets available
      *
-     * @return bool|null
+     * @return bool
      */
     public function getAvailable()
     {
@@ -890,15 +725,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets available
      *
-     * @param bool|null $available available
+     * @param bool $available available
      *
-     * @return self
+     * @return $this
      */
     public function setAvailable($available)
     {
-        if (is_null($available)) {
-            throw new \InvalidArgumentException('non-nullable available cannot be null');
-        }
         $this->container['available'] = $available;
 
         return $this;
@@ -907,7 +739,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets processing
      *
-     * @return bool|null
+     * @return bool
      */
     public function getProcessing()
     {
@@ -917,15 +749,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets processing
      *
-     * @param bool|null $processing processing
+     * @param bool $processing processing
      *
-     * @return self
+     * @return $this
      */
     public function setProcessing($processing)
     {
-        if (is_null($processing)) {
-            throw new \InvalidArgumentException('non-nullable processing cannot be null');
-        }
         $this->container['processing'] = $processing;
 
         return $this;
@@ -934,7 +763,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets info_text
      *
-     * @return string|null
+     * @return string
      */
     public function getInfoText()
     {
@@ -944,15 +773,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets info_text
      *
-     * @param string|null $info_text info_text
+     * @param string $info_text info_text
      *
-     * @return self
+     * @return $this
      */
     public function setInfoText($info_text)
     {
-        if (is_null($info_text)) {
-            throw new \InvalidArgumentException('non-nullable info_text cannot be null');
-        }
         $this->container['info_text'] = $info_text;
 
         return $this;
@@ -961,7 +787,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets agreement_title
      *
-     * @return string|null
+     * @return string
      */
     public function getAgreementTitle()
     {
@@ -971,15 +797,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets agreement_title
      *
-     * @param string|null $agreement_title agreement_title
+     * @param string $agreement_title agreement_title
      *
-     * @return self
+     * @return $this
      */
     public function setAgreementTitle($agreement_title)
     {
-        if (is_null($agreement_title)) {
-            throw new \InvalidArgumentException('non-nullable agreement_title cannot be null');
-        }
         $this->container['agreement_title'] = $agreement_title;
 
         return $this;
@@ -988,7 +811,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets agreement_text
      *
-     * @return string|null
+     * @return string
      */
     public function getAgreementText()
     {
@@ -998,15 +821,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets agreement_text
      *
-     * @param string|null $agreement_text agreement_text
+     * @param string $agreement_text agreement_text
      *
-     * @return self
+     * @return $this
      */
     public function setAgreementText($agreement_text)
     {
-        if (is_null($agreement_text)) {
-            throw new \InvalidArgumentException('non-nullable agreement_text cannot be null');
-        }
         $this->container['agreement_text'] = $agreement_text;
 
         return $this;
@@ -1015,7 +835,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets unavailable_text
      *
-     * @return string|null
+     * @return string
      */
     public function getUnavailableText()
     {
@@ -1025,15 +845,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets unavailable_text
      *
-     * @param string|null $unavailable_text unavailable_text
+     * @param string $unavailable_text unavailable_text
      *
-     * @return self
+     * @return $this
      */
     public function setUnavailableText($unavailable_text)
     {
-        if (is_null($unavailable_text)) {
-            throw new \InvalidArgumentException('non-nullable unavailable_text cannot be null');
-        }
         $this->container['unavailable_text'] = $unavailable_text;
 
         return $this;
@@ -1042,7 +859,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets license_url
      *
-     * @return string|null
+     * @return string
      */
     public function getLicenseUrl()
     {
@@ -1052,15 +869,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets license_url
      *
-     * @param string|null $license_url license_url
+     * @param string $license_url license_url
      *
-     * @return self
+     * @return $this
      */
     public function setLicenseUrl($license_url)
     {
-        if (is_null($license_url)) {
-            throw new \InvalidArgumentException('non-nullable license_url cannot be null');
-        }
         $this->container['license_url'] = $license_url;
 
         return $this;
@@ -1069,7 +883,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets license_text
      *
-     * @return string|null
+     * @return string
      */
     public function getLicenseText()
     {
@@ -1079,15 +893,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets license_text
      *
-     * @param string|null $license_text license_text
+     * @param string $license_text license_text
      *
-     * @return self
+     * @return $this
      */
     public function setLicenseText($license_text)
     {
-        if (is_null($license_text)) {
-            throw new \InvalidArgumentException('non-nullable license_text cannot be null');
-        }
         $this->container['license_text'] = $license_text;
 
         return $this;
@@ -1096,7 +907,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets redirect_url
      *
-     * @return string|null
+     * @return string
      */
     public function getRedirectUrl()
     {
@@ -1106,15 +917,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets redirect_url
      *
-     * @param string|null $redirect_url redirect_url
+     * @param string $redirect_url redirect_url
      *
-     * @return self
+     * @return $this
      */
     public function setRedirectUrl($redirect_url)
     {
-        if (is_null($redirect_url)) {
-            throw new \InvalidArgumentException('non-nullable redirect_url cannot be null');
-        }
         $this->container['redirect_url'] = $redirect_url;
 
         return $this;
@@ -1123,7 +931,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets price_line1_text
      *
-     * @return string|null
+     * @return string
      */
     public function getPriceLine1Text()
     {
@@ -1133,15 +941,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets price_line1_text
      *
-     * @param string|null $price_line1_text price_line1_text
+     * @param string $price_line1_text price_line1_text
      *
-     * @return self
+     * @return $this
      */
     public function setPriceLine1Text($price_line1_text)
     {
-        if (is_null($price_line1_text)) {
-            throw new \InvalidArgumentException('non-nullable price_line1_text cannot be null');
-        }
         $this->container['price_line1_text'] = $price_line1_text;
 
         return $this;
@@ -1150,7 +955,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets price_line2_text
      *
-     * @return string|null
+     * @return string
      */
     public function getPriceLine2Text()
     {
@@ -1160,15 +965,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets price_line2_text
      *
-     * @param string|null $price_line2_text price_line2_text
+     * @param string $price_line2_text price_line2_text
      *
-     * @return self
+     * @return $this
      */
     public function setPriceLine2Text($price_line2_text)
     {
-        if (is_null($price_line2_text)) {
-            throw new \InvalidArgumentException('non-nullable price_line2_text cannot be null');
-        }
         $this->container['price_line2_text'] = $price_line2_text;
 
         return $this;
@@ -1177,7 +979,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets price_line3_text
      *
-     * @return string|null
+     * @return string
      */
     public function getPriceLine3Text()
     {
@@ -1187,15 +989,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets price_line3_text
      *
-     * @param string|null $price_line3_text price_line3_text
+     * @param string $price_line3_text price_line3_text
      *
-     * @return self
+     * @return $this
      */
     public function setPriceLine3Text($price_line3_text)
     {
-        if (is_null($price_line3_text)) {
-            throw new \InvalidArgumentException('non-nullable price_line3_text cannot be null');
-        }
         $this->container['price_line3_text'] = $price_line3_text;
 
         return $this;
@@ -1204,7 +1003,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets price1
      *
-     * @return object|null
+     * @return \Learnist\Tripletex\Model\TlxNumber
      */
     public function getPrice1()
     {
@@ -1214,15 +1013,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets price1
      *
-     * @param object|null $price1 price1
+     * @param \Learnist\Tripletex\Model\TlxNumber $price1 price1
      *
-     * @return self
+     * @return $this
      */
     public function setPrice1($price1)
     {
-        if (is_null($price1)) {
-            throw new \InvalidArgumentException('non-nullable price1 cannot be null');
-        }
         $this->container['price1'] = $price1;
 
         return $this;
@@ -1231,7 +1027,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets price2
      *
-     * @return object|null
+     * @return \Learnist\Tripletex\Model\TlxNumber
      */
     public function getPrice2()
     {
@@ -1241,15 +1037,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets price2
      *
-     * @param object|null $price2 price2
+     * @param \Learnist\Tripletex\Model\TlxNumber $price2 price2
      *
-     * @return self
+     * @return $this
      */
     public function setPrice2($price2)
     {
-        if (is_null($price2)) {
-            throw new \InvalidArgumentException('non-nullable price2 cannot be null');
-        }
         $this->container['price2'] = $price2;
 
         return $this;
@@ -1258,7 +1051,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets price3
      *
-     * @return object|null
+     * @return \Learnist\Tripletex\Model\TlxNumber
      */
     public function getPrice3()
     {
@@ -1268,15 +1061,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets price3
      *
-     * @param object|null $price3 price3
+     * @param \Learnist\Tripletex\Model\TlxNumber $price3 price3
      *
-     * @return self
+     * @return $this
      */
     public function setPrice3($price3)
     {
-        if (is_null($price3)) {
-            throw new \InvalidArgumentException('non-nullable price3 cannot be null');
-        }
         $this->container['price3'] = $price3;
 
         return $this;
@@ -1285,7 +1075,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets can_deactivate
      *
-     * @return bool|null
+     * @return bool
      */
     public function getCanDeactivate()
     {
@@ -1295,15 +1085,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets can_deactivate
      *
-     * @param bool|null $can_deactivate can_deactivate
+     * @param bool $can_deactivate can_deactivate
      *
-     * @return self
+     * @return $this
      */
     public function setCanDeactivate($can_deactivate)
     {
-        if (is_null($can_deactivate)) {
-            throw new \InvalidArgumentException('non-nullable can_deactivate cannot be null');
-        }
         $this->container['can_deactivate'] = $can_deactivate;
 
         return $this;
@@ -1312,7 +1099,7 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Gets deactivation_error
      *
-     * @return string|null
+     * @return string
      */
     public function getDeactivationError()
     {
@@ -1322,15 +1109,12 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets deactivation_error
      *
-     * @param string|null $deactivation_error deactivation_error
+     * @param string $deactivation_error deactivation_error
      *
-     * @return self
+     * @return $this
      */
     public function setDeactivationError($deactivation_error)
     {
-        if (is_null($deactivation_error)) {
-            throw new \InvalidArgumentException('non-nullable deactivation_error cannot be null');
-        }
         $this->container['deactivation_error'] = $deactivation_error;
 
         return $this;
@@ -1342,7 +1126,8 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
      *
      * @return boolean
      */
-    public function offsetExists($offset): bool
+    #[\ReturnTypeWillChange] 
+    public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
     }
@@ -1352,23 +1137,24 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
      *
      * @param integer $offset Offset
      *
-     * @return mixed|null
+     * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[\ReturnTypeWillChange] 
     public function offsetGet($offset)
     {
-        return $this->container[$offset] ?? null;
+        return isset($this->container[$offset]) ? $this->container[$offset] : null;
     }
 
     /**
      * Sets value based on offset.
      *
-     * @param int|null $offset Offset
-     * @param mixed    $value  Value to be set
+     * @param integer $offset Offset
+     * @param mixed   $value  Value to be set
      *
      * @return void
      */
-    public function offsetSet($offset, $value): void
+    #[\ReturnTypeWillChange] 
+    public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -1384,22 +1170,10 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
      *
      * @return void
      */
-    public function offsetUnset($offset): void
+    #[\ReturnTypeWillChange] 
+    public function offsetUnset($offset)
     {
         unset($this->container[$offset]);
-    }
-
-    /**
-     * Serializes the object to a value that can be serialized natively by json_encode().
-     * @link https://www.php.net/manual/en/jsonserializable.jsonserialize.php
-     *
-     * @return mixed Returns data which can be serialized by json_encode(), which is a value
-     * of any type other than a resource.
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
-    {
-       return ObjectSerializer::sanitizeForSerialization($this);
     }
 
     /**
@@ -1409,21 +1183,13 @@ class MySubscriptionModuleDTO implements ModelInterface, ArrayAccess, \JsonSeria
      */
     public function __toString()
     {
-        return json_encode(
-            ObjectSerializer::sanitizeForSerialization($this),
-            JSON_PRETTY_PRINT
-        );
-    }
+        if (defined('JSON_PRETTY_PRINT')) { // use JSON pretty print
+            return json_encode(
+                ObjectSerializer::sanitizeForSerialization($this),
+                JSON_PRETTY_PRINT
+            );
+        }
 
-    /**
-     * Gets a header-safe presentation of the object
-     *
-     * @return string
-     */
-    public function toHeaderValue()
-    {
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
 }
-
-
