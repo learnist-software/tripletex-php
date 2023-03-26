@@ -862,7 +862,7 @@ self::POST_TYPE_FREE_NOTE_FREE_TEXT,        ];
      *
      * @return boolean
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -875,7 +875,7 @@ self::POST_TYPE_FREE_NOTE_FREE_TEXT,        ];
      *
      * @return mixed
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -889,7 +889,7 @@ self::POST_TYPE_FREE_NOTE_FREE_TEXT,        ];
      *
      * @return void
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -906,7 +906,7 @@ self::POST_TYPE_FREE_NOTE_FREE_TEXT,        ];
      *
      * @return void
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

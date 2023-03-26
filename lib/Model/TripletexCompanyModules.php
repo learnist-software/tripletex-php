@@ -4140,7 +4140,7 @@ self::MODULE_FACTORING_VISMA_FINANCE_OPTED_OUT,        ];
      *
      * @return boolean
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -4153,7 +4153,7 @@ self::MODULE_FACTORING_VISMA_FINANCE_OPTED_OUT,        ];
      *
      * @return mixed
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -4167,7 +4167,7 @@ self::MODULE_FACTORING_VISMA_FINANCE_OPTED_OUT,        ];
      *
      * @return void
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -4184,7 +4184,7 @@ self::MODULE_FACTORING_VISMA_FINANCE_OPTED_OUT,        ];
      *
      * @return void
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

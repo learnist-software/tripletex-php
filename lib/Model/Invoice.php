@@ -1499,7 +1499,7 @@ self::EHF_SEND_STATUS_SEND_FAILURE_RECIPIENT_NOT_FOUND,        ];
      *
      * @return boolean
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -1512,7 +1512,7 @@ self::EHF_SEND_STATUS_SEND_FAILURE_RECIPIENT_NOT_FOUND,        ];
      *
      * @return mixed
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -1526,7 +1526,7 @@ self::EHF_SEND_STATUS_SEND_FAILURE_RECIPIENT_NOT_FOUND,        ];
      *
      * @return void
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -1543,7 +1543,7 @@ self::EHF_SEND_STATUS_SEND_FAILURE_RECIPIENT_NOT_FOUND,        ];
      *
      * @return void
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

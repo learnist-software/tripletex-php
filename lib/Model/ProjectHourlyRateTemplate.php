@@ -378,7 +378,7 @@ self::HOURLY_RATE_MODEL_FIXED_HOURLY_RATE,        ];
      *
      * @return boolean
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -391,7 +391,7 @@ self::HOURLY_RATE_MODEL_FIXED_HOURLY_RATE,        ];
      *
      * @return mixed
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -405,7 +405,7 @@ self::HOURLY_RATE_MODEL_FIXED_HOURLY_RATE,        ];
      *
      * @return void
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -422,7 +422,7 @@ self::HOURLY_RATE_MODEL_FIXED_HOURLY_RATE,        ];
      *
      * @return void
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

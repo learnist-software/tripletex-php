@@ -585,7 +585,7 @@ self::POST_TYPE_NEGATIVE_PERSONAL_INCOME_CARRIED_FORWARD_NEXT_YEAR_SPOUSE,      
      *
      * @return boolean
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -598,7 +598,7 @@ self::POST_TYPE_NEGATIVE_PERSONAL_INCOME_CARRIED_FORWARD_NEXT_YEAR_SPOUSE,      
      *
      * @return mixed
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -612,7 +612,7 @@ self::POST_TYPE_NEGATIVE_PERSONAL_INCOME_CARRIED_FORWARD_NEXT_YEAR_SPOUSE,      
      *
      * @return void
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -629,7 +629,7 @@ self::POST_TYPE_NEGATIVE_PERSONAL_INCOME_CARRIED_FORWARD_NEXT_YEAR_SPOUSE,      
      *
      * @return void
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

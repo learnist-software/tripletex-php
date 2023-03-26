@@ -1,22 +1,20 @@
 {
     "name": "learnist-software/tripletex-php",
     "version": "1.0.0",
-    "description": "Tripletex public API",
+    "description": "",
     "keywords": [
-        "openapitools",
-        "openapi-generator",
-        "openapi",
+        "swagger",
         "php",
         "sdk",
         "rest",
         "api"
     ],
-    "homepage": "https://openapi-generator.tech",
-    "license": "unlicense",
+    "homepage": "http://swagger.io",
+    "license": "proprietary",
     "authors": [
         {
-            "name": "OpenAPI-Generator contributors",
-            "homepage": "https://openapi-generator.tech"
+            "name": "Swagger and contributors",
+            "homepage": "https://github.com/swagger-api/swagger-codegen"
         }
     ],
     "require": {
@@ -35,6 +33,6 @@
         "psr-4": { "Learnist\\Tripletex\\" : "lib/" }
     },
     "autoload-dev": {
-        "psr-4": { "Learnist\\Tripletex\\Test\\" : "test/" }
+        "psr-4": { "Learnist\\Tripletex\\" : "test/" }
     }
 }

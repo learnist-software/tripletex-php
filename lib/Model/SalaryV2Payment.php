@@ -1348,7 +1348,7 @@ self::DELIVERY_METHOD_PAY_SLIP_APP,        ];
      *
      * @return boolean
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -1361,7 +1361,7 @@ self::DELIVERY_METHOD_PAY_SLIP_APP,        ];
      *
      * @return mixed
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -1375,7 +1375,7 @@ self::DELIVERY_METHOD_PAY_SLIP_APP,        ];
      *
      * @return void
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -1392,7 +1392,7 @@ self::DELIVERY_METHOD_PAY_SLIP_APP,        ];
      *
      * @return void
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);

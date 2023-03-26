@@ -6,17 +6,17 @@ set -u
 
 root=$(dirname $0)
 
-(cd $root &&
 
-docker run --rm -v "${PWD}:/local" \
-    -u "$(id -u):$(id -g)" \
-    openapitools/openapi-generator-cli generate \
-    -i /local/tripletex-api.json \
-    -g php \
-    -o /local/ \
-    --invoker-package=Learnist\\Tripletex \
-    --additional-properties=composerPackageName=learnist/tripletex \
-    --artifact-version=1.0.0
+java -Xms2G -jar ./swagger-codegen-cli.jar  generate \
+      -i tripletex-api.json \
+      -l php \
+      -o . \
+      --invoker-package=Learnist\\Tripletex \
+      --additional-properties=composerPackageName=learnist-software/tripletex-php \
+      --artifact-version=1.0.0 --remove-operation-id-prefix=true \
+      --git-user-id=learnist-software \
+      --git-repo-id=tripletex-php  \
+      --additional-properties=packagePath=. \
+      -t ./template
 
-)
 

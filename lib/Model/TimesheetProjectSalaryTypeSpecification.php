@@ -538,7 +538,7 @@ class TimesheetProjectSalaryTypeSpecification implements ModelInterface, ArrayAc
      *
      * @return boolean
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->container[$offset]);
@@ -551,7 +551,7 @@ class TimesheetProjectSalaryTypeSpecification implements ModelInterface, ArrayAc
      *
      * @return mixed
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->container[$offset]) ? $this->container[$offset] : null;
@@ -565,7 +565,7 @@ class TimesheetProjectSalaryTypeSpecification implements ModelInterface, ArrayAc
      *
      * @return void
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -582,7 +582,7 @@ class TimesheetProjectSalaryTypeSpecification implements ModelInterface, ArrayAc
      *
      * @return void
      */
-    #[\ReturnTypeWillChange] 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->container[$offset]);
