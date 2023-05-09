@@ -691,12 +691,12 @@ class SaftApi
         // form params
         if ($saft_file !== null) {
             $multipart = true;
-            $formParams['saftFile'] = \GuzzleHttp\Psr7\try_fopen(ObjectSerializer::toFormValue($saft_file), 'rb');
+            $formParams['saftFile'] = \GuzzleHttp\Psr7\Utils::tryFopen(ObjectSerializer::toFormValue($saft_file), 'rb');
         }
         // form params
         if ($mapping_file !== null) {
             $multipart = true;
-            $formParams['mappingFile'] = \GuzzleHttp\Psr7\try_fopen(ObjectSerializer::toFormValue($mapping_file), 'rb');
+            $formParams['mappingFile'] = \GuzzleHttp\Psr7\Utils::tryFopen(ObjectSerializer::toFormValue($mapping_file), 'rb');
         }
         // form params
         if ($import_customer_vendors !== null) {
